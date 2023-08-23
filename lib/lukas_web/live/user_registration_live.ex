@@ -54,7 +54,9 @@ defmodule LukasWeb.UserRegistrationLive do
     {:ok, socket, temporary_assigns: [form: nil]}
   end
 
-  def handle_event("save", %{"user" => user_params}, socket) do
+  def handle_event("save", %{"user" => raw_user_params}, socket) do
+    user_params = Map.put(raw_user_params, "kind", :student)
+
     case Accounts.register_user(user_params) do
       {:ok, user} ->
         {:ok, _} =
@@ -71,7 +73,9 @@ defmodule LukasWeb.UserRegistrationLive do
     end
   end
 
-  def handle_event("validate", %{"user" => user_params}, socket) do
+  def handle_event("validate", %{"user" => raw_user_params}, socket) do
+    user_params = Map.put(raw_user_params, "kind", :student)
+
     changeset = Accounts.change_user_registration(%User{}, user_params)
     {:noreply, assign_form(socket, Map.put(changeset, :action, :validate))}
   end

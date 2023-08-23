@@ -14,7 +14,8 @@ defmodule Lukas.AccountsFixtures do
     Enum.into(attrs, %{
       phone_number: unique_user_phone_number(),
       email: unique_user_email(),
-      password: valid_user_password()
+      password: valid_user_password(),
+      kind: :operator
     })
   end
 

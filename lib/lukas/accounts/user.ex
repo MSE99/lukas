@@ -1,6 +1,9 @@
 defmodule Lukas.Accounts.User do
   use Ecto.Schema
+
   import Ecto.Changeset
+
+  @user_kinds [:operator, :student, :lecturer]
 
   schema "users" do
     field(:phone_number, :string)
@@ -8,16 +11,24 @@ defmodule Lukas.Accounts.User do
     field(:password, :string, virtual: true, redact: true)
     field(:hashed_password, :string, redact: true)
     field(:confirmed_at, :naive_datetime)
+    field(:kind, Ecto.Enum, values: @user_kinds)
 
     timestamps()
   end
 
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password, :phone_number])
+    |> cast(attrs, [:email, :password, :phone_number, :kind])
     |> validate_phone_number()
     |> validate_email(opts)
     |> validate_password(opts)
+    |> validate_kinds()
+  end
+
+  defp validate_kinds(changeset) do
+    changeset
+    |> validate_required(:kind)
+    |> validate_inclusion(:kind, @user_kinds)
   end
 
   defp validate_phone_number(changeset) do
