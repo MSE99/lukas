@@ -11,7 +11,7 @@ defmodule LukasWeb.UserSessionControllerTest do
     test "logs the user in", %{conn: conn, user: user} do
       conn =
         post(conn, ~p"/users/log_in", %{
-          "user" => %{"email" => user.email, "password" => valid_user_password()}
+          "user" => %{"phone_number" => user.phone_number, "password" => valid_user_password()}
         })
 
       assert get_session(conn, :user_token)
@@ -29,7 +29,7 @@ defmodule LukasWeb.UserSessionControllerTest do
       conn =
         post(conn, ~p"/users/log_in", %{
           "user" => %{
-            "email" => user.email,
+            "phone_number" => user.phone_number,
             "password" => valid_user_password(),
             "remember_me" => "true"
           }
@@ -45,7 +45,7 @@ defmodule LukasWeb.UserSessionControllerTest do
         |> init_test_session(user_return_to: "/foo/bar")
         |> post(~p"/users/log_in", %{
           "user" => %{
-            "email" => user.email,
+            "phone_number" => user.phone_number,
             "password" => valid_user_password()
           }
         })
@@ -60,7 +60,7 @@ defmodule LukasWeb.UserSessionControllerTest do
         |> post(~p"/users/log_in", %{
           "_action" => "registered",
           "user" => %{
-            "email" => user.email,
+            "phone_number" => user.phone_number,
             "password" => valid_user_password()
           }
         })
@@ -75,7 +75,7 @@ defmodule LukasWeb.UserSessionControllerTest do
         |> post(~p"/users/log_in", %{
           "_action" => "password_updated",
           "user" => %{
-            "email" => user.email,
+            "phone_number" => user.phone_number,
             "password" => valid_user_password()
           }
         })
@@ -87,10 +87,10 @@ defmodule LukasWeb.UserSessionControllerTest do
     test "redirects to login page with invalid credentials", %{conn: conn} do
       conn =
         post(conn, ~p"/users/log_in", %{
-          "user" => %{"email" => "invalid@email.com", "password" => "invalid_password"}
+          "user" => %{"phone_number" => "invalid@email.com", "password" => "invalid_password"}
         })
 
-      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "Invalid email or password"
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "Invalid phone number or password"
       assert redirected_to(conn) == ~p"/users/log_in"
     end
   end

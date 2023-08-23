@@ -32,7 +32,9 @@ defmodule LukasWeb.UserLoginLiveTest do
       {:ok, lv, _html} = live(conn, ~p"/users/log_in")
 
       form =
-        form(lv, "#login_form", user: %{email: user.email, password: password, remember_me: true})
+        form(lv, "#login_form",
+          user: %{phone_number: user.phone_number, password: password, remember_me: true}
+        )
 
       conn = submit_form(form, conn)
 
@@ -45,13 +47,15 @@ defmodule LukasWeb.UserLoginLiveTest do
       {:ok, lv, _html} = live(conn, ~p"/users/log_in")
 
       form =
-        form(lv, "#login_form",
-          user: %{email: "test@email.com", password: "123456", remember_me: true}
+        form(
+          lv,
+          "#login_form",
+          user: %{phone_number: "test@email.com", password: "123456", remember_me: true}
         )
 
       conn = submit_form(form, conn)
 
-      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "Invalid email or password"
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "Invalid phone number or password"
 
       assert redirected_to(conn) == "/users/log_in"
     end

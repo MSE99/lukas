@@ -98,6 +98,7 @@ defmodule LukasWeb.UserSettingsLiveTest do
         form(lv, "#password_form", %{
           "current_password" => password,
           "user" => %{
+            "phone_number" => user.phone_number,
             "email" => user.email,
             "password" => new_password,
             "password_confirmation" => new_password

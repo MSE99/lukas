@@ -1,43 +1,23 @@
 defmodule Lukas.Accounts do
-  @moduledoc """
-  The Accounts context.
-  """
-
   import Ecto.Query, warn: false
   alias Lukas.Repo
 
   alias Lukas.Accounts.{User, UserToken, UserNotifier}
 
-  ## Database getters
+  def get_user_by_phone_number(phone_number) when is_binary(phone_number) do
+    Repo.get_by(User, phone_number: phone_number)
+  end
 
-  @doc """
-  Gets a user by email.
-
-  ## Examples
-
-      iex> get_user_by_email("foo@example.com")
-      %User{}
-
-      iex> get_user_by_email("unknown@example.com")
-      nil
-
-  """
   def get_user_by_email(email) when is_binary(email) do
     Repo.get_by(User, email: email)
   end
 
-  @doc """
-  Gets a user by email and password.
+  def get_user_by_phone_number_and_password(phone_number, password)
+      when is_binary(phone_number) and is_binary(password) do
+    user = Repo.get_by(User, phone_number: phone_number)
+    if User.valid_password?(user, password), do: user
+  end
 
-  ## Examples
-
-      iex> get_user_by_email_and_password("foo@example.com", "correct_password")
-      %User{}
-
-      iex> get_user_by_email_and_password("foo@example.com", "invalid_password")
-      nil
-
-  """
   def get_user_by_email_and_password(email, password)
       when is_binary(email) and is_binary(password) do
     user = Repo.get_by(User, email: email)
