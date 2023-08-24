@@ -8,21 +8,16 @@ defmodule LukasWeb.UserSessionControllerTest do
   end
 
   describe "POST /users/log_in" do
-    test "logs the user in", %{conn: conn, user: user} do
+    test "logs the operator in", %{conn: conn} do
+      user = user_fixture(%{kind: :operator})
+
       conn =
         post(conn, ~p"/users/log_in", %{
           "user" => %{"phone_number" => user.phone_number, "password" => valid_user_password()}
         })
 
       assert get_session(conn, :user_token)
-      assert redirected_to(conn) == ~p"/"
-
-      # Now do a logged in request and assert on the menu
-      conn = get(conn, ~p"/")
-      response = html_response(conn, 200)
-      assert response =~ user.email
-      assert response =~ ~p"/users/settings"
-      assert response =~ ~p"/users/log_out"
+      assert redirected_to(conn) == ~p"/controls"
     end
 
     test "logs the user in with remember me", %{conn: conn, user: user} do
@@ -36,7 +31,7 @@ defmodule LukasWeb.UserSessionControllerTest do
         })
 
       assert conn.resp_cookies["_lukas_web_user_remember_me"]
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) == ~p"/controls"
     end
 
     test "logs the user in with return to", %{conn: conn, user: user} do
@@ -65,7 +60,7 @@ defmodule LukasWeb.UserSessionControllerTest do
           }
         })
 
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) == ~p"/controls"
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Account created successfully"
     end
 

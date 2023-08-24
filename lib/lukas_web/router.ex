@@ -23,6 +23,14 @@ defmodule LukasWeb.Router do
     get "/", PageController, :home
   end
 
+  scope "/controls", LukasWeb do
+    pipe_through [:browser, :require_authenticated_operator]
+
+    live_session :controls, on_mount: [{LukasWeb.UserAuth, :ensure_authenticated_operator}] do
+      live "/", Operators.HomeLive
+    end
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", LukasWeb do
   #   pipe_through :api
