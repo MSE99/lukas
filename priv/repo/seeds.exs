@@ -9,3 +9,27 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+{:ok, _} =
+  Lukas.Accounts.register_user(%{
+    "kind" => "operator",
+    "phone_number" => "091",
+    "password" => "123123123123",
+    "email" => "cool2@gmail.com"
+  })
+
+{:ok, _} =
+  Lukas.Accounts.register_user(%{
+    "kind" => "student",
+    "phone_number" => "092",
+    "password" => "123123123123",
+    "email" => "cool@gmail.com"
+  })
+
+{:ok, _} =
+  Lukas.Accounts.register_user(%{
+    "kind" => "lecturer",
+    "phone_number" => "094",
+    "password" => "123123123123",
+    "email" => "cool3@gmail.com"
+  })

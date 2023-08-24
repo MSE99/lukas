@@ -235,5 +235,13 @@ defmodule LukasWeb.UserAuth do
     ~p"/controls"
   end
 
+  defp signed_in_path(_, user) when user.kind == :student do
+    ~p"/home"
+  end
+
+  defp signed_in_path(_, user) when user.kind == :lecturer do
+    ~p"/tutor"
+  end
+
   defp signed_in_path(_, _), do: ~p"/"
 end

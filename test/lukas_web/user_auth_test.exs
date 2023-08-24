@@ -219,6 +219,22 @@ defmodule LukasWeb.UserAuthTest do
       assert redirected_to(conn) == ~p"/controls"
     end
 
+    test "redirects if student is authenticated", %{conn: conn} do
+      user = user_fixture(%{kind: :student})
+
+      conn = conn |> assign(:current_user, user) |> UserAuth.redirect_if_user_is_authenticated([])
+      assert conn.halted
+      assert redirected_to(conn) == ~p"/home"
+    end
+
+    test "redirects if lecturer is authenticated", %{conn: conn} do
+      user = user_fixture(%{kind: :lecturer})
+
+      conn = conn |> assign(:current_user, user) |> UserAuth.redirect_if_user_is_authenticated([])
+      assert conn.halted
+      assert redirected_to(conn) == ~p"/tutor"
+    end
+
     test "does not redirect if user is not authenticated", %{conn: conn} do
       conn = UserAuth.redirect_if_user_is_authenticated(conn, [])
       refute conn.halted
