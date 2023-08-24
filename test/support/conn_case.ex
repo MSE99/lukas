@@ -49,6 +49,16 @@ defmodule LukasWeb.ConnCase do
     %{conn: log_in_user(conn, user), user: user}
   end
 
+  def register_and_log_in_student(%{conn: conn}) do
+    user = Lukas.AccountsFixtures.user_fixture(%{kind: :student})
+    %{conn: log_in_user(conn, user), user: user}
+  end
+
+  def register_and_log_in_lecturer(%{conn: conn}) do
+    user = Lukas.AccountsFixtures.user_fixture(%{kind: :lecturer})
+    %{conn: log_in_user(conn, user), user: user}
+  end
+
   @doc """
   Logs the given `user` into the `conn`.
 

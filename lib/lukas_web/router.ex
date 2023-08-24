@@ -31,6 +31,22 @@ defmodule LukasWeb.Router do
     end
   end
 
+  scope "/tutor", LukasWeb do
+    pipe_through [:browser, :require_authenticated_lecturer]
+
+    live_session :tutor, on_mount: [{LukasWeb.UserAuth, :ensure_authenticated_lecturer}] do
+      live "/", Lecturers.HomeLive
+    end
+  end
+
+  scope "/home", LukasWeb do
+    pipe_through [:browser, :require_authenticated_lecturer]
+
+    live_session :students_home, on_mount: [{LukasWeb.UserAuth, :ensure_authenticated_student}] do
+      live "/", Students.HomeLive
+    end
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", LukasWeb do
   #   pipe_through :api
