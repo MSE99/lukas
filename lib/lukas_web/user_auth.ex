@@ -88,6 +88,51 @@ defmodule LukasWeb.UserAuth do
     end
   end
 
+  def on_mount(:ensure_authenticated_operator, _params, session, socket) do
+    socket = mount_current_user(socket, session)
+
+    if Accounts.User.is_operator?(socket.assigns.current_user) do
+      {:cont, socket}
+    else
+      socket =
+        socket
+        |> Phoenix.LiveView.put_flash(:error, "You must log in to access this page.")
+        |> Phoenix.LiveView.redirect(to: ~p"/users/log_in")
+
+      {:halt, socket}
+    end
+  end
+
+  def on_mount(:ensure_authenticated_lecturer, _params, session, socket) do
+    socket = mount_current_user(socket, session)
+
+    if Accounts.User.is_lecturer?(socket.assigns.current_user) do
+      {:cont, socket}
+    else
+      socket =
+        socket
+        |> Phoenix.LiveView.put_flash(:error, "You must log in to access this page.")
+        |> Phoenix.LiveView.redirect(to: ~p"/users/log_in")
+
+      {:halt, socket}
+    end
+  end
+
+  def on_mount(:ensure_authenticated_student, _params, session, socket) do
+    socket = mount_current_user(socket, session)
+
+    if Accounts.User.is_student?(socket.assigns.current_user) do
+      {:cont, socket}
+    else
+      socket =
+        socket
+        |> Phoenix.LiveView.put_flash(:error, "You must log in to access this page.")
+        |> Phoenix.LiveView.redirect(to: ~p"/users/log_in")
+
+      {:halt, socket}
+    end
+  end
+
   def on_mount(:redirect_if_user_is_authenticated, _params, session, socket) do
     socket = mount_current_user(socket, session)
 
@@ -131,6 +176,42 @@ defmodule LukasWeb.UserAuth do
     else
       conn
       |> put_flash(:error, "You must log in to access this page.")
+      |> maybe_store_return_to()
+      |> redirect(to: ~p"/users/log_in")
+      |> halt()
+    end
+  end
+
+  def require_authenticated_operator(conn, _opts) do
+    if Accounts.User.is_operator?(conn.assigns[:current_user]) do
+      conn
+    else
+      conn
+      |> put_flash(:error, "Unauthorized.")
+      |> maybe_store_return_to()
+      |> redirect(to: ~p"/users/log_in")
+      |> halt()
+    end
+  end
+
+  def require_authenticated_lecturer(conn, _opts) do
+    if Accounts.User.is_lecturer?(conn.assigns[:current_user]) do
+      conn
+    else
+      conn
+      |> put_flash(:error, "Unauthorized.")
+      |> maybe_store_return_to()
+      |> redirect(to: ~p"/users/log_in")
+      |> halt()
+    end
+  end
+
+  def require_authenticated_student(conn, _opts) do
+    if Accounts.User.is_student?(conn.assigns[:current_user]) do
+      conn
+    else
+      conn
+      |> put_flash(:error, "Unauthorized.")
       |> maybe_store_return_to()
       |> redirect(to: ~p"/users/log_in")
       |> halt()

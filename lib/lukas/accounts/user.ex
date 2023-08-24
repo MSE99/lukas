@@ -115,4 +115,13 @@ defmodule Lukas.Accounts.User do
       add_error(changeset, :current_password, "is not valid")
     end
   end
+
+  def is_operator?(%__MODULE__{kind: :operator}), do: true
+  def is_operator?(_), do: false
+
+  def is_student?(%__MODULE__{kind: :student}), do: true
+  def is_student?(_), do: false
+
+  def is_lecturer?(%__MODULE__{kind: :lecturer}), do: true
+  def is_lecturer?(_), do: false
 end
