@@ -71,3 +71,6 @@ jobs:
 
     - name: Run tests
       run: mix test
+
+    - name: Run hex audit
+      run: mix hex.audit
