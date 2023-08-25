@@ -40,7 +40,7 @@ defmodule LukasWeb.Router do
   end
 
   scope "/home", LukasWeb do
-    pipe_through([:browser, :require_authenticated_lecturer])
+    pipe_through([:browser, :require_authenticated_student])
 
     live_session :students_home, on_mount: [{LukasWeb.UserAuth, :ensure_authenticated_student}] do
       live("/", Students.HomeLive)
