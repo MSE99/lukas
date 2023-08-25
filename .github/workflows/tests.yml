@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+  env:
+    MIX_ENV: test
+  
+  permissions:
+    contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Elixir
+      uses: actions/setup-elixir@v1
+      with:
+        elixir-version: 1.14
+        otp-version: 25
+
+    - name: Cache deps
+      id: cache-deps
+      uses: actions/cache@v3
+      env:
+        cache-name: cache-elixir-deps
+      with:
+        path: deps
+        key: ${{ runner.os }}-mix-${{ env.cache-name }}-${{ hashFiles('**/mix.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-mix-${{ env.cache-name }}-
+
+    - name: Cache compiled build
+      id: cache-build
+      uses: actions/cache@v3
+      env:
+        cache-name: cache-compiled-build
+      with:
+        path: _build
+        key: ${{ runner.os }}-mix-${{ env.cache-name }}-${{ hashFiles('**/mix.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-mix-${{ env.cache-name }}-
+          ${{ runner.os }}-mix-
+
+    - name: Clean to rule out incremental build as a source of flakiness
+      if: github.run_attempt != '1'
+      run: |
+        mix deps.clean --all
+        mix clean
+      shell: sh
+
+    - name: Install dependencies
+      run: mix deps.get
+
+    - name: Compiles without warnings
+      run: mix compile --warnings-as-errors
+
+    - name: Run linting
+      run: mix format --check-formatted
+
+    - name: Run audit
+      run: mix deps.audit
+
+    - name: Run tests
+      run: mix test
