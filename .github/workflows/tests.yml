@@ -21,12 +21,12 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Setup BEAM 
+    - name: Set up Elixir
       uses: erlef/setup-beam@v1
-        with:
-          otp-version: 25
-          elixir-version: 1.14
-
+      with:
+        otp-version: '25.0.4'
+        elixir-version: '1.14.4'
+    
     - name: Cache deps
       id: cache-deps
       uses: actions/cache@v3
