@@ -6,6 +6,12 @@ defmodule LukasWeb.Operators.HomeLive do
   def render(assigns) do
     ~H"""
     <h1>Operator's home</h1>
+
+    <ul>
+      <li>
+        <.link navigate={~p"/controls/tags"}>Tags</.link>
+      </li>
+    </ul>
     """
   end
 end
