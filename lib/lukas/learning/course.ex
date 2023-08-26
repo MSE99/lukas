@@ -16,7 +16,5 @@ defmodule Lukas.Learning.Course do
     course
     |> cast(attrs, [:name])
     |> validate_required([:name])
-    |> cast_assoc(:tags, &Lukas.Learning.Tagging.changeset/2)
-    |> cast_assoc(:teachings, &Lukas.Learning.Teaching.changeset/2)
   end
 end

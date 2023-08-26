@@ -11,7 +11,7 @@ defmodule Lukas.LearningFixtures do
     {:ok, tag} =
       attrs
       |> Enum.into(%{
-        name: "some name"
+        name: "Tag ##{System.unique_integer()}"
       })
       |> Lukas.Learning.create_tag()
 
@@ -21,11 +21,7 @@ defmodule Lukas.LearningFixtures do
   def course_fixture(attrs \\ %{}) do
     {:ok, course} =
       attrs
-      |> Map.put_new(:name, "some name")
-      |> Map.put_new_lazy(:tags, fn -> [tag_fixture()] end)
-      |> Map.put_new_lazy(:teachings, fn ->
-        [Lukas.AccountsFixtures.user_fixture(%{kind: :lecturer})]
-      end)
+      |> Map.put_new(:name, "Course ##{System.unique_integer([:positive])}")
       |> Lukas.Learning.create_course()
 
     course

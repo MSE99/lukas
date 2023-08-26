@@ -29,6 +29,9 @@ defmodule LukasWeb.Router do
     live_session :controls, on_mount: [{LukasWeb.UserAuth, :ensure_authenticated_operator}] do
       live("/", Operators.HomeLive)
 
+      live("/courses", Operator.AllCoursesLive, :index)
+      live("/courses/new", Operator.AllCoursesLive, :new)
+
       live("/tags", TagLive.Index, :index)
       live("/tags/new", TagLive.Index, :new)
       live("/tags/:id/edit", TagLive.Index, :edit)

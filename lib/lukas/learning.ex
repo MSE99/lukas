@@ -5,8 +5,9 @@ defmodule Lukas.Learning do
 
   ## Courses
   alias Lukas.Learning.Course
+  alias Lukas.Learning.Tagging
 
-  def list_courses(), do: Repo.all(Course)
+  def list_courses(), do: from(c in Course, preload: [:tags]) |> Repo.all()
 
   def create_course(attrs) do
     %Course{}
@@ -15,12 +16,49 @@ defmodule Lukas.Learning do
     |> maybe_emit_course_created()
   end
 
-  def update_course(attrs) do
-    %Course{}
+  def create_course(attrs, tag_ids) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:course, Course.changeset(%Course{}, attrs))
+    |> Ecto.Multi.run(
+      :tags,
+      fn _, %{course: course} ->
+        course_id = course.id
+
+        taggings =
+          tag_ids
+          |> Enum.map(fn tag_id -> Repo.insert(Tagging.new(tag_id, course_id)) end)
+
+        {:ok, taggings}
+      end
+    )
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{course: course}} ->
+        :ok
+        Phoenix.PubSub.broadcast(Lukas.PubSub, "courses", {:course_created, course})
+
+      {:error, :course, cs, _} ->
+        {:error, cs}
+    end
+  end
+
+  def update_course(course, attrs) do
+    course
     |> Course.changeset(attrs)
     |> Repo.update()
     |> maybe_emit_course_updated()
   end
+
+  def create_course_changeset(attrs \\ %{}) do
+    Course.changeset(%Course{}, attrs)
+  end
+
+  def validate_course(attrs) do
+    Course.changeset(%Course{}, attrs)
+    |> Map.put(:action, :validate)
+  end
+
+  def watch_courses(), do: Phoenix.PubSub.subscribe(Lukas.PubSub, "courses")
 
   def maybe_emit_course_created({:ok, course} = res) do
     Phoenix.PubSub.broadcast(Lukas.PubSub, "courses", {:course_created, course})
