@@ -3,7 +3,9 @@ defmodule Lukas.Learning.Tag do
   import Ecto.Changeset
 
   schema "tags" do
-    field :name, :string
+    field(:name, :string)
+
+    has_many(:taggings, Lukas.Learning.Tagging)
 
     timestamps()
   end

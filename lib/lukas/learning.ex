@@ -2,6 +2,42 @@ defmodule Lukas.Learning do
   import Ecto.Query, warn: false
 
   alias Lukas.Repo
+
+  ## Courses
+  alias Lukas.Learning.Course
+
+  def list_courses(), do: Repo.all(Course)
+
+  def create_course(attrs) do
+    %Course{}
+    |> Course.changeset(attrs)
+    |> Repo.insert()
+    |> maybe_emit_course_created()
+  end
+
+  def update_course(attrs) do
+    %Course{}
+    |> Course.changeset(attrs)
+    |> Repo.update()
+    |> maybe_emit_course_updated()
+  end
+
+  def maybe_emit_course_created({:ok, course} = res) do
+    Phoenix.PubSub.broadcast(Lukas.PubSub, "courses", {:course_created, course})
+    res
+  end
+
+  def maybe_emit_course_created(res), do: res
+
+  def maybe_emit_course_updated({:ok, course} = res) do
+    Phoenix.PubSub.broadcast(Lukas.PubSub, "courses", {:course_updated, course})
+    res
+  end
+
+  def maybe_emit_course_updated(res), do: res
+
+  ## Tags
+
   alias Lukas.Learning.Tag
 
   def list_tags do

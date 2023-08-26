@@ -17,4 +17,17 @@ defmodule Lukas.LearningFixtures do
 
     tag
   end
+
+  def course_fixture(attrs \\ %{}) do
+    {:ok, course} =
+      attrs
+      |> Map.put_new(:name, "some name")
+      |> Map.put_new_lazy(:tags, fn -> [tag_fixture()] end)
+      |> Map.put_new_lazy(:teachings, fn ->
+        [Lukas.AccountsFixtures.user_fixture(%{kind: :lecturer})]
+      end)
+      |> Lukas.Learning.create_course()
+
+    course
+  end
 end
