@@ -8,6 +8,7 @@ defmodule Lukas.Learning.Course do
 
     has_many(:tags, Lukas.Learning.Tagging)
     has_many(:teachings, Lukas.Learning.Teaching)
+    has_many(:lessons, Lukas.Learning.Lesson)
 
     timestamps()
   end
