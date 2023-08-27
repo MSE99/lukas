@@ -4,10 +4,7 @@ defmodule Lukas.Learning do
   alias Lukas.Repo
 
   ## Courses
-  alias Lukas.Learning.Course
-  alias Lukas.Learning.Lesson
-  alias Lukas.Learning.Tagging
-  alias Lukas.Learning.Tag
+  alias Lukas.Learning.{Course, Lesson, Tagging, Tag}
 
   def create_lesson(%Course{} = course, attrs \\ %{}) do
     attrs_with_course = Map.merge(attrs, %{"course_id" => course.id})
