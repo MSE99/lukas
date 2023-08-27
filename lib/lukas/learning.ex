@@ -30,6 +30,29 @@ defmodule Lukas.Learning do
     |> maybe_emit_lesson_deleted()
   end
 
+  def create_text_topic(%Lesson{id: lesson_id} = lesson, attrs) do
+    %Lesson.TextTopic{lesson_id: lesson_id}
+    |> Lesson.TextTopic.changeset(attrs)
+    |> Repo.insert()
+    |> maybe_emit_topic_added(lesson)
+  end
+
+  def remove_topic(%Lesson.TextTopic{} = topic) do
+    topic_with_lesson = Repo.preload(topic, :lesson)
+
+    Repo.delete(topic_with_lesson)
+    |> maybe_emit_topic_removed(topic_with_lesson.lesson)
+  end
+
+  def update_topic(%Lesson.TextTopic{} = topic, attrs) do
+    topic_with_lesson = Repo.preload(topic, :lesson)
+
+    topic_with_lesson
+    |> Lesson.TextTopic.changeset(attrs)
+    |> Repo.update()
+    |> maybe_emit_topic_updated(topic_with_lesson.lesson)
+  end
+
   def list_courses(), do: from(c in Course, preload: [:tags]) |> Repo.all()
 
   def get_course_and_tags(course_id) when is_integer(course_id) do
@@ -192,6 +215,42 @@ defmodule Lukas.Learning do
   end
 
   def maybe_emit_course_lesson_deleted(res), do: res
+
+  def maybe_emit_topic_added({:ok, topic} = res, lesson) do
+    Phoenix.PubSub.broadcast(
+      Lukas.PubSub,
+      "courses/#{lesson.course_id}",
+      {:courses, :topic_added, topic}
+    )
+
+    res
+  end
+
+  def maybe_emit_topic_added(res, _), do: res
+
+  def maybe_emit_topic_removed({:ok, topic} = res, lesson) do
+    Phoenix.PubSub.broadcast(
+      Lukas.PubSub,
+      "courses/#{lesson.course_id}",
+      {:courses, :topic_removed, topic}
+    )
+
+    res
+  end
+
+  def maybe_emit_topic_removed(res, _), do: res
+
+  def maybe_emit_topic_updated({:ok, topic} = res, lesson) do
+    Phoenix.PubSub.broadcast(
+      Lukas.PubSub,
+      "courses/#{lesson.course_id}",
+      {:courses, :topic_updated, topic}
+    )
+
+    res
+  end
+
+  def maybe_emit_topic_updated(res, _), do: res
 
   def emit_course_untagged(course_id, tag_id) do
     tag = Repo.get!(Tag, tag_id)

@@ -3,17 +3,17 @@ defmodule Lukas.Learning.Lesson.TextTopic do
   import Ecto.Changeset
 
   schema "text_topics" do
-    field :content, :string
-    field :title, :string
-    field :lesson_id, :id
+    field(:content, :string)
+    field(:title, :string)
+
+    belongs_to(:lesson, Lukas.Learning.Lesson)
 
     timestamps()
   end
 
-  @doc false
   def changeset(text_topic, attrs) do
     text_topic
-    |> cast(attrs, [:title, :content])
-    |> validate_required([:title, :content])
+    |> cast(attrs, [:title, :content, :lesson_id])
+    |> validate_required([:title, :content, :lesson_id])
   end
 end

@@ -4,9 +4,9 @@ defmodule Lukas.Learning.Lesson do
   import Ecto.Changeset
 
   schema "lessons" do
-    field :title, :string
-    field :description, :string
-    field :course_id, :id
+    field(:title, :string)
+    field(:description, :string)
+    field(:course_id, :id)
 
     timestamps()
   end

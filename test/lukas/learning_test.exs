@@ -150,4 +150,76 @@ defmodule Lukas.LearningTest do
       assert_received({:courses, :lesson_deleted, ^removed_lesson})
     end
   end
+
+  describe "courses lesson topics" do
+    setup do
+      course = course_fixture()
+
+      {:ok, lesson} =
+        Learning.create_lesson(course, %{"title" => "Lesson 1", "description" => "Mathematics I"})
+
+      %{course: course, lesson: lesson}
+    end
+
+    test "create_text_topic/2 should add a topic to a given lesson.", %{
+      lesson: lesson,
+      course: course
+    } do
+      Learning.watch_course(course)
+
+      {:ok, topic} =
+        Learning.create_text_topic(lesson, %{
+          "title" => "Topic 1",
+          "content" => "foo is great bar is none."
+        })
+
+      assert topic.lesson_id == lesson.id
+      assert topic.title == "Topic 1"
+      assert topic.content == "foo is great bar is none."
+
+      assert_receive({:courses, :topic_added, ^topic})
+    end
+
+    test "remove_text_topic/1 should remove a topic.", %{
+      lesson: lesson,
+      course: course
+    } do
+      Learning.watch_course(course)
+
+      {:ok, topic} =
+        Learning.create_text_topic(lesson, %{
+          "title" => "Topic 1",
+          "content" => "foo is great bar is none."
+        })
+
+      assert_receive({:courses, :topic_added, ^topic})
+
+      {:ok, removed_topic} = Learning.remove_topic(topic)
+
+      assert_receive({:courses, :topic_removed, ^removed_topic})
+    end
+
+    test "update_topic/1 should update a topic and dispatch an event.", %{
+      lesson: lesson,
+      course: course
+    } do
+      Learning.watch_course(course)
+
+      {:ok, topic} =
+        Learning.create_text_topic(lesson, %{
+          "title" => "Topic 1",
+          "content" => "foo is great bar is none."
+        })
+
+      assert_receive({:courses, :topic_added, ^topic})
+
+      {:ok, updated_topic} =
+        Learning.update_topic(topic, %{
+          "title" => "Topic 2",
+          "content" => "foo is great bar is none."
+        })
+
+      assert_received({:courses, :topic_updated, ^updated_topic})
+    end
+  end
 end
