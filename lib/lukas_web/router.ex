@@ -31,6 +31,7 @@ defmodule LukasWeb.Router do
 
       live("/courses", Operator.AllCoursesLive, :index)
       live("/courses/new", Operator.AllCoursesLive, :new)
+      live("/courses/:id", Operator.CourseLive)
 
       live("/tags", TagLive.Index, :index)
       live("/tags/new", TagLive.Index, :new)

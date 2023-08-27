@@ -82,6 +82,8 @@ defmodule Lukas.Learning do
     emit_course_untagged(course_id, tag_id)
   end
 
+  def get_course(id), do: Repo.get(Course, id)
+
   def create_course(attrs) do
     %Course{}
     |> Course.changeset(attrs)
