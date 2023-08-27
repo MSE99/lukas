@@ -13,8 +13,8 @@ defmodule Lukas.Learning.Lesson do
 
   def changeset(lesson, attrs) do
     lesson
-    |> cast(attrs, [:title, :description])
-    |> validate_required([:title, :description])
+    |> cast(attrs, [:title, :description, :course_id])
+    |> validate_required([:title, :description, :course_id])
     |> validate_length(:title, min: 3, max: 80)
     |> validate_length(:description, min: 3, max: 200)
   end

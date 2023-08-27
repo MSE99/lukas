@@ -5,8 +5,30 @@ defmodule Lukas.Learning do
 
   ## Courses
   alias Lukas.Learning.Course
+  alias Lukas.Learning.Lesson
   alias Lukas.Learning.Tagging
   alias Lukas.Learning.Tag
+
+  def create_lesson(%Course{} = course, attrs \\ %{}) do
+    attrs_with_course = Map.merge(attrs, %{"course_id" => course.id})
+
+    %Lesson{}
+    |> Lesson.changeset(attrs_with_course)
+    |> Repo.insert()
+    |> maybe_emit_lesson_added()
+  end
+
+  def update_lesson(%Lesson{} = lesson, attrs \\ %{}) do
+    lesson
+    |> Lesson.changeset(attrs)
+    |> Repo.update()
+    |> maybe_emit_lesson_updated()
+  end
+
+  def remove_lesson(%Lesson{} = lesson) do
+    Repo.delete(lesson)
+    |> maybe_emit_lesson_deleted()
+  end
 
   def list_courses(), do: from(c in Course, preload: [:tags]) |> Repo.all()
 
@@ -122,6 +144,37 @@ defmodule Lukas.Learning do
   end
 
   def maybe_emit_course_tagged(res), do: res
+
+  def maybe_emit_lesson_added({:ok, lesson} = res) do
+    Phoenix.PubSub.broadcast(Lukas.PubSub, "courses/#{lesson.course_id}", {:lesson_added, lesson})
+    res
+  end
+
+  def maybe_emit_course_lesson_added(res), do: res
+
+  def maybe_emit_lesson_updated({:ok, lesson} = res) do
+    Phoenix.PubSub.broadcast(
+      Lukas.PubSub,
+      "courses/#{lesson.course_id}",
+      {:lesson_updated, lesson}
+    )
+
+    res
+  end
+
+  def maybe_emit_course_lesson_updated(res), do: res
+
+  def maybe_emit_lesson_deleted({:ok, lesson} = res) do
+    Phoenix.PubSub.broadcast(
+      Lukas.PubSub,
+      "courses/#{lesson.course_id}",
+      {:lesson_deleted, lesson}
+    )
+
+    res
+  end
+
+  def maybe_emit_course_lesson_deleted(res), do: res
 
   def emit_course_untagged(course_id, tag_id) do
     tag = Repo.get!(Tag, tag_id)

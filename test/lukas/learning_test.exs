@@ -109,4 +109,45 @@ defmodule Lukas.LearningTest do
       assert_received({:course_untagged, ^tag})
     end
   end
+
+  describe "courses lessons" do
+    setup do
+      %{course: course_fixture()}
+    end
+
+    test "create_lesson/2 should create a new lesson and dispatch an event.", %{course: course} do
+      Learning.watch_course(course)
+
+      {:ok, lesson} =
+        Learning.create_lesson(course, %{"title" => "Lesson 1", "description" => "Mathematics I"})
+
+      assert_received({:lesson_added, ^lesson})
+    end
+
+    test "update_lesson/2 should update a lesson and dispatch an event.", %{course: course} do
+      Learning.watch_course(course)
+
+      {:ok, lesson} =
+        Learning.create_lesson(course, %{"title" => "Lesson 1", "description" => "Mathematics I"})
+
+      assert_received({:lesson_added, ^lesson})
+
+      {:ok, next_lesson} =
+        Learning.update_lesson(lesson, %{"title" => "Lesson 2", "description" => "Mathematics I"})
+
+      assert_received({:lesson_updated, ^next_lesson})
+    end
+
+    test "remove_lesson/1 should remove a lesson and dispatch a removal event.", %{course: course} do
+      Learning.watch_course(course)
+
+      {:ok, lesson} =
+        Learning.create_lesson(course, %{"title" => "Lesson 1", "description" => "Mathematics I"})
+
+      assert_received({:lesson_added, ^lesson})
+
+      {:ok, removed_lesson} = Learning.remove_lesson(lesson)
+      assert_received({:lesson_deleted, ^removed_lesson})
+    end
+  end
 end
