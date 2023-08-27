@@ -78,7 +78,7 @@ defmodule LukasWeb.Operator.AllCoursesLive do
 
   def handle_event("create", %{"course" => attrs}, socket) do
     case Learning.create_course(attrs, socket.assigns.tag_ids) do
-      :ok ->
+      {:ok, _} ->
         {:noreply, push_patch(socket, to: ~p"/controls/courses")}
 
       {:error, cs} ->

@@ -6,8 +6,39 @@ defmodule Lukas.Learning do
   ## Courses
   alias Lukas.Learning.Course
   alias Lukas.Learning.Tagging
+  alias Lukas.Learning.Tag
 
   def list_courses(), do: from(c in Course, preload: [:tags]) |> Repo.all()
+
+  def get_course_and_tags(course_id) when is_integer(course_id) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.one(:course, from(c in Course, where: c.id == ^course_id))
+    |> Ecto.Multi.all(
+      :tags,
+      from(
+        tagging in Tagging,
+        join: tag in Tag,
+        on: tag.id == tagging.tag_id,
+        where: tagging.course_id == ^course_id,
+        select: tag
+      )
+    )
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{course: course, tags: tags}} ->
+        {course, tags}
+    end
+  end
+
+  def untag_course(course_id, tag_id) when is_integer(course_id) and is_integer(tag_id) do
+    from(
+      tagging in Tagging,
+      where: tagging.course_id == ^course_id and tagging.tag_id == ^tag_id
+    )
+    |> Repo.delete_all()
+
+    emit_course_untagged(course_id, tag_id)
+  end
 
   def create_course(attrs) do
     %Course{}
@@ -36,10 +67,17 @@ defmodule Lukas.Learning do
       {:ok, %{course: course}} ->
         :ok
         Phoenix.PubSub.broadcast(Lukas.PubSub, "courses", {:course_created, course})
+        {:ok, course}
 
       {:error, :course, cs, _} ->
         {:error, cs}
     end
+  end
+
+  def tag_course(course, tag) when is_integer(course) and is_integer(tag) do
+    Tagging.new(tag, course)
+    |> Repo.insert()
+    |> maybe_emit_course_tagged()
   end
 
   def update_course(course, attrs) do
@@ -60,6 +98,8 @@ defmodule Lukas.Learning do
 
   def watch_courses(), do: Phoenix.PubSub.subscribe(Lukas.PubSub, "courses")
 
+  def watch_course(%Course{id: id}), do: Phoenix.PubSub.subscribe(Lukas.PubSub, "courses/#{id}")
+
   def maybe_emit_course_created({:ok, course} = res) do
     Phoenix.PubSub.broadcast(Lukas.PubSub, "courses", {:course_created, course})
     res
@@ -69,10 +109,29 @@ defmodule Lukas.Learning do
 
   def maybe_emit_course_updated({:ok, course} = res) do
     Phoenix.PubSub.broadcast(Lukas.PubSub, "courses", {:course_updated, course})
+    Phoenix.PubSub.broadcast(Lukas.PubSub, "courses/#{course.id}", {:course_updated, course})
     res
   end
 
   def maybe_emit_course_updated(res), do: res
+
+  def maybe_emit_course_tagged({:ok, tagging} = res) do
+    tag = Repo.get!(Tag, tagging.tag_id)
+    Phoenix.PubSub.broadcast(Lukas.PubSub, "courses/#{tagging.course_id}", {:course_tagged, tag})
+    res
+  end
+
+  def maybe_emit_course_tagged(res), do: res
+
+  def emit_course_untagged(course_id, tag_id) do
+    tag = Repo.get!(Tag, tag_id)
+
+    Phoenix.PubSub.broadcast(
+      Lukas.PubSub,
+      "courses/#{course_id}",
+      {:course_untagged, tag}
+    )
+  end
 
   ## Tags
 
