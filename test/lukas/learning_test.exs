@@ -70,7 +70,7 @@ defmodule Lukas.LearningTest do
       {:ok, course} = Learning.create_course(%{"name" => "Japanese basic"}, [tag.id])
       assert course.name == "Japanese basic"
 
-      assert_received({:course_created, ^course})
+      assert_received({:courses, :course_created, ^course})
     end
 
     test "tag_course/2 should add the tag to the course with the given id and update the course.",
@@ -100,13 +100,13 @@ defmodule Lukas.LearningTest do
       Learning.watch_course(cr)
 
       {:ok, updated} = Learning.update_course(cr, %{"name" => "Japanese advanced"})
-      assert_received({:course_updated, ^updated})
+      assert_received({:courses, :course_updated, ^updated})
 
       Learning.tag_course(cr.id, tag.id)
-      assert_received({:course_tagged, ^tag})
+      assert_received({:courses, :course_tagged, ^tag})
 
       Learning.untag_course(cr.id, tag.id)
-      assert_received({:course_untagged, ^tag})
+      assert_received({:courses, :course_untagged, ^tag})
     end
   end
 
@@ -121,7 +121,7 @@ defmodule Lukas.LearningTest do
       {:ok, lesson} =
         Learning.create_lesson(course, %{"title" => "Lesson 1", "description" => "Mathematics I"})
 
-      assert_received({:lesson_added, ^lesson})
+      assert_received({:courses, :lesson_added, ^lesson})
     end
 
     test "update_lesson/2 should update a lesson and dispatch an event.", %{course: course} do
@@ -130,12 +130,12 @@ defmodule Lukas.LearningTest do
       {:ok, lesson} =
         Learning.create_lesson(course, %{"title" => "Lesson 1", "description" => "Mathematics I"})
 
-      assert_received({:lesson_added, ^lesson})
+      assert_received({:courses, :lesson_added, ^lesson})
 
       {:ok, next_lesson} =
         Learning.update_lesson(lesson, %{"title" => "Lesson 2", "description" => "Mathematics I"})
 
-      assert_received({:lesson_updated, ^next_lesson})
+      assert_received({:courses, :lesson_updated, ^next_lesson})
     end
 
     test "remove_lesson/1 should remove a lesson and dispatch a removal event.", %{course: course} do
@@ -144,10 +144,10 @@ defmodule Lukas.LearningTest do
       {:ok, lesson} =
         Learning.create_lesson(course, %{"title" => "Lesson 1", "description" => "Mathematics I"})
 
-      assert_received({:lesson_added, ^lesson})
+      assert_received({:courses, :lesson_added, ^lesson})
 
       {:ok, removed_lesson} = Learning.remove_lesson(lesson)
-      assert_received({:lesson_deleted, ^removed_lesson})
+      assert_received({:courses, :lesson_deleted, ^removed_lesson})
     end
   end
 end

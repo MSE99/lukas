@@ -97,11 +97,11 @@ defmodule LukasWeb.Operator.AllCoursesLive do
     end
   end
 
-  def handle_info({:course_created, course}, socket) do
+  def handle_info({:courses, :course_created, course}, socket) do
     {:noreply, stream_insert(socket, :courses, course)}
   end
 
-  def handle_info({:course_updated, course}, socket) do
+  def handle_info({:courses, :course_updated, course}, socket) do
     {:noreply, stream_insert(socket, :courses, course)}
   end
 end
