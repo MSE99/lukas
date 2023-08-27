@@ -12,17 +12,25 @@ defmodule Lukas.Accounts.User do
     field(:hashed_password, :string, redact: true)
     field(:confirmed_at, :naive_datetime)
     field(:kind, Ecto.Enum, values: @user_kinds)
+    field(:name, :string)
 
     timestamps()
   end
 
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password, :phone_number, :kind])
+    |> cast(attrs, [:email, :password, :phone_number, :kind, :name])
     |> validate_phone_number()
     |> validate_email(opts)
     |> validate_password(opts)
     |> validate_kinds()
+    |> validate_name()
+  end
+
+  defp validate_name(changeset) do
+    changeset
+    |> validate_required(:name)
+    |> validate_length(:name, min: 3, max: 100)
   end
 
   defp validate_kinds(changeset) do

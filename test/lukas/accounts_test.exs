@@ -97,7 +97,7 @@ defmodule Lukas.AccountsTest do
   describe "change_user_registration/2" do
     test "returns a changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_registration(%User{})
-      assert changeset.required == [:kind, :password, :email, :phone_number]
+      assert changeset.required == [:name, :kind, :password, :email, :phone_number]
     end
 
     test "allows fields to be set" do

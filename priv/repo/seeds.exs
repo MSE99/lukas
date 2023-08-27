@@ -15,7 +15,8 @@
     "kind" => "operator",
     "phone_number" => "091",
     "password" => "123123123123",
-    "email" => "cool2@gmail.com"
+    "email" => "cool2@gmail.com",
+    "name" => "Mohamed Edrah"
   })
 
 {:ok, _} =
@@ -23,7 +24,8 @@
     "kind" => "student",
     "phone_number" => "092",
     "password" => "123123123123",
-    "email" => "cool@gmail.com"
+    "email" => "cool@gmail.com",
+    "name" => "Abu bakr sadiq"
   })
 
 {:ok, _} =
@@ -31,5 +33,6 @@
     "kind" => "lecturer",
     "phone_number" => "094",
     "password" => "123123123123",
-    "email" => "cool3@gmail.com"
+    "email" => "cool3@gmail.com",
+    "name" => "Ali ageel"
   })
