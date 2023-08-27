@@ -155,7 +155,7 @@ defmodule Lukas.Learning do
     Phoenix.PubSub.broadcast(
       Lukas.PubSub,
       "courses/#{course.id}",
-      {:courses, :course_updated, course}
+      {:course, course.id, :course_updated, course}
     )
 
     res
@@ -169,7 +169,7 @@ defmodule Lukas.Learning do
     Phoenix.PubSub.broadcast(
       Lukas.PubSub,
       "courses/#{tagging.course_id}",
-      {:courses, :course_tagged, tag}
+      {:course, tagging.course_id, :course_tagged, tag}
     )
 
     res
@@ -181,7 +181,7 @@ defmodule Lukas.Learning do
     Phoenix.PubSub.broadcast(
       Lukas.PubSub,
       "courses/#{lesson.course_id}",
-      {:courses, :lesson_added, lesson}
+      {:course, lesson.course_id, :lesson_added, lesson}
     )
 
     res
@@ -193,7 +193,7 @@ defmodule Lukas.Learning do
     Phoenix.PubSub.broadcast(
       Lukas.PubSub,
       "courses/#{lesson.course_id}",
-      {:courses, :lesson_updated, lesson}
+      {:course, lesson.course_id, :lesson_updated, lesson}
     )
 
     res
@@ -205,7 +205,7 @@ defmodule Lukas.Learning do
     Phoenix.PubSub.broadcast(
       Lukas.PubSub,
       "courses/#{lesson.course_id}",
-      {:courses, :lesson_deleted, lesson}
+      {:course, lesson.course_id, :lesson_deleted, lesson}
     )
 
     res
@@ -217,7 +217,7 @@ defmodule Lukas.Learning do
     Phoenix.PubSub.broadcast(
       Lukas.PubSub,
       "courses/#{lesson.course_id}",
-      {:courses, :topic_added, topic}
+      {:course, lesson.course_id, :topic_added, topic}
     )
 
     res
@@ -229,7 +229,7 @@ defmodule Lukas.Learning do
     Phoenix.PubSub.broadcast(
       Lukas.PubSub,
       "courses/#{lesson.course_id}",
-      {:courses, :topic_removed, topic}
+      {:course, lesson.course_id, :topic_removed, topic}
     )
 
     res
@@ -241,7 +241,7 @@ defmodule Lukas.Learning do
     Phoenix.PubSub.broadcast(
       Lukas.PubSub,
       "courses/#{lesson.course_id}",
-      {:courses, :topic_updated, topic}
+      {:course, lesson.course_id, :topic_updated, topic}
     )
 
     res
@@ -255,7 +255,7 @@ defmodule Lukas.Learning do
     Phoenix.PubSub.broadcast(
       Lukas.PubSub,
       "courses/#{course_id}",
-      {:courses, :course_untagged, tag}
+      {:course, course_id, :course_untagged, tag}
     )
   end
 
