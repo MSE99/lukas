@@ -6,6 +6,30 @@ defmodule Lukas.Learning do
   ## Courses
   alias Lukas.Learning.{Course, Lesson, Tagging, Tag}
 
+  def get_lesson(course_id, lesson_id) when is_integer(course_id) and is_integer(lesson_id) do
+    from(l in Lesson, where: l.course_id == ^course_id and l.id == ^lesson_id) |> Repo.one()
+  end
+
+  def get_lesson_and_topic_names(course_id, lesson_id) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.one(
+      :lesson,
+      from(l in Lesson, where: l.course_id == ^course_id and l.id == ^lesson_id)
+    )
+    |> Ecto.Multi.all(
+      :topics,
+      from(
+        t in Lesson.Topic,
+        where: t.lesson_id == ^lesson_id,
+        select: %{id: t.id, title: t.title, kind: t.kind}
+      )
+    )
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{lesson: lesson, topics: topics}} -> {:ok, lesson, topics}
+    end
+  end
+
   def create_lesson(%Course{} = course, attrs \\ %{}) do
     attrs_with_course = Map.merge(attrs, %{"course_id" => course.id})
 
