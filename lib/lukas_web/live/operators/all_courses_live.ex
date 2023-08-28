@@ -64,7 +64,7 @@ defmodule LukasWeb.Operator.AllCoursesLive do
 
     <ul phx-update="stream" id="courses">
       <li :for={{id, course} <- @streams.courses} id={id}>
-        <%= course.name %>
+        <.link navigate={~p"/controls/courses/#{course.id}"}><%= course.name %></.link>
       </li>
     </ul>
     """
