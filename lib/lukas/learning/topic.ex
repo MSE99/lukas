@@ -1,8 +1,9 @@
-defmodule Lukas.Learning.Lesson.TextTopic do
+defmodule Lukas.Learning.Lesson.Topic do
   use Ecto.Schema
+
   import Ecto.Changeset
 
-  schema "text_topics" do
+  schema "topics" do
     field(:content, :string)
     field(:title, :string)
 

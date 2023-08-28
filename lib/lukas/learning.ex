@@ -28,24 +28,24 @@ defmodule Lukas.Learning do
   end
 
   def create_text_topic(%Lesson{id: lesson_id} = lesson, attrs) do
-    %Lesson.TextTopic{lesson_id: lesson_id}
-    |> Lesson.TextTopic.changeset(attrs)
+    %Lesson.Topic{lesson_id: lesson_id}
+    |> Lesson.Topic.changeset(attrs)
     |> Repo.insert()
     |> maybe_emit_topic_added(lesson)
   end
 
-  def remove_topic(%Lesson.TextTopic{} = topic) do
+  def remove_topic(%Lesson.Topic{} = topic) do
     topic_with_lesson = Repo.preload(topic, :lesson)
 
     Repo.delete(topic_with_lesson)
     |> maybe_emit_topic_removed(topic_with_lesson.lesson)
   end
 
-  def update_topic(%Lesson.TextTopic{} = topic, attrs) do
+  def update_topic(%Lesson.Topic{} = topic, attrs) do
     topic_with_lesson = Repo.preload(topic, :lesson)
 
     topic_with_lesson
-    |> Lesson.TextTopic.changeset(attrs)
+    |> Lesson.Topic.changeset(attrs)
     |> Repo.update()
     |> maybe_emit_topic_updated(topic_with_lesson.lesson)
   end
