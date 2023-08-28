@@ -84,6 +84,9 @@ defmodule Lukas.Learning do
 
   def get_course(id), do: Repo.get(Course, id)
 
+  def get_lessons(%Course{id: course_id}),
+    do: from(l in Lesson, where: l.course_id == ^course_id) |> Repo.all()
+
   def create_course(attrs) do
     %Course{}
     |> Course.changeset(attrs)

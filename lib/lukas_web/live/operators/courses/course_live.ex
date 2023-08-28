@@ -11,9 +11,13 @@ defmodule LukasWeb.Operator.CourseLive do
     end
   end
 
+  def load_lessons(socket, course), do: stream(socket, :lessons, Learning.get_lessons(course))
+
   def render(assigns) do
     ~H"""
       <h1>Course <%= @course.name %></h1>
+
+      <ul></ul>
     """
   end
 end

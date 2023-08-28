@@ -4,8 +4,20 @@ defmodule LukasWeb.Courses.CourseLiveTest do
   import Phoenix.LiveViewTest
   import Lukas.LearningFixtures
 
+  alias Lukas.Learning
+
   def create_course(ctx) do
-    Map.put(ctx, :course, course_fixture())
+    course = course_fixture()
+
+    {:ok, lesson} =
+      Learning.create_lesson(course, %{
+        "title" => "Operations",
+        "description" => "a lesson about operations"
+      })
+
+    ctx
+    |> Map.put(:course, course)
+    |> Map.put(:lesson, lesson)
   end
 
   test "should require an authenticated admin.", %{conn: conn} do
@@ -25,7 +37,10 @@ defmodule LukasWeb.Courses.CourseLiveTest do
       assert {:error, {:redirect, _}} = live(conn, ~p"/controls/courses/10")
     end
 
-    test "should render the course name if the course id is valid.", %{conn: conn, course: course} do
+    test "should render the course data if the course id is valid.", %{
+      conn: conn,
+      course: course
+    } do
       {:ok, _, html} = live(conn, ~p"/controls/courses/#{course.id}")
       assert html =~ course.name
     end
