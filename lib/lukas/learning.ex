@@ -6,6 +6,12 @@ defmodule Lukas.Learning do
   ## Courses
   alias Lukas.Learning.{Course, Lesson, Tagging, Tag}
 
+  def topic_kinds() do
+    %{
+      "text" => "text"
+    }
+  end
+
   def get_lesson(course_id, lesson_id) when is_integer(course_id) and is_integer(lesson_id) do
     from(l in Lesson, where: l.course_id == ^course_id and l.id == ^lesson_id) |> Repo.one()
   end
@@ -68,6 +74,16 @@ defmodule Lukas.Learning do
     |> Lesson.Topic.changeset(attrs)
     |> Repo.insert()
     |> maybe_emit_topic_added(lesson)
+  end
+
+  def create_topic_changeset(%Lesson{id: lesson_id}, attrs \\ %{}) do
+    %Lesson.Topic{lesson_id: lesson_id}
+    |> Lesson.Topic.changeset(attrs)
+  end
+
+  def validate_topic(%Lesson{} = lesson, attrs \\ %{}) do
+    create_topic_changeset(lesson, attrs)
+    |> Map.put(:action, :validate)
   end
 
   def remove_topic(%Lesson.Topic{} = topic) do
@@ -181,6 +197,11 @@ defmodule Lukas.Learning do
 
   def watch_courses(), do: Phoenix.PubSub.subscribe(Lukas.PubSub, "courses")
 
+  def watch_course(course_id) when is_integer(course_id) do
+    course = Repo.get(Course, course_id)
+    watch_course(course)
+  end
+
   def watch_course(%Course{id: id}), do: Phoenix.PubSub.subscribe(Lukas.PubSub, "courses/#{id}")
 
   def maybe_emit_course_created({:ok, course} = res) do
@@ -252,7 +273,7 @@ defmodule Lukas.Learning do
     res
   end
 
-  def maybe_emit_course_lesson_deleted(res), do: res
+  def maybe_emit_lesson_deleted(res), do: res
 
   def maybe_emit_topic_added({:ok, topic} = res, lesson) do
     Phoenix.PubSub.broadcast(
