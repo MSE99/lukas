@@ -26,7 +26,12 @@ defmodule LukasWeb.Operator.LessonLive do
 
   def render(assigns) do
     ~H"""
-    <.modal :if={@live_action == :new_topic} id="new-topic-modal" show>
+    <.modal
+      :if={@live_action == :new_topic}
+      id="new-topic-modal"
+      on_cancel={JS.patch(~p"/controls/courses/#{@lesson.course_id}/lessons/#{@lesson.id}")}
+      show
+    >
       <.form for={@form} phx-change="validate" phx-submit="create">
         <.input field={@form[:title]} type="text" label="Title" />
         <.input
@@ -98,12 +103,16 @@ defmodule LukasWeb.Operator.LessonLive do
   end
 
   def handle_info({:course, _, :lesson_removed, lesson}, socket)
-      when socket.assigns.lesson == lesson do
+      when socket.assigns.lesson.id == lesson.id do
     {:noreply, redirect(socket, to: ~p"/controls/courses")}
   end
 
-  def handle_info({:course, _, _, _} = msg, socket) do
-    IO.inspect(msg)
+  def handle_info({:course, _, :lesson_updated, lesson}, socket)
+      when socket.assigns.lesson.id == lesson.id do
+    {:noreply, assign(socket, lesson: lesson)}
+  end
+
+  def handle_info({:course, _, _, _}, socket) do
     {:noreply, socket}
   end
 end

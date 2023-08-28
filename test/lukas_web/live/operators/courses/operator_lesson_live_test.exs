@@ -71,6 +71,17 @@ defmodule LukasWeb.Operator.LessonLiveTest do
       lv |> element("a", "New topic") |> render_click()
       assert_patched(lv, ~p"/controls/courses/#{lesson.course_id}/lessons/#{lesson.id}/new-topic")
     end
+
+    test "should react to lesson being updated.", %{conn: conn, lesson: lesson} do
+      {:ok, lv, html} = live(conn, ~p"/controls/courses/#{lesson.course_id}/lessons/#{lesson.id}")
+
+      assert html =~ lesson.title
+
+      {:ok, next_lesson} =
+        Learning.update_lesson(lesson, %{title: "New title", description: "new description"})
+
+      assert render(lv) =~ next_lesson.title
+    end
   end
 
   describe "new" do
