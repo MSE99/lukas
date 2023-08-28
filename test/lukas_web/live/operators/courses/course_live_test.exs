@@ -94,4 +94,54 @@ defmodule LukasWeb.Courses.CourseLiveTest do
       assert render(lv) =~ "Listener"
     end
   end
+
+  describe "edit lesson" do
+    setup [:register_and_log_in_user, :create_course]
+
+    test "form should render errors on change.", %{conn: conn, course: course, lesson: lesson} do
+      {:ok, lv, _} =
+        live(conn, ~p"/controls/courses/#{course.id}/lessons/#{lesson.id}/edit-lesson")
+
+      render_result =
+        lv
+        |> form("form", %{
+          "lesson" => %{"title" => "", "description" => "foo is great bar is none"}
+        })
+        |> render_change()
+
+      assert render_result =~ "can&#39;t be blank"
+    end
+
+    test "form should render errors on submit.", %{conn: conn, course: course, lesson: lesson} do
+      {:ok, lv, _} =
+        live(conn, ~p"/controls/courses/#{course.id}/lessons/#{lesson.id}/edit-lesson")
+
+      render_result =
+        lv
+        |> form("form", %{
+          "lesson" => %{"title" => "", "description" => "foo is great bar is none"}
+        })
+        |> render_submit()
+
+      assert render_result =~ "can&#39;t be blank"
+    end
+
+    test "should patch back the course page and update the lesson title", %{
+      conn: conn,
+      course: course,
+      lesson: lesson
+    } do
+      {:ok, lv, _} =
+        live(conn, ~p"/controls/courses/#{course.id}/lessons/#{lesson.id}/edit-lesson")
+
+      lv
+      |> form("form", %{
+        "lesson" => %{"title" => "Bar Baz Naz", "description" => "foo is great bar is none"}
+      })
+      |> render_submit()
+
+      assert_patched(lv, ~p"/controls/courses/#{course.id}")
+      assert render(lv) =~ "Bar Baz Naz"
+    end
+  end
 end

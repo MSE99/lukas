@@ -57,6 +57,11 @@ defmodule Lukas.Learning do
     |> Lesson.changeset(attrs_with_course)
   end
 
+  def edit_lesson_changeset(%Lesson{} = lesson, attrs \\ %{}) do
+    lesson
+    |> Lesson.changeset(attrs)
+  end
+
   def update_lesson(%Lesson{} = lesson, attrs \\ %{}) do
     lesson
     |> Lesson.changeset(attrs)
@@ -261,7 +266,7 @@ defmodule Lukas.Learning do
     res
   end
 
-  def maybe_emit_course_lesson_updated(res), do: res
+  def maybe_emit_lesson_updated(res), do: res
 
   def maybe_emit_lesson_deleted({:ok, lesson} = res) do
     Phoenix.PubSub.broadcast(
