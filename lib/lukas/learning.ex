@@ -15,6 +15,18 @@ defmodule Lukas.Learning do
     |> maybe_emit_lesson_added()
   end
 
+  def validate_lesson(%Course{} = course, attrs \\ %{}) do
+    create_lesson_changeset(course, attrs)
+    |> Map.put(:action, :validate)
+  end
+
+  def create_lesson_changeset(%Course{} = course, attrs \\ %{}) do
+    attrs_with_course = Map.merge(attrs, %{"course_id" => course.id})
+
+    %Lesson{}
+    |> Lesson.changeset(attrs_with_course)
+  end
+
   def update_lesson(%Lesson{} = lesson, attrs \\ %{}) do
     lesson
     |> Lesson.changeset(attrs)
@@ -192,7 +204,7 @@ defmodule Lukas.Learning do
     res
   end
 
-  def maybe_emit_course_lesson_added(res), do: res
+  def maybe_emit_lesson_added(res), do: res
 
   def maybe_emit_lesson_updated({:ok, lesson} = res) do
     Phoenix.PubSub.broadcast(

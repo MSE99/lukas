@@ -39,10 +39,59 @@ defmodule LukasWeb.Courses.CourseLiveTest do
 
     test "should render the course data if the course id is valid.", %{
       conn: conn,
-      course: course
+      course: course,
+      lesson: lesson
     } do
       {:ok, _, html} = live(conn, ~p"/controls/courses/#{course.id}")
+
       assert html =~ course.name
+      assert html =~ lesson.title
+    end
+  end
+
+  describe "new lesson" do
+    setup [:register_and_log_in_user, :create_course]
+
+    test "form should render errors on change.", %{conn: conn, course: course} do
+      {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}/new-lesson")
+
+      render_result =
+        lv
+        |> form("form", %{
+          "lesson" => %{"title" => "", "description" => "foo is great bar is none"}
+        })
+        |> render_change()
+
+      assert render_result =~ "can&#39;t be blank"
+    end
+
+    test "form should render errors on submit.", %{conn: conn, course: course} do
+      {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}/new-lesson")
+
+      render_result =
+        lv
+        |> form("form", %{
+          "lesson" => %{"title" => "", "description" => "foo is great bar is none"}
+        })
+        |> render_submit()
+
+      assert render_result =~ "can&#39;t be blank"
+    end
+
+    test "should create a new lesson if all lesson props are valid.", %{
+      conn: conn,
+      course: course
+    } do
+      {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}/new-lesson")
+
+      lv
+      |> form("form", %{
+        "lesson" => %{"title" => "Listener", "description" => "foo is great bar is none"}
+      })
+      |> render_submit()
+
+      assert_patched(lv, ~p"/controls/courses/#{course.id}")
+      assert render(lv) =~ "Listener"
     end
   end
 end
