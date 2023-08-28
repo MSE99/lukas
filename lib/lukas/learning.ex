@@ -28,7 +28,7 @@ defmodule Lukas.Learning do
   end
 
   def create_text_topic(%Lesson{id: lesson_id} = lesson, attrs) do
-    %Lesson.Topic{lesson_id: lesson_id}
+    %Lesson.Topic{lesson_id: lesson_id, kind: :text}
     |> Lesson.Topic.changeset(attrs)
     |> Repo.insert()
     |> maybe_emit_topic_added(lesson)

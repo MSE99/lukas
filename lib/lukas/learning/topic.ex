@@ -3,9 +3,12 @@ defmodule Lukas.Learning.Lesson.Topic do
 
   import Ecto.Changeset
 
+  @kinds [:text]
+
   schema "topics" do
-    field(:content, :string)
     field(:title, :string)
+    field(:kind, Ecto.Enum, values: @kinds)
+    field(:content, :string)
 
     belongs_to(:lesson, Lukas.Learning.Lesson)
 
@@ -14,7 +17,7 @@ defmodule Lukas.Learning.Lesson.Topic do
 
   def changeset(text_topic, attrs) do
     text_topic
-    |> cast(attrs, [:title, :content, :lesson_id])
-    |> validate_required([:title, :content, :lesson_id])
+    |> cast(attrs, [:title, :content, :lesson_id, :kind])
+    |> validate_required([:title, :content, :lesson_id, :kind])
   end
 end
