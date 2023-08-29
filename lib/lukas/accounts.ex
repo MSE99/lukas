@@ -36,6 +36,10 @@ defmodule Lukas.Accounts do
     |> emit_invite_deleted()
   end
 
+  def get_invite_by_code(code) when is_binary(code) do
+    Repo.get_by(Invite, code: code)
+  end
+
   def generate_invite!() do
     Invite.changeset(%Invite{}, %{"code" => gen_code()})
     |> Repo.insert!()
@@ -63,6 +67,23 @@ defmodule Lukas.Accounts do
   end
 
   ## User registration
+
+  def register_user(%Invite{} = invite, attrs) do
+    filled = attrs |> Map.put("kind", "lecturer")
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:user, User.registration_changeset(%User{}, filled))
+    |> Ecto.Multi.delete(:invite, invite)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user, invite: invite}} ->
+        emit_invite_deleted(invite)
+        {:ok, user}
+
+      {:error, :user, changeset, _} ->
+        {:error, changeset}
+    end
+  end
 
   def register_user(attrs) do
     %User{}
