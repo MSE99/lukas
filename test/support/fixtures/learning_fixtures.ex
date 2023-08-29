@@ -1,12 +1,4 @@
 defmodule Lukas.LearningFixtures do
-  @moduledoc """
-  This module defines test helpers for creating
-  entities via the `Lukas.Learning` context.
-  """
-
-  @doc """
-  Generate a tag.
-  """
   def tag_fixture(attrs \\ %{}) do
     {:ok, tag} =
       attrs
@@ -25,5 +17,24 @@ defmodule Lukas.LearningFixtures do
       |> Lukas.Learning.create_course()
 
     course
+  end
+
+  def lesson_fixture(%Lukas.Learning.Course{} = course, attrs \\ %{}) do
+    filled =
+      attrs
+      |> Map.put_new("title", "Lesson ##{System.unique_integer([:positive])}")
+
+    {:ok, lesson} = Lukas.Learning.create_lesson(course, filled)
+
+    lesson
+  end
+
+  def text_topic_fixture(%Lukas.Learning.Lesson{} = lesson, attrs \\ %{}) do
+    filled =
+      attrs
+      |> Map.put_new("title", "Lesson ##{System.unique_integer([:positive])}")
+
+    {:ok, topic} = Lukas.Learning.create_text_topic(lesson, filled)
+    topic
   end
 end

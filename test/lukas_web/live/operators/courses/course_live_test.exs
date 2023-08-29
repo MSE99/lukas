@@ -4,13 +4,11 @@ defmodule LukasWeb.Courses.CourseLiveTest do
   import Phoenix.LiveViewTest
   import Lukas.LearningFixtures
 
-  alias Lukas.Learning
-
   def create_course(ctx) do
     course = course_fixture()
 
-    {:ok, lesson} =
-      Learning.create_lesson(course, %{
+    lesson =
+      lesson_fixture(course, %{
         "title" => "Operations",
         "description" => "a lesson about operations"
       })

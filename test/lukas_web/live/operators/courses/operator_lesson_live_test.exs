@@ -13,20 +13,15 @@ defmodule LukasWeb.Operator.LessonLiveTest do
   def setup_test(ctx) do
     course = course_fixture()
 
-    {:ok, lesson} =
-      Learning.create_lesson(course, %{
+    lesson =
+      lesson_fixture(course, %{
         "title" => "Operations",
         "description" => "a lesson about operations"
       })
 
-    {:ok, topic1} =
-      Learning.create_text_topic(lesson, %{"title" => "Topic 1", "content" => "Topic 1"})
-
-    {:ok, topic2} =
-      Learning.create_text_topic(lesson, %{"title" => "Topic 2", "content" => "Topic 2"})
-
-    {:ok, topic3} =
-      Learning.create_text_topic(lesson, %{"title" => "Topic 3", "content" => "Topic 3"})
+    topic1 = text_topic_fixture(lesson, %{"title" => "Topic 1", "content" => "Topic 1"})
+    topic2 = text_topic_fixture(lesson, %{"title" => "Topic 2", "content" => "Topic 2"})
+    topic3 = text_topic_fixture(lesson, %{"title" => "Topic 3", "content" => "Topic 3"})
 
     Map.merge(
       ctx,
