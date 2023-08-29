@@ -16,6 +16,18 @@ defmodule LukasWeb.Operator.LessonLive do
     end
   end
 
+  def handle_params(%{"topic_id" => raw_topic_id}, _, socket)
+      when socket.assigns.live_action == :edit_topic do
+    with {id, _} <- Integer.parse(raw_topic_id),
+         topic when topic != nil <- Learning.get_topic(socket.assigns.lesson.id, id) do
+      cs = Learning.update_topic_changeset(Map.from_struct(topic))
+      form = to_form(cs)
+      {:noreply, assign(socket, form: form, topic_kind: "#{topic.kind}", topic: topic)}
+    else
+      _ -> {:noreply, redirect(socket, to: ~p"/")}
+    end
+  end
+
   def handle_params(_, _, socket) when socket.assigns.live_action == :new_topic do
     cs = Learning.create_topic_changeset(socket.assigns.lesson)
     form = to_form(cs)
@@ -27,12 +39,16 @@ defmodule LukasWeb.Operator.LessonLive do
   def render(assigns) do
     ~H"""
     <.modal
-      :if={@live_action == :new_topic}
+      :if={@live_action in [:edit_topic, :new_topic]}
       id="new-topic-modal"
       on_cancel={JS.patch(~p"/controls/courses/#{@lesson.course_id}/lessons/#{@lesson.id}")}
       show
     >
-      <.form for={@form} phx-change="validate" phx-submit="create">
+      <.form
+        for={@form}
+        phx-change="validate"
+        phx-submit={if @live_action == :new_topic, do: "create", else: "update"}
+      >
         <.input field={@form[:title]} type="text" label="Title" />
         <.input
           field={@form[:kind]}
@@ -59,7 +75,12 @@ defmodule LukasWeb.Operator.LessonLive do
 
     <ul id="topics" phx-update="stream">
       <li :for={{id, topic} <- @streams.topics} id={id}>
-        <%= topic.title %>
+        <%= topic.title %> |
+        <.link patch={
+          ~p"/controls/courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{topic.id}/edit-topic"
+        }>
+          <.button>Edit</.button>
+        </.link>
       </li>
     </ul>
     """
@@ -69,6 +90,20 @@ defmodule LukasWeb.Operator.LessonLive do
     cs = Learning.validate_topic(socket.assigns.lesson, params)
     form = to_form(cs)
     {:noreply, assign(socket, form: form)}
+  end
+
+  def handle_event("update", %{"topic" => params}, socket) do
+    case Learning.update_topic(socket.assigns.topic, params) do
+      {:error, cs} ->
+        {:noreply, assign(socket, form: to_form(cs))}
+
+      {:ok, _} ->
+        {:noreply,
+         push_patch(socket,
+           to:
+             ~p"/controls/courses/#{socket.assigns.lesson.course_id}/lessons/#{socket.assigns.lesson.id}"
+         )}
+    end
   end
 
   def handle_event("create", %{"topic" => params}, socket)

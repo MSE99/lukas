@@ -178,4 +178,93 @@ defmodule LukasWeb.Operator.LessonLiveTest do
       assert render(lv) =~ updated_topic.title
     end
   end
+
+  describe "edit topic" do
+    setup [:register_and_log_in_user, :setup_test]
+
+    test "should redirect if the lesson id is invalid.", %{conn: conn, course: course} do
+      assert {:error, {:redirect, _}} =
+               live(conn, ~p"/controls/courses/#{course.id}/lessons/invalid")
+    end
+
+    test "form should render errors on change.", %{
+      conn: conn,
+      course: course,
+      lesson: lesson,
+      topics: [topic1 | _]
+    } do
+      {:ok, lv, _html} =
+        live(
+          conn,
+          ~p"/controls/courses/#{course.id}/lessons/#{lesson.id}/topics/#{topic1.id}/edit-topic"
+        )
+
+      render_result =
+        lv
+        |> form("form", %{
+          "topic" => %{
+            "title" => "",
+            "content" => "Foo is great bar is none.",
+            "kind" => "text"
+          }
+        })
+        |> render_change()
+
+      assert render_result =~ "can&#39;t be blank"
+    end
+
+    test "form should render errors on submit.", %{
+      conn: conn,
+      course: course,
+      lesson: lesson,
+      topics: [topic1 | _]
+    } do
+      {:ok, lv, _html} =
+        live(
+          conn,
+          ~p"/controls/courses/#{course.id}/lessons/#{lesson.id}/topics/#{topic1.id}/edit-topic"
+        )
+
+      render_result =
+        lv
+        |> form("form", %{
+          "topic" => %{
+            "title" => "",
+            "content" => "Foo is great bar is none.",
+            "kind" => "text"
+          }
+        })
+        |> render_submit()
+
+      assert render_result =~ "can&#39;t be blank"
+    end
+
+    test "should edit the text topic.", %{
+      conn: conn,
+      course: course,
+      lesson: lesson,
+      topics: [topic1 | _],
+      path: path
+    } do
+      {:ok, lv, _html} =
+        live(
+          conn,
+          ~p"/controls/courses/#{course.id}/lessons/#{lesson.id}/topics/#{topic1.id}/edit-topic"
+        )
+
+      lv
+      |> form("form", %{
+        "topic" => %{
+          "title" => "Nib",
+          "content" => "Foo is great bar is none.",
+          "kind" => "text"
+        }
+      })
+      |> render_submit()
+
+      assert_patched(lv, path)
+      refute render(lv) =~ topic1.title
+      assert render(lv) =~ "Nib"
+    end
+  end
 end

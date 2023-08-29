@@ -81,6 +81,15 @@ defmodule Lukas.Learning do
     |> maybe_emit_topic_added(lesson)
   end
 
+  def get_topic(lesson_id, topic_id) when is_integer(lesson_id) and is_integer(topic_id) do
+    from(t in Lesson.Topic, where: t.lesson_id == ^lesson_id and t.id == ^topic_id) |> Repo.one()
+  end
+
+  def update_topic_changeset(attrs \\ %{}) do
+    %Lesson.Topic{}
+    |> Lesson.Topic.changeset(attrs)
+  end
+
   def create_topic_changeset(%Lesson{id: lesson_id}, attrs \\ %{}) do
     %Lesson.Topic{lesson_id: lesson_id}
     |> Lesson.Topic.changeset(attrs)
@@ -102,7 +111,7 @@ defmodule Lukas.Learning do
     topic_with_lesson = Repo.preload(topic, :lesson)
 
     topic_with_lesson
-    |> Lesson.Topic.changeset(attrs)
+    |> Lesson.Topic.update_changeset(attrs)
     |> Repo.update()
     |> maybe_emit_topic_updated(topic_with_lesson.lesson)
   end

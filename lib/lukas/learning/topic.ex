@@ -20,4 +20,10 @@ defmodule Lukas.Learning.Lesson.Topic do
     |> cast(attrs, [:title, :content, :lesson_id, :kind])
     |> validate_required([:title, :content, :lesson_id, :kind])
   end
+
+  def update_changeset(text_topic, attrs) do
+    text_topic
+    |> cast(attrs, [:title, :content, :kind])
+    |> validate_required([:title, :content, :kind])
+  end
 end
