@@ -10,7 +10,13 @@ defmodule LukasWeb.Operators.HomeLive do
     <ul>
       <li>
         <.link navigate={~p"/controls/tags"}>Tags</.link>
+      </li>
+      <li>
         <.link navigate={~p"/controls/courses"}>Courses</.link>
+      </li>
+
+      <li>
+        <.link navigate={~p"/controls/invites"}>Invites</.link>
       </li>
     </ul>
     """

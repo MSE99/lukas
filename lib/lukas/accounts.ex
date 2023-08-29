@@ -30,6 +30,12 @@ defmodule Lukas.Accounts do
     Repo.all(Invite)
   end
 
+  def delete_invite!(id) when is_integer(id) do
+    Repo.get!(Invite, id)
+    |> Repo.delete!()
+    |> emit_invite_deleted()
+  end
+
   def generate_invite!() do
     Invite.changeset(%Invite{}, %{"code" => gen_code()})
     |> Repo.insert!()
@@ -42,12 +48,18 @@ defmodule Lukas.Accounts do
     |> String.slice(0..4)
   end
 
-  defp watch_invites() do
+  def watch_invites() do
     Phoenix.PubSub.subscribe(Lukas.PubSub, "invites")
   end
 
   defp emit_invite_created(invite) do
     Phoenix.PubSub.broadcast(Lukas.PubSub, "invites", {:invites, :invite_created, invite})
+    invite
+  end
+
+  defp emit_invite_deleted(invite) do
+    Phoenix.PubSub.broadcast(Lukas.PubSub, "invites", {:invites, :invite_deleted, invite})
+    invite
   end
 
   ## User registration

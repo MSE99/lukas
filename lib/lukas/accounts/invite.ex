@@ -14,7 +14,7 @@ defmodule Lukas.Accounts.Invite do
     |> cast(attrs, [:code])
     |> validate_required([:code])
     |> validate_length(:code, is: 5)
-    |> validate_format(:code, ~r/^[A-Za-z]{5}$/)
+    |> validate_format(:code, ~r/^[A-Za-z0-9]{5}$/)
     |> unique_constraint(:code)
   end
 end

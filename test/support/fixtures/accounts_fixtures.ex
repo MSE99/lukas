@@ -37,7 +37,7 @@ defmodule Lukas.AccountsFixtures do
     token
   end
 
-  def invite_fixture(attrs \\ %{"code" => Accounts.gen_code()}) do
-    Accounts.Invite.changeset(%Accounts.Invite{}, attrs) |> Lukas.Repo.insert!()
+  def invite_fixture() do
+    Accounts.generate_invite!()
   end
 end
