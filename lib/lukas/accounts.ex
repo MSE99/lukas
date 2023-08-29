@@ -4,6 +4,10 @@ defmodule Lukas.Accounts do
 
   alias Lukas.Accounts.{User, UserToken, UserNotifier, Invite}
 
+  def get_lecturer!(lecturer_id) when is_integer(lecturer_id) do
+    Repo.get_by!(User, kind: :lecturer, id: lecturer_id)
+  end
+
   def get_user_by_phone_number(phone_number) when is_binary(phone_number) do
     Repo.get_by(User, phone_number: phone_number)
   end

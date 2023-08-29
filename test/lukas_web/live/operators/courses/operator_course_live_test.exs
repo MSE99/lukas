@@ -30,9 +30,10 @@ defmodule LukasWeb.Courses.CourseLiveTest do
       assert {:error, {:redirect, _}} = live(conn, ~p"/controls/courses/invalid")
     end
 
-    test "should redirect if the course id is valid but no matching course is found.", %{
-      conn: conn
-    } do
+    test "should redirect if the course id is valid but no matching course is found.",
+         %{
+           conn: conn
+         } do
       assert {:error, {:redirect, _}} = live(conn, ~p"/controls/courses/10")
     end
 
@@ -85,7 +86,10 @@ defmodule LukasWeb.Courses.CourseLiveTest do
 
       lv
       |> form("form", %{
-        "lesson" => %{"title" => "Listener", "description" => "foo is great bar is none"}
+        "lesson" => %{
+          "title" => "Listener",
+          "description" => "foo is great bar is none"
+        }
       })
       |> render_submit()
 
@@ -97,7 +101,11 @@ defmodule LukasWeb.Courses.CourseLiveTest do
   describe "edit lesson" do
     setup [:register_and_log_in_user, :create_course]
 
-    test "form should render errors on change.", %{conn: conn, course: course, lesson: lesson} do
+    test "form should render errors on change.", %{
+      conn: conn,
+      course: course,
+      lesson: lesson
+    } do
       {:ok, lv, _} =
         live(conn, ~p"/controls/courses/#{course.id}/lessons/#{lesson.id}/edit-lesson")
 
@@ -111,7 +119,11 @@ defmodule LukasWeb.Courses.CourseLiveTest do
       assert render_result =~ "can&#39;t be blank"
     end
 
-    test "form should render errors on submit.", %{conn: conn, course: course, lesson: lesson} do
+    test "form should render errors on submit.", %{
+      conn: conn,
+      course: course,
+      lesson: lesson
+    } do
       {:ok, lv, _} =
         live(conn, ~p"/controls/courses/#{course.id}/lessons/#{lesson.id}/edit-lesson")
 
@@ -135,7 +147,10 @@ defmodule LukasWeb.Courses.CourseLiveTest do
 
       lv
       |> form("form", %{
-        "lesson" => %{"title" => "Bar Baz Naz", "description" => "foo is great bar is none"}
+        "lesson" => %{
+          "title" => "Bar Baz Naz",
+          "description" => "foo is great bar is none"
+        }
       })
       |> render_submit()
 
@@ -147,7 +162,10 @@ defmodule LukasWeb.Courses.CourseLiveTest do
   describe "lecturers" do
     setup [:register_and_log_in_user, :create_course]
 
-    test "should render all lecturers assigned to the course.", %{conn: conn, course: course} do
+    test "should render all lecturers assigned to the course.", %{
+      conn: conn,
+      course: course
+    } do
       lect1 = user_fixture(%{kind: :lecturer})
       lect2 = user_fixture(%{kind: :lecturer})
 
@@ -160,7 +178,10 @@ defmodule LukasWeb.Courses.CourseLiveTest do
       assert html =~ lect2.name
     end
 
-    test "should react to lecturers being assigned to the course.", %{conn: conn, course: course} do
+    test "should react to lecturers being assigned to the course.", %{
+      conn: conn,
+      course: course
+    } do
       {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}")
 
       lect1 = user_fixture(%{kind: :lecturer})
@@ -193,6 +214,20 @@ defmodule LukasWeb.Courses.CourseLiveTest do
 
       refute html =~ lect1.name
       assert html =~ lect2.name
+    end
+
+    test "clicking on add lecturer should add the lecturer to the course.", %{
+      conn: conn,
+      course: course
+    } do
+      lect = user_fixture(%{kind: :lecturer})
+      {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}/add-lecturer")
+
+      lv |> element("button", lect.name) |> render_click()
+
+      assert_patched(lv, ~p"/controls/courses/#{course.id}")
+
+      assert render(lv) =~ lect.name
     end
   end
 end

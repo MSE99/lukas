@@ -1,12 +1,11 @@
 defmodule LukasWeb.Operator.CourseLive do
   use LukasWeb, :live_view
 
-  alias Lukas.Learning
+  alias Lukas.{Learning, Accounts}
 
   def mount(%{"id" => raw_id}, _session, socket) do
     with {id, _} <- Integer.parse(raw_id), course when course != nil <- Learning.get_course(id) do
       Learning.watch_course(course)
-
       lecturers = Learning.list_course_lecturers(course)
 
       {:ok,
@@ -34,12 +33,30 @@ defmodule LukasWeb.Operator.CourseLive do
     end
   end
 
+  def handle_params(_, _, socket) when socket.assigns.live_action == :add_lecturer do
+    possible_lecturers = Learning.possible_lecturers_for(socket.assigns.course)
+    {:noreply, stream(socket, :possible_lecturers, possible_lecturers, reset: true)}
+  end
+
   def handle_params(_, _, socket), do: {:noreply, socket}
 
   def load_lessons(socket, course), do: stream(socket, :lessons, Learning.get_lessons(course))
 
   def render(assigns) do
     ~H"""
+    <.modal
+      :if={@live_action == :add_lecturer}
+      id="new-lecturer-modal"
+      on_cancel={JS.patch(~p"/controls/courses/#{@course.id}")}
+      show
+    >
+      <ul id="lecturers-list" phx-update="stream">
+        <li :for={{id, lect} <- @streams.possible_lecturers} id={id}>
+          <.button phx-click="add-lecturer" phx-value-lecturer-id={lect.id}><%= lect.name %></.button>
+        </li>
+      </ul>
+    </.modal>
+
     <.modal
       :if={@live_action in [:new_lesson, :edit_lesson]}
       id="new-lesson-modal"
@@ -77,6 +94,10 @@ defmodule LukasWeb.Operator.CourseLive do
 
     <h3>Lecturers</h3>
 
+    <.link patch={~p"/controls/courses/#{@course.id}/add-lecturer"}>
+      <.button>Add lecturer</.button>
+    </.link>
+
     <ul id="lecturers" phx-update="stream">
       <li :for={{id, lect} <- @streams.lecturers} id={id}>
         <%= lect.name %>
@@ -108,6 +129,14 @@ defmodule LukasWeb.Operator.CourseLive do
       {:error, cs} ->
         {:noreply, assign(socket, form: to_form(cs))}
     end
+  end
+
+  def handle_event("add-lecturer", %{"lecturer-id" => raw_lecturer_id}, socket) do
+    {lecturer_id, _} = Integer.parse(raw_lecturer_id)
+    lect = Accounts.get_lecturer!(lecturer_id)
+    {:ok, _} = Learning.add_lecturer_to_course(socket.assigns.course, lect)
+
+    {:noreply, push_patch(socket, to: ~p"/controls/courses/#{socket.assigns.course.id}")}
   end
 
   def handle_info({:course, _, :lesson_added, lesson}, socket) do
