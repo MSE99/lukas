@@ -3,8 +3,7 @@ defmodule Lukas.Repo.Migrations.CreateCourses do
 
   def change do
     create table(:courses) do
-      add :name, :string
-      add :price, :double
+      add(:name, :string)
 
       timestamps()
     end
