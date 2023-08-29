@@ -16,7 +16,6 @@ defmodule LukasWeb.Shared.LecturerRegistrationLive do
   def render(assigns) do
     ~H"""
     Register lecturer
-
     <.form for={@form} phx-change="validate" phx-submit="register">
       <.input type="text" label="Phone" field={@form[:phone_number]} />
       <.input type="password" label="Password" field={@form[:password]} />
