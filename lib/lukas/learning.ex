@@ -40,18 +40,21 @@ defmodule Lukas.Learning do
     |> maybe_emit_lecturer_added_to_course(lecturer)
   end
 
-  def remove_lecturer_from_course(%Teaching{} = teaching) do
-    teaching_with_lecturer = Repo.preload(teaching, :lecturer)
+  def remove_lecturer_from_course(%Course{} = course, lecturer) do
+    lecturer_id = lecturer.id
+    course_id = course.id
 
-    Repo.delete(teaching_with_lecturer)
-    |> maybe_emit_lecturer_removed_from_course(teaching_with_lecturer.lecturer)
+    from(t in Teaching, where: t.lecturer_id == ^lecturer_id and t.course_id == ^course_id)
+    |> Repo.one()
+    |> Repo.delete()
+    |> maybe_emit_lecturer_removed_from_course(lecturer)
   end
 
   defp maybe_emit_lecturer_removed_from_course({:ok, teaching} = res, lecturer) do
     Phoenix.PubSub.broadcast(
       Lukas.PubSub,
       "courses/#{teaching.course_id}",
-      {:courses, teaching.course_id, :lecturer_removed, lecturer}
+      {:course, teaching.course_id, :lecturer_removed, lecturer}
     )
 
     res
@@ -63,7 +66,7 @@ defmodule Lukas.Learning do
     Phoenix.PubSub.broadcast(
       Lukas.PubSub,
       "courses/#{teaching.course_id}",
-      {:courses, teaching.course_id, :lecturer_added, lecturer}
+      {:course, teaching.course_id, :lecturer_added, lecturer}
     )
 
     res

@@ -3,6 +3,7 @@ defmodule LukasWeb.Courses.CourseLiveTest do
 
   import Phoenix.LiveViewTest
   import Lukas.LearningFixtures
+  import Lukas.AccountsFixtures
 
   def create_course(ctx) do
     course = course_fixture()
@@ -140,6 +141,58 @@ defmodule LukasWeb.Courses.CourseLiveTest do
 
       assert_patched(lv, ~p"/controls/courses/#{course.id}")
       assert render(lv) =~ "Bar Baz Naz"
+    end
+  end
+
+  describe "lecturers" do
+    setup [:register_and_log_in_user, :create_course]
+
+    test "should render all lecturers assigned to the course.", %{conn: conn, course: course} do
+      lect1 = user_fixture(%{kind: :lecturer})
+      lect2 = user_fixture(%{kind: :lecturer})
+
+      teaching_fixture(course, lect1)
+      teaching_fixture(course, lect2)
+
+      {:ok, _lv, html} = live(conn, ~p"/controls/courses/#{course.id}")
+
+      assert html =~ lect1.name
+      assert html =~ lect2.name
+    end
+
+    test "should react to lecturers being assigned to the course.", %{conn: conn, course: course} do
+      {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}")
+
+      lect1 = user_fixture(%{kind: :lecturer})
+      lect2 = user_fixture(%{kind: :lecturer})
+
+      teaching_fixture(course, lect1)
+      teaching_fixture(course, lect2)
+
+      html = render(lv)
+
+      assert html =~ lect1.name
+      assert html =~ lect2.name
+    end
+
+    test "should react to lecturers being removed from the course.", %{
+      conn: conn,
+      course: course
+    } do
+      {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}")
+
+      lect1 = user_fixture(%{kind: :lecturer})
+      lect2 = user_fixture(%{kind: :lecturer})
+
+      teaching_fixture(course, lect1)
+      teaching_fixture(course, lect2)
+
+      Lukas.Learning.remove_lecturer_from_course(course, lect1)
+
+      html = render(lv)
+
+      refute html =~ lect1.name
+      assert html =~ lect2.name
     end
   end
 end

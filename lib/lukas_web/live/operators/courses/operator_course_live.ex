@@ -6,7 +6,11 @@ defmodule LukasWeb.Operator.CourseLive do
   def mount(%{"id" => raw_id}, _session, socket) do
     with {id, _} <- Integer.parse(raw_id), course when course != nil <- Learning.get_course(id) do
       Learning.watch_course(course)
-      {:ok, socket |> assign(course: course) |> load_lessons(course)}
+
+      lecturers = Learning.list_course_lecturers(course)
+
+      {:ok,
+       socket |> assign(course: course) |> load_lessons(course) |> stream(:lecturers, lecturers)}
     else
       _ -> {:ok, redirect(socket, to: ~p"/")}
     end
@@ -15,7 +19,6 @@ defmodule LukasWeb.Operator.CourseLive do
   def handle_params(_, _, socket) when socket.assigns.live_action == :new_lesson do
     cs = Learning.create_lesson_changeset(socket.assigns.course, %{})
     form = to_form(cs)
-
     {:noreply, assign(socket, form: form)}
   end
 
@@ -71,6 +74,14 @@ defmodule LukasWeb.Operator.CourseLive do
         </.link>
       </li>
     </ul>
+
+    <h3>Lecturers</h3>
+
+    <ul id="lecturers" phx-update="stream">
+      <li :for={{id, lect} <- @streams.lecturers} id={id}>
+        <%= lect.name %>
+      </li>
+    </ul>
     """
   end
 
@@ -105,5 +116,13 @@ defmodule LukasWeb.Operator.CourseLive do
 
   def handle_info({:course, _, :lesson_updated, lesson}, socket) do
     {:noreply, stream_insert(socket, :lessons, lesson)}
+  end
+
+  def handle_info({:course, _, :lecturer_added, lecturer}, socket) do
+    {:noreply, stream_insert(socket, :lecturers, lecturer)}
+  end
+
+  def handle_info({:course, _, :lecturer_removed, lecturer}, socket) do
+    {:noreply, stream_delete(socket, :lecturers, lecturer)}
   end
 end
