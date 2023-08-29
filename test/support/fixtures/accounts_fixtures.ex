@@ -4,6 +4,8 @@ defmodule Lukas.AccountsFixtures do
   entities via the `Lukas.Accounts` context.
   """
 
+  alias Lukas.Accounts
+
   def unique_user_phone_number,
     do: "#{System.unique_integer([:positive]) |> Integer.to_string() |> String.duplicate(2)}"
 
@@ -33,5 +35,9 @@ defmodule Lukas.AccountsFixtures do
     {:ok, captured_email} = fun.(&"[TOKEN]#{&1}[TOKEN]")
     [_, token | _] = String.split(captured_email.text_body, "[TOKEN]")
     token
+  end
+
+  def invite_fixture(attrs \\ %{"code" => Accounts.gen_code()}) do
+    Accounts.Invite.changeset(%Accounts.Invite{}, attrs) |> Lukas.Repo.insert!()
   end
 end

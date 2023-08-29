@@ -2,7 +2,7 @@ defmodule Lukas.Accounts do
   import Ecto.Query, warn: false
   alias Lukas.Repo
 
-  alias Lukas.Accounts.{User, UserToken, UserNotifier}
+  alias Lukas.Accounts.{User, UserToken, UserNotifier, Invite}
 
   def get_user_by_phone_number(phone_number) when is_binary(phone_number) do
     Repo.get_by(User, phone_number: phone_number)
@@ -25,6 +25,30 @@ defmodule Lukas.Accounts do
   end
 
   def get_user!(id), do: Repo.get!(User, id)
+
+  def list_invites() do
+    Repo.all(Invite)
+  end
+
+  def generate_invite!() do
+    Invite.changeset(%Invite{}, %{"code" => gen_code()})
+    |> Repo.insert!()
+    |> emit_invite_created()
+  end
+
+  def gen_code() do
+    :crypto.strong_rand_bytes(5)
+    |> Base.encode16()
+    |> String.slice(0..4)
+  end
+
+  defp watch_invites() do
+    Phoenix.PubSub.subscribe(Lukas.PubSub, "invites")
+  end
+
+  defp emit_invite_created(invite) do
+    Phoenix.PubSub.broadcast(Lukas.PubSub, "invites", {:invites, :invite_created, invite})
+  end
 
   ## User registration
 
