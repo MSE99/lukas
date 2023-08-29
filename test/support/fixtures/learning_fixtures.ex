@@ -37,4 +37,12 @@ defmodule Lukas.LearningFixtures do
     {:ok, topic} = Lukas.Learning.create_text_topic(lesson, filled)
     topic
   end
+
+  def teaching_fixture(
+        %Lukas.Learning.Course{} = course,
+        %Lukas.Accounts.User{kind: :lecturer} = teacher
+      ) do
+    {:ok, teaching} = Lukas.Learning.add_lecturer_to_course(course, teacher)
+    teaching
+  end
 end

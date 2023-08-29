@@ -5,6 +5,8 @@ defmodule Lukas.Accounts.User do
 
   @user_kinds [:operator, :student, :lecturer]
 
+  defguard must_be_lecturer(user) when is_struct(user, __MODULE__) and user.kind == :lecturer
+
   schema "users" do
     field(:phone_number, :string)
     field(:email, :string)

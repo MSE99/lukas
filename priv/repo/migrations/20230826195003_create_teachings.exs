@@ -4,7 +4,7 @@ defmodule Lukas.Repo.Migrations.CreateTeachings do
   def change() do
     create table(:teachings) do
       add(:course_id, references(:courses))
-      add(:lecturer_id, references(:lecturers))
+      add(:lecturer_id, references(:users))
 
       timestamps()
     end

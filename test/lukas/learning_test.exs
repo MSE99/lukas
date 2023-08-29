@@ -4,6 +4,7 @@ defmodule Lukas.LearningTest do
   alias Lukas.Learning
 
   import Lukas.LearningFixtures
+  import Lukas.AccountsFixtures
 
   describe "tags" do
     alias Lukas.Learning.Tag
@@ -220,6 +221,36 @@ defmodule Lukas.LearningTest do
         })
 
       assert_received({:course, _, :topic_updated, ^updated_topic})
+    end
+  end
+
+  describe "teaching" do
+    setup do
+      course = course_fixture()
+      lecturer = user_fixture(%{kind: :lecturer})
+
+      %{course: course, lecturer: lecturer}
+    end
+
+    test "list_course_lecturers/1 should return an empty list.", %{course: course} do
+      assert Learning.list_course_lecturers(course) == []
+    end
+
+    test "list_course_lecturers/1 should return a list of all lecturers for the given course.", %{
+      course: course,
+      lecturer: lecturer
+    } do
+      {:ok, _} = Learning.add_lecturer_to_course(course, lecturer)
+      assert Learning.list_course_lecturers(course) == [lecturer]
+    end
+
+    test "possible_lecturers_for/1 should return list of possible lecturers for course.", %{
+      course: course,
+      lecturer: lecturer
+    } do
+      lecturers = Learning.possible_lecturers_for(course)
+
+      assert Enum.find(lecturers, fn lect -> lect.id == lecturer.id end)
     end
   end
 end

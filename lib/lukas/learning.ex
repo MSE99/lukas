@@ -1,10 +1,75 @@
 defmodule Lukas.Learning do
   import Ecto.Query, warn: false
+  import Lukas.Accounts.User, only: [must_be_lecturer: 1]
 
   alias Lukas.Repo
+  alias Lukas.Accounts
 
   ## Courses
-  alias Lukas.Learning.{Course, Lesson, Tagging, Tag}
+  alias Lukas.Learning.{Course, Lesson, Tagging, Tag, Teaching}
+
+  def possible_lecturers_for(%Course{} = course) do
+    {:ok, lecturers} =
+      Repo.transaction(fn ->
+        lecturers = list_course_lecturers(course) |> Enum.map(fn lect -> lect.id end)
+
+        possible_lecturers =
+          from(u in Accounts.User, where: u.kind == :lecturer and u.id not in ^lecturers)
+          |> Repo.all()
+
+        possible_lecturers
+      end)
+
+    lecturers
+  end
+
+  def list_course_lecturers(%Course{} = course) do
+    from(
+      l in Teaching,
+      join: u in Accounts.User,
+      on: l.lecturer_id == u.id,
+      where: l.course_id == ^course.id,
+      select: u
+    )
+    |> Repo.all()
+  end
+
+  def add_lecturer_to_course(%Course{} = course, lecturer) when must_be_lecturer(lecturer) do
+    Teaching.changeset(%Teaching{}, %{course_id: course.id, lecturer_id: lecturer.id})
+    |> Repo.insert()
+    |> maybe_emit_lecturer_added_to_course(lecturer)
+  end
+
+  def remove_lecturer_from_course(%Teaching{} = teaching) do
+    teaching_with_lecturer = Repo.preload(teaching, :lecturer)
+
+    Repo.delete(teaching_with_lecturer)
+    |> maybe_emit_lecturer_removed_from_course(teaching_with_lecturer.lecturer)
+  end
+
+  defp maybe_emit_lecturer_removed_from_course({:ok, teaching} = res, lecturer) do
+    Phoenix.PubSub.broadcast(
+      Lukas.PubSub,
+      "courses/#{teaching.course_id}",
+      {:courses, teaching.course_id, :lecturer_removed, lecturer}
+    )
+
+    res
+  end
+
+  defp maybe_emit_lecturer_removed_from_course(res, _), do: res
+
+  defp maybe_emit_lecturer_added_to_course({:ok, teaching} = res, lecturer) do
+    Phoenix.PubSub.broadcast(
+      Lukas.PubSub,
+      "courses/#{teaching.course_id}",
+      {:courses, teaching.course_id, :lecturer_added, lecturer}
+    )
+
+    res
+  end
+
+  defp maybe_emit_lecturer_added_to_course(res, _), do: res
 
   def topic_kinds() do
     %{
