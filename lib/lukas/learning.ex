@@ -163,6 +163,10 @@ defmodule Lukas.Learning do
     |> maybe_emit_lesson_updated()
   end
 
+  def remove_lesson(id) when is_integer(id) do
+    Repo.get(Lesson, id) |> remove_lesson()
+  end
+
   def remove_lesson(%Lesson{} = lesson) do
     Repo.delete(lesson)
     |> maybe_emit_lesson_deleted()

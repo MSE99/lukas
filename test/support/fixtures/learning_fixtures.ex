@@ -23,6 +23,7 @@ defmodule Lukas.LearningFixtures do
     filled =
       attrs
       |> Map.put_new("title", "Lesson ##{System.unique_integer([:positive])}")
+      |> Map.put_new("description", "##{System.unique_integer([:positive])}")
 
     {:ok, lesson} = Lukas.Learning.create_lesson(course, filled)
 

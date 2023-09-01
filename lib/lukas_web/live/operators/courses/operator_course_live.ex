@@ -89,6 +89,10 @@ defmodule LukasWeb.Operator.CourseLive do
         <.link patch={~p"/controls/courses/#{@course.id}/lessons/#{lesson.id}/edit-lesson"}>
           Edit
         </.link>
+        |
+        <.button id={"lesson-delete-#{lesson.id}"} phx-click="delete-lesson" phx-value-id={lesson.id}>
+          Delete lesson
+        </.button>
       </li>
     </ul>
 
@@ -139,12 +143,22 @@ defmodule LukasWeb.Operator.CourseLive do
     {:noreply, push_patch(socket, to: ~p"/controls/courses/#{socket.assigns.course.id}")}
   end
 
+  def handle_event("delete-lesson", %{"id" => raw_id}, socket) do
+    {lesson_id, _} = Integer.parse(raw_id)
+    {:ok, _} = Learning.remove_lesson(lesson_id)
+    {:noreply, socket}
+  end
+
   def handle_info({:course, _, :lesson_added, lesson}, socket) do
     {:noreply, stream_insert(socket, :lessons, lesson)}
   end
 
   def handle_info({:course, _, :lesson_updated, lesson}, socket) do
     {:noreply, stream_insert(socket, :lessons, lesson)}
+  end
+
+  def handle_info({:course, _, :lesson_deleted, lesson}, socket) do
+    {:noreply, stream_delete(socket, :lessons, lesson)}
   end
 
   def handle_info({:course, _, :lecturer_added, lecturer}, socket) do

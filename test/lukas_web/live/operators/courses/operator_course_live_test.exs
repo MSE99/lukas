@@ -241,4 +241,31 @@ defmodule LukasWeb.Courses.CourseLiveTest do
       assert render(lv) =~ lect.name
     end
   end
+
+  describe "lesson deletion" do
+    setup [:register_and_log_in_user, :create_course]
+
+    test "clicking on delete should delete a lesson.", %{conn: conn, course: course} do
+      {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}")
+
+      lesson = lesson_fixture(course)
+
+      lv
+      |> element("button#lesson-delete-#{lesson.id}")
+      |> render_click()
+
+      refute render(lv) =~ lesson.title
+    end
+
+    test "should react to lessons being removed.", %{conn: conn, course: course} do
+      {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}")
+
+      lesson = lesson_fixture(course)
+      assert render(lv) =~ lesson.title
+
+      Learning.remove_lesson(lesson)
+
+      refute render(lv) =~ lesson.title
+    end
+  end
 end
