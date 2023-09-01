@@ -4,9 +4,9 @@ defmodule LukasWeb.Operator.CourseLive do
   alias Lukas.{Learning, Accounts}
 
   def mount(%{"id" => raw_id}, _session, socket) do
-    with {id, _} <- Integer.parse(raw_id), course when course != nil <- Learning.get_course(id) do
+    with {id, _} <- Integer.parse(raw_id),
+         {course, lecturers} when course != nil <- Learning.get_course_with_lecturers(id) do
       Learning.watch_course(course)
-      lecturers = Learning.list_course_lecturers(course)
 
       {:ok,
        socket |> assign(course: course) |> load_lessons(course) |> stream(:lecturers, lecturers)}
