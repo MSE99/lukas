@@ -1,9 +1,31 @@
 defmodule Lukas.Learning do
   import Ecto.Query, warn: false
-  import Lukas.Accounts.User, only: [must_be_lecturer: 1]
+  import Lukas.Accounts.User, only: [must_be_lecturer: 1, must_be_student: 1]
 
   alias Lukas.Repo
   alias Lukas.Accounts
+  alias Lukas.Learning.{Enrollment, Course}
+
+  ## Enrollments
+
+  def enroll_student(%Course{} = course, %Accounts.User{} = student)
+      when must_be_student(student) do
+    Enrollment.changeset(%Enrollment{}, %{course_id: course.id, student_id: student.id})
+    |> Repo.insert()
+    |> maybe_emit_student_enrolled(student)
+  end
+
+  def maybe_emit_student_enrolled({:ok, enrollment} = res, student) do
+    Phoenix.PubSub.broadcast(
+      Lukas.PubSub,
+      "courses/#{enrollment.course_id}",
+      {:course, enrollment.course_id, :student_enrolled, student}
+    )
+
+    res
+  end
+
+  def maybe_emit_student_enrolled(res, _), do: res
 
   ## Courses
   alias Lukas.Learning.{Course, Lesson, Tagging, Tag, Teaching}

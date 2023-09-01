@@ -253,4 +253,36 @@ defmodule Lukas.LearningTest do
       assert Enum.find(lecturers, fn lect -> lect.id == lecturer.id end)
     end
   end
+
+  describe "enrollment" do
+    setup do
+      course = course_fixture()
+      student = user_fixture(%{kind: :student})
+
+      %{student: student, course: course}
+    end
+
+    test "enroll_student/2 should enroll a student into a given course and publish an event to the course.",
+         %{
+           student: student,
+           course: course
+         } do
+      course_id = course.id
+      Learning.watch_course(course_id)
+      {:ok, enrollment} = Learning.enroll_student(course, student)
+
+      assert enrollment.student_id == student.id
+      assert enrollment.course_id == course.id
+
+      assert_received({:course, ^course_id, :student_enrolled, ^student})
+    end
+
+    test "enroll_student/2 should return an error if the student is already enrolled.", %{
+      student: student,
+      course: course
+    } do
+      Learning.enroll_student(course, student)
+      assert {:error, _} = Learning.enroll_student(course, student)
+    end
+  end
 end

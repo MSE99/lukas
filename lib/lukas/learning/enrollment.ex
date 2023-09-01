@@ -3,15 +3,20 @@ defmodule Lukas.Learning.Enrollment do
   import Ecto.Changeset
 
   schema "enrollments" do
-    belongs_to :student, Lukas.Accounts.User
-    belongs_to :course, Lukas.Learning.Course
+    belongs_to(:student, Lukas.Accounts.User)
+    belongs_to(:course, Lukas.Learning.Course)
 
     timestamps()
   end
 
   def changeset(enrollment, attrs) do
     enrollment
-    |> cast(attrs, [:user_id, :course_id])
-    |> validate_required([:user_id, :course_id])
+    |> cast(attrs, [:student_id, :course_id])
+    |> validate_required([:student_id, :course_id])
+    |> unique_constraint([:student_id, :course_id])
+  end
+
+  def new(course_id, student_id) do
+    %__MODULE__{course_id: course_id, student_id: student_id}
   end
 end
