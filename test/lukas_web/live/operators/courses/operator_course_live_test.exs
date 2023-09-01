@@ -227,6 +227,28 @@ defmodule LukasWeb.Courses.CourseLiveTest do
       assert html =~ lect2.name
     end
 
+    test "clicking on remove lecturer should remove the lecturer from course.", %{
+      conn: conn,
+      course: course
+    } do
+      {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}")
+
+      lect1 = user_fixture(%{kind: :lecturer})
+      lect2 = user_fixture(%{kind: :lecturer})
+
+      teaching_fixture(course, lect1)
+      teaching_fixture(course, lect2)
+
+      lv
+      |> element("button#lecturer-delete-#{lect1.id}")
+      |> render_click()
+
+      html = render(lv)
+
+      refute html =~ lect1.name
+      assert html =~ lect2.name
+    end
+
     test "clicking on add lecturer should add the lecturer to the course.", %{
       conn: conn,
       course: course

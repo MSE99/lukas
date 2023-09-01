@@ -104,7 +104,14 @@ defmodule LukasWeb.Operator.CourseLive do
 
     <ul id="lecturers" phx-update="stream">
       <li :for={{id, lect} <- @streams.lecturers} id={id}>
-        <%= lect.name %>
+        <%= lect.name %> |
+        <.button
+          id={"lecturer-delete-#{lect.id}"}
+          phx-click="delete-lecturer"
+          phx-value-lecturer-id={lect.id}
+        >
+          Remove
+        </.button>
       </li>
     </ul>
     """
@@ -141,6 +148,14 @@ defmodule LukasWeb.Operator.CourseLive do
     {:ok, _} = Learning.add_lecturer_to_course(socket.assigns.course, lect)
 
     {:noreply, push_patch(socket, to: ~p"/controls/courses/#{socket.assigns.course.id}")}
+  end
+
+  def handle_event("delete-lecturer", %{"lecturer-id" => raw_lecturer_id}, socket) do
+    {lecturer_id, _} = Integer.parse(raw_lecturer_id)
+    lect = Accounts.get_lecturer!(lecturer_id)
+    {:ok, _} = Learning.remove_lecturer_from_course(socket.assigns.course, lect)
+
+    {:noreply, socket}
   end
 
   def handle_event("delete-lesson", %{"id" => raw_id}, socket) do
