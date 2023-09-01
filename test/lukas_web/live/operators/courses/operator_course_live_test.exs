@@ -5,6 +5,8 @@ defmodule LukasWeb.Courses.CourseLiveTest do
   import Lukas.LearningFixtures
   import Lukas.AccountsFixtures
 
+  alias Lukas.Learning
+
   def create_course(ctx) do
     course = course_fixture()
 
@@ -46,6 +48,15 @@ defmodule LukasWeb.Courses.CourseLiveTest do
 
       assert html =~ course.name
       assert html =~ lesson.title
+    end
+
+    test "should handle students enrollments.", %{conn: conn, course: course} do
+      {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}")
+
+      student = user_fixture(%{kind: :student})
+      {:ok, _} = Learning.enroll_student(course, student)
+
+      assert render(lv) =~ course.name
     end
   end
 

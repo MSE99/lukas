@@ -154,4 +154,8 @@ defmodule LukasWeb.Operator.CourseLive do
   def handle_info({:course, _, :lecturer_removed, lecturer}, socket) do
     {:noreply, stream_delete(socket, :lecturers, lecturer)}
   end
+
+  def handle_info({:course, _, :student_enrolled, student}, socket) do
+    {:noreply, socket |> put_flash(:info, "#{student.id} enrolled in the course")}
+  end
 end
