@@ -29,7 +29,7 @@ defmodule LukasWeb.Router do
     live_session :controls, on_mount: [{LukasWeb.UserAuth, :ensure_authenticated_operator}] do
       live("/", Operators.HomeLive)
 
-      live "/invites", Operator.InvitesLive
+      live("/invites", Operator.InvitesLive)
 
       live("/courses", Operator.AllCoursesLive, :index)
       live("/courses/new", Operator.AllCoursesLive, :new)
@@ -39,6 +39,8 @@ defmodule LukasWeb.Router do
       live("/courses/:id/lessons/:lesson_id/edit-lesson", Operator.CourseLive, :edit_lesson)
       live("/courses/:id/lessons/:lesson_id", Operator.LessonLive)
       live("/courses/:id/lessons/:lesson_id/new-topic", Operator.LessonLive, :new_topic)
+
+      live("/courses/:id/enrollments", Operator.CourseEnrollmentsLive)
 
       live(
         "/courses/:id/lessons/:lesson_id/topics/:topic_id/edit-topic",
