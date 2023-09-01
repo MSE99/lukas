@@ -81,9 +81,19 @@ defmodule LukasWeb.Operator.LessonLive do
         }>
           <.button>Edit</.button>
         </.link>
+        <.button id={"delete-topic-#{topic.id}"} phx-click="delete-topic" phx-value-id={topic.id}>
+          Delete
+        </.button>
       </li>
     </ul>
     """
+  end
+
+  def handle_event("delete-topic", %{"id" => raw_topic_id}, socket) do
+    {id, _} = Integer.parse(raw_topic_id)
+    topic = Learning.get_topic(socket.assigns.lesson.id, id)
+    {:ok, _} = Learning.remove_topic(topic)
+    {:noreply, socket}
   end
 
   def handle_event("validate", %{"topic" => params}, socket) do

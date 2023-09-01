@@ -33,7 +33,8 @@ defmodule Lukas.LearningFixtures do
   def text_topic_fixture(%Lukas.Learning.Lesson{} = lesson, attrs \\ %{}) do
     filled =
       attrs
-      |> Map.put_new("title", "Lesson ##{System.unique_integer([:positive])}")
+      |> Map.put_new("title", "Topic ##{System.unique_integer([:positive])}")
+      |> Map.put_new("content", "##{System.unique_integer([:positive])}")
 
     {:ok, topic} = Lukas.Learning.create_text_topic(lesson, filled)
     topic

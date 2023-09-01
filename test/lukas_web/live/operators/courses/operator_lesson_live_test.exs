@@ -77,6 +77,17 @@ defmodule LukasWeb.Operator.LessonLiveTest do
 
       assert render(lv) =~ next_lesson.title
     end
+
+    test "should render a button for removing topics.", %{conn: conn, lesson: lesson} do
+      {:ok, lv, _html} =
+        live(conn, ~p"/controls/courses/#{lesson.course_id}/lessons/#{lesson.id}")
+
+      topic = text_topic_fixture(lesson)
+
+      lv |> element("button#delete-topic-#{topic.id}") |> render_click()
+
+      refute render(lv) =~ topic.title
+    end
   end
 
   describe "new" do
