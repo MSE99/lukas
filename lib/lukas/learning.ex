@@ -7,6 +7,10 @@ defmodule Lukas.Learning do
   alias Lukas.Learning.{Enrollment, Course}
 
   ## Enrollments
+  def list_enrolled() do
+    from(e in Enrollment, join: u in Accounts.User, on: e.student_id == u.id, select: u)
+    |> Repo.all()
+  end
 
   def enroll_student(%Course{} = course, %Accounts.User{} = student)
       when must_be_student(student) do

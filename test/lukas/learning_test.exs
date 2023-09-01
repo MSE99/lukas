@@ -284,5 +284,17 @@ defmodule Lukas.LearningTest do
       Learning.enroll_student(course, student)
       assert {:error, _} = Learning.enroll_student(course, student)
     end
+
+    test "list_enrolled/0 should list all the enrolled students of the course.", %{course: course} do
+      student1 = user_fixture(%{kind: :student})
+      student2 = user_fixture(%{kind: :student})
+      student3 = user_fixture(%{kind: :student})
+
+      {:ok, _} = Learning.enroll_student(course, student1)
+      {:ok, _} = Learning.enroll_student(course, student2)
+      {:ok, _} = Learning.enroll_student(course, student3)
+
+      assert Learning.list_enrolled() == [student1, student2, student3]
+    end
   end
 end
