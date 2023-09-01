@@ -126,7 +126,7 @@ defmodule Lukas.Learning do
     )
     |> Repo.transaction()
     |> case do
-      {:ok, %{lesson: lesson, topics: topics}} -> {:ok, lesson, topics}
+      {:ok, %{lesson: lesson, topics: topics}} -> {lesson, topics}
     end
   end
 

@@ -6,7 +6,7 @@ defmodule LukasWeb.Operator.LessonLive do
   def mount(%{"id" => raw_course_id, "lesson_id" => raw_lesson_id}, _session, socket) do
     with {course_id, _} <- Integer.parse(raw_course_id),
          {lesson_id, _} <- Integer.parse(raw_lesson_id),
-         {:ok, lesson, topics} when lesson != nil <-
+         {lesson, topics} when lesson != nil <-
            Learning.get_lesson_and_topic_names(course_id, lesson_id) do
       Learning.watch_course(course_id)
 

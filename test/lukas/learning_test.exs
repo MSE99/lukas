@@ -145,10 +145,14 @@ defmodule Lukas.LearningTest do
       {:ok, lesson} =
         Learning.create_lesson(course, %{"title" => "Lesson 1", "description" => "Mathematics I"})
 
+      text_topic_fixture(lesson, %{"content" => "foo is great bar is none", "title" => "FOO"})
+
       assert_received({:course, _, :lesson_added, ^lesson})
 
       {:ok, removed_lesson} = Learning.remove_lesson(lesson)
       assert_received({:course, _, :lesson_deleted, ^removed_lesson})
+
+      assert Learning.get_lesson_and_topic_names(course.id, lesson.id) == {nil, []}
     end
   end
 
