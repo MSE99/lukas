@@ -16,13 +16,13 @@ defmodule LukasWeb.Operator.CourseEnrollmentsLive do
 
   def render(assigns) do
     ~H"""
-      <h1>Enrollments</h1>
+    <h1>Enrollments</h1>
 
-      <ul phx-update="stream" id="students">
-        <li :for={{id, student} <- @streams.students} id={id}>
-          <%= student.name %>
-        </li>
-      </ul>
+    <ul phx-update="stream" id="students">
+      <li :for={{id, student} <- @streams.students} id={id}>
+        <%= student.name %>
+      </li>
+    </ul>
     """
   end
 
