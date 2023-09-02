@@ -332,17 +332,22 @@ defmodule Lukas.Learning do
       )
     )
     |> Ecto.Multi.exists?(
-      :enrollment,
+      :is_enrolled,
       from(
         e in Enrollment,
-        where: e.student_id == ^student.id and e.course_id == ^id,
-        select: true
+        where: e.student_id == ^student.id and e.course_id == ^id
       )
     )
     |> Repo.transaction()
     |> case do
-      {:ok, %{course: course, lecturers: lecturers, tags: tags}} ->
-        {course, lecturers, tags}
+      {:ok,
+       %{
+         course: course,
+         lecturers: lecturers,
+         tags: tags,
+         is_enrolled: is_enrolled
+       }} ->
+        {course, lecturers, tags, is_enrolled}
     end
   end
 
@@ -361,7 +366,8 @@ defmodule Lukas.Learning do
     )
     |> Repo.transaction()
     |> case do
-      {:ok, %{course: course, lecturers: lecturers}} -> {course, lecturers}
+      {:ok, %{course: course, lecturers: lecturers}} ->
+        {course, lecturers}
     end
   end
 

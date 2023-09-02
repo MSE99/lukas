@@ -9,14 +9,13 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
 
   def setup_course(ctx) do
     course = course_fixture()
-    student = student_fixture()
     lecturers = [lecturer_fixture(), lecturer_fixture(), lecturer_fixture()]
     tags = [tag_fixture(), tag_fixture()]
 
     Enum.each(lecturers, fn lect -> Learning.add_lecturer_to_course(course, lect) end)
     Enum.each(tags, fn tag -> Learning.tag_course(course.id, tag.id) end)
 
-    Map.merge(ctx, %{course: course, student: student, lecturers: lecturers, tags: tags})
+    Map.merge(ctx, %{course: course, lecturers: lecturers, tags: tags})
   end
 
   test "should require an authenticated student", %{conn: conn} do
@@ -106,6 +105,35 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
       {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}")
       lesson_fixture(course)
       assert render(lv) =~ course.name
+    end
+
+    test "should render the enroll button if the student is not enrolled", %{
+      conn: conn,
+      course: course
+    } do
+      {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}")
+      assert lv |> element("button#enroll-button") |> has_element?()
+    end
+
+    test "should not render the enroll button if the student is enrolled", %{
+      conn: conn,
+      course: course,
+      user: user
+    } do
+      {:ok, _} = Learning.enroll_student(course, user)
+      {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}")
+      refute lv |> element("button#enroll-button") |> has_element?()
+    end
+
+    test "should react to student being enrolled in the course and remove the enroll button.", %{
+      conn: conn,
+      course: course,
+      user: user
+    } do
+      {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}")
+      assert lv |> element("button#enroll-button") |> has_element?()
+      {:ok, _} = Learning.enroll_student(course, user)
+      refute lv |> element("button#enroll-button") |> has_element?()
     end
   end
 end
