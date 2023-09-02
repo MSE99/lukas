@@ -4,9 +4,51 @@ defmodule Lukas.Learning do
 
   alias Lukas.Repo
   alias Lukas.Accounts
-  alias Lukas.Learning.{Enrollment, Course}
+  alias Lukas.Learning.{Enrollment, Course, Lesson}
 
   ## Enrollments
+  def get_progress(%Accounts.User{} = student, course_id)
+      when must_be_student(student) and is_integer(course_id) do
+    {:ok, res} =
+      Repo.transaction(fn ->
+        course = Repo.get!(Course, course_id)
+        Repo.get_by!(Enrollment, course_id: course.id, student_id: student.id)
+
+        completions =
+          from(
+            c in Lesson.Completion,
+            where: c.course_id == ^course_id and c.student_id == ^student.id
+          )
+          |> Repo.all()
+
+        lessons =
+          from(l in Lesson, where: l.course_id == ^course_id)
+          |> Repo.all()
+          |> Enum.map(fn l ->
+            topics =
+              from(t in Lesson.Topic,
+                where: t.lesson_id == ^l.id,
+                select: %{id: t.id, title: t.title, inserted_at: t.inserted_at}
+              )
+              |> Repo.all()
+              |> Enum.map(fn t ->
+                case Enum.find(completions, fn c -> c.lesson_id == l.id and c.topic_id == t.id end) do
+                  nil -> Map.put(t, :completed, false)
+                  _ -> Map.put(t, :completed, true)
+                end
+              end)
+
+            l
+            |> Map.from_struct()
+            |> Map.put(:topics, topics)
+          end)
+
+        {course, lessons}
+      end)
+
+    res
+  end
+
   def list_student_courses(%Accounts.User{} = user) do
     from(
       c in Course,
