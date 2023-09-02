@@ -7,6 +7,16 @@ defmodule Lukas.Learning do
   alias Lukas.Learning.{Enrollment, Course}
 
   ## Enrollments
+  def list_student_courses(%Accounts.User{} = user) do
+    from(
+      c in Course,
+      join: e in Enrollment,
+      on: c.id == e.course_id,
+      where: e.student_id == ^user.id
+    )
+    |> Repo.all()
+  end
+
   def list_enrolled() do
     from(e in Enrollment, join: u in Accounts.User, on: e.student_id == u.id, select: u)
     |> Repo.all()
@@ -16,20 +26,30 @@ defmodule Lukas.Learning do
       when must_be_student(student) do
     Enrollment.changeset(%Enrollment{}, %{course_id: course.id, student_id: student.id})
     |> Repo.insert()
-    |> maybe_emit_student_enrolled(student)
+    |> maybe_emit_student_enrolled(student, course)
   end
 
-  def maybe_emit_student_enrolled({:ok, enrollment} = res, student) do
+  def maybe_emit_student_enrolled({:ok, enrollment} = res, student, course) do
     Phoenix.PubSub.broadcast(
       Lukas.PubSub,
       "courses/#{enrollment.course_id}",
       {:course, enrollment.course_id, :student_enrolled, student}
     )
 
+    Phoenix.PubSub.broadcast(
+      Lukas.PubSub,
+      "enrollments/#{enrollment.student_id}",
+      {:enrollments, :enrolled, course}
+    )
+
     res
   end
 
-  def maybe_emit_student_enrolled(res, _), do: res
+  def maybe_emit_student_enrolled(res, _, _), do: res
+
+  def watch_student_enrollments(%Accounts.User{} = user) do
+    Phoenix.PubSub.subscribe(Lukas.PubSub, "enrollments/#{user.id}")
+  end
 
   ## Courses
   alias Lukas.Learning.{Course, Lesson, Tagging, Tag, Teaching}
