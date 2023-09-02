@@ -17,6 +17,27 @@ defmodule Lukas.Learning do
     |> Repo.all()
   end
 
+  def list_open_courses_for_student(%Accounts.User{} = student) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.all(
+      :enrolled_ids,
+      from(
+        c in Course,
+        join: e in Enrollment,
+        on: c.id == e.course_id,
+        where: e.student_id == ^student.id,
+        select: c.id
+      )
+    )
+    |> Ecto.Multi.run(:courses, fn _repo, %{enrolled_ids: enrolled_ids} ->
+      {:ok, from(c in Course, where: c.id not in ^enrolled_ids) |> Repo.all()}
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{courses: courses}} -> courses
+    end
+  end
+
   def list_enrolled() do
     from(e in Enrollment, join: u in Accounts.User, on: e.student_id == u.id, select: u)
     |> Repo.all()
