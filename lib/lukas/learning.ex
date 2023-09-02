@@ -308,6 +308,44 @@ defmodule Lukas.Learning do
     end
   end
 
+  def get_course_for_student(id, %Accounts.User{} = student) when is_integer(id) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.one(:course, from(c in Course, where: c.id == ^id))
+    |> Ecto.Multi.all(
+      :lecturers,
+      from(
+        t in Teaching,
+        join: u in Accounts.User,
+        on: u.id == t.lecturer_id and u.kind == :lecturer,
+        where: t.course_id == ^id,
+        select: u
+      )
+    )
+    |> Ecto.Multi.all(
+      :tags,
+      from(
+        t in Tagging,
+        join: tag in Tag,
+        on: t.tag_id == tag.id,
+        where: t.course_id == ^id,
+        select: tag
+      )
+    )
+    |> Ecto.Multi.exists?(
+      :enrollment,
+      from(
+        e in Enrollment,
+        where: e.student_id == ^student.id and e.course_id == ^id,
+        select: true
+      )
+    )
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{course: course, lecturers: lecturers, tags: tags}} ->
+        {course, lecturers, tags}
+    end
+  end
+
   def get_course_with_lecturers(id) when is_integer(id) do
     Ecto.Multi.new()
     |> Ecto.Multi.one(:course, from(c in Course, where: c.id == ^id))

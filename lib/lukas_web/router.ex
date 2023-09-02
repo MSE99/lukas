@@ -73,6 +73,7 @@ defmodule LukasWeb.Router do
 
       live("/courses", Students.CoursesLive)
       live("/courses/available", Students.AvailableCoursesLive)
+      live("/courses/:id", Students.CourseLive)
     end
   end
 

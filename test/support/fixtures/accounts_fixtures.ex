@@ -22,6 +22,18 @@ defmodule Lukas.AccountsFixtures do
     })
   end
 
+  def student_fixture(attrs \\ %{}) do
+    attrs
+    |> Map.put(:kind, :student)
+    |> user_fixture()
+  end
+
+  def lecturer_fixture(attrs \\ %{}) do
+    attrs
+    |> Map.put(:kind, :lecturer)
+    |> user_fixture()
+  end
+
   def user_fixture(attrs \\ %{}) do
     {:ok, user} =
       attrs
