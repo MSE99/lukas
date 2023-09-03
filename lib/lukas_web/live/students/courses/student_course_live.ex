@@ -20,13 +20,22 @@ defmodule LukasWeb.Students.CourseLive do
     end
   end
 
+  def handle_params(_, _, socket), do: {:noreply, socket}
+
   def render(assigns) do
     ~H"""
     <h1>Course <%= @course.name %></h1>
 
-    <.button :if={!@is_enrolled} id="enroll-button">
+    <.button :if={!@is_enrolled} id="enroll-button" phx-click="enroll">
       Enroll
     </.button>
+
+    <.link :if={@is_enrolled} navigate={~p"/home/courses/#{@course.id}/lessons"}>
+      <.button>
+        Lessons
+      </.button>
+    </.link>
+
 
     <ul id="lecturers" phx-update="stream">
       <li :for={{id, lecturer} <- @streams.lecturers} id={id}>
@@ -40,6 +49,11 @@ defmodule LukasWeb.Students.CourseLive do
       </li>
     </ul>
     """
+  end
+
+  def handle_event("enroll", _params, socket) do
+    {:ok, _} = Learning.enroll_student(socket.assigns.course, socket.assigns.current_user)
+    {:noreply, push_patch(socket, to: ~p"/home/courses/#{socket.assigns.course.id}")}
   end
 
   def handle_info({:course, _, :course_updated, course}, socket) do

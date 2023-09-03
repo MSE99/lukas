@@ -17,7 +17,7 @@ defmodule LukasWeb.Students.AvailableCoursesLive do
 
     <ul id="available-courses" phx-update="stream">
       <li :for={{id, course} <- @streams.available_courses} id={id}>
-        <%= course.name %>
+        <.link navigate={~p"/home/courses/#{course.id}"}><%= course.name %></.link>
       </li>
     </ul>
     """
