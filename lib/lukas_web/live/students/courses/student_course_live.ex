@@ -36,7 +36,6 @@ defmodule LukasWeb.Students.CourseLive do
       </.button>
     </.link>
 
-
     <ul id="lecturers" phx-update="stream">
       <li :for={{id, lecturer} <- @streams.lecturers} id={id}>
         <%= lecturer.name %>

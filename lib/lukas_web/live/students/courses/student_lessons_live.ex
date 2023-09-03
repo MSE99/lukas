@@ -47,7 +47,7 @@ defmodule LukasWeb.Students.LessonsLive do
       </li>
     </ul>
 
-    <hr class="mb-5">
+    <hr class="mb-5" />
 
     <div :if={@live_action == :lesson}>
       <h1><%= @lesson.title %></h1>
