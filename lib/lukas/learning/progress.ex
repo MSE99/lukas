@@ -1,7 +1,7 @@
-defmodule Lukas.Learning.Lesson.Completion do
+defmodule Lukas.Learning.Progress do
   use Ecto.Schema
 
-  schema "completions" do
+  schema "progresses" do
     belongs_to :lesson, Lukas.Learning.Lesson
     belongs_to :student, Lukas.Accounts.User
     belongs_to :course, Lukas.Learning.Course
