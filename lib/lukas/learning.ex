@@ -8,6 +8,45 @@ defmodule Lukas.Learning do
   alias Ecto.Multi
 
   ## Enrollments
+  def progress_through_lesson(%Accounts.User{} = student, %{} = lesson) do
+    Progress.changeset(%Progress{}, %{
+      course_id: lesson.course_id,
+      student_id: student.id,
+      lesson_id: lesson.id
+    })
+    |> Repo.insert!()
+
+    emit_progress_update(student, lesson.course_id)
+
+    nil
+  end
+
+  def progress_through_topic(%Accounts.User{} = student, %{} = topic) do
+    lesson = Repo.get(Lesson, topic.lesson_id)
+
+    Progress.changeset(%Progress{}, %{
+      course_id: lesson.course_id,
+      student_id: student.id,
+      lesson_id: lesson.id,
+      topic_id: topic.id
+    })
+    |> Repo.insert!()
+
+    emit_progress_update(student, lesson.course_id)
+
+    nil
+  end
+
+  defp emit_progress_update(student, course_id) do
+    prog = get_progress(student, course_id)
+
+    Phoenix.PubSub.broadcast(
+      Lukas.PubSub,
+      "progress/#{student.id}/#{course_id}",
+      {:progress, course_id, prog}
+    )
+  end
+
   def get_progress(%Accounts.User{} = student, course_id) when must_be_student(student) do
     Multi.new()
     |> Multi.one(:course, from(c in Course, where: c.course_id == ^course_id))
