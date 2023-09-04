@@ -4,9 +4,60 @@ defmodule Lukas.Learning do
 
   alias Lukas.Repo
   alias Lukas.Accounts
-  alias Lukas.Learning.{Enrollment, Course, Lesson}
+  alias Lukas.Learning.{Enrollment, Course, Lesson, Progress}
+  alias Ecto.Multi
 
   ## Enrollments
+  def get_progress(%Accounts.User{} = student, course_id) when must_be_student(student) do
+    Multi.new()
+    |> Multi.one(:course, from(c in Course, where: c.course_id == ^course_id))
+    |> Multi.one(
+      :enrollment,
+      from(enr in Enrollment, where: enr.student_id == ^student.id and enr.course_id == ^course_id)
+    )
+    |> Multi.all(
+      :progresses,
+      from(p in Progress, where: p.course_id == ^course_id and p.student_id == ^student.id)
+    )
+    |> Multi.run(:lessons, fn _, %{enrollment: enr, progresses: progs} when enr != nil ->
+      lessons =
+        from(l in Lesson, where: l.course_id == ^course_id)
+        |> Repo.all()
+        |> Enum.map(fn l ->
+          topics =
+            from(
+              t in Lesson.Topic,
+              where: t.lesson_id == ^l.id,
+              select: %{id: t.id, title: t.title, kind: t.kind, inserted_at: t.inserted_at}
+            )
+            |> Repo.all()
+            |> Enum.map(fn t ->
+              Map.put(
+                t,
+                :progressed,
+                Enum.find(progs, fn prog -> prog.topic_id == t.id and prog.lesson_id == l.id end) !=
+                  nil
+              )
+            end)
+
+          l
+          |> Map.from_struct()
+          |> Map.put(:topics, topics)
+          |> Map.put(
+            :progressed,
+            Enum.find(progs, fn prog -> prog.lesson_id == l.id and prog.topic_id == nil end) !=
+              nil
+          )
+        end)
+
+      {:ok, lessons}
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{course: course, lessons: lessons}} ->
+        {course, lessons}
+    end
+  end
 
   def list_student_courses(%Accounts.User{} = user) do
     from(
