@@ -8,6 +8,27 @@ defmodule Lukas.Learning do
   alias Ecto.Multi
 
   ## Enrollments
+  def get_next_lesson_or_topic(lessons) do
+    Enum.reduce(lessons, :course_home, fn
+      lesson, acc ->
+        if acc != :course_home do
+          acc
+        else
+          if !lesson.progressed do
+            {:lesson, lesson}
+          else
+            topic = Enum.find(lesson.topics, fn t -> t.progressed == false end)
+
+            if topic != nil do
+              {:topic, topic}
+            else
+              acc
+            end
+          end
+        end
+    end)
+  end
+
   def progress_through_lesson(%Accounts.User{} = student, %{} = lesson) do
     Progress.changeset(%Progress{}, %{
       course_id: lesson.course_id,
@@ -49,7 +70,7 @@ defmodule Lukas.Learning do
 
   def get_progress(%Accounts.User{} = student, course_id) when must_be_student(student) do
     Multi.new()
-    |> Multi.one(:course, from(c in Course, where: c.course_id == ^course_id))
+    |> Multi.one(:course, from(c in Course, where: c.id == ^course_id))
     |> Multi.one(
       :enrollment,
       from(enr in Enrollment, where: enr.student_id == ^student.id and enr.course_id == ^course_id)

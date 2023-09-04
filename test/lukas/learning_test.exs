@@ -301,4 +301,158 @@ defmodule Lukas.LearningTest do
       assert Learning.list_enrolled() == [student1, student2, student3]
     end
   end
+
+  def setup_progress_tests(ctx) do
+    course = course_fixture()
+
+    lessons =
+      [
+        lesson_fixture(course),
+        lesson_fixture(course),
+        lesson_fixture(course),
+        lesson_fixture(course)
+      ]
+      |> Enum.map(fn lesson ->
+        topic = text_topic_fixture(lesson)
+        Map.from_struct(lesson) |> Map.put(:topics, [topic])
+      end)
+
+    student = student_fixture()
+
+    Learning.enroll_student(course, student)
+
+    Map.merge(ctx, %{course: course, student: student, lessons: lessons})
+  end
+
+  describe "progress" do
+    setup [:setup_progress_tests]
+
+    test "get_progress/2 should return the progress of a given student.", %{
+      student: student,
+      course: course
+    } do
+      {_, lessons} = Learning.get_progress(student, course.id)
+
+      Enum.each(
+        lessons,
+        fn l ->
+          refute l.progressed
+          Enum.each(l.topics, &refute(&1.progressed))
+        end
+      )
+    end
+
+    test "get_progress/2 should mark a lesson as having been progressed.", %{
+      course: course,
+      student: student,
+      lessons: [lesson | _]
+    } do
+      Learning.progress_through_lesson(student, lesson)
+
+      {_, lessons} = Learning.get_progress(student, course.id)
+
+      lesson_from_prog = Enum.at(lessons, 0)
+
+      assert lesson_from_prog.progressed
+      first_topic = Enum.at(lesson_from_prog.topics, 0)
+
+      assert {:topic, ^first_topic} = Learning.get_next_lesson_or_topic(lessons)
+    end
+
+    test "get_progress/2 should mark a topic as having been progressed.", %{
+      course: course,
+      student: student,
+      lessons: [lesson | [next_lesson | _]]
+    } do
+      Learning.progress_through_lesson(student, lesson)
+      Learning.progress_through_topic(student, Enum.at(lesson.topics, 0))
+
+      {_, lessons} = Learning.get_progress(student, course.id)
+
+      lesson_from_prog = Enum.at(lessons, 0)
+
+      assert lesson_from_prog.progressed
+
+      assert Enum.at(lesson_from_prog.topics, 0).progressed
+
+      {:lesson, gotten_next_lesson} = Learning.get_next_lesson_or_topic(lessons)
+
+      assert gotten_next_lesson.id == next_lesson.id
+    end
+
+    test "get_next_lesson_or_topic/1 should return the next topic.", %{student: student} do
+      course = course_fixture()
+      {:ok, _} = Learning.enroll_student(course, student)
+
+      lesson = lesson_fixture(course)
+      first_topic = text_topic_fixture(lesson)
+      wanted_next = text_topic_fixture(lesson)
+
+      Learning.progress_through_lesson(student, lesson)
+      Learning.progress_through_topic(student, first_topic)
+
+      {_, lessons} = Learning.get_progress(student, course.id)
+      {:topic, next_topic} = Learning.get_next_lesson_or_topic(lessons)
+      assert next_topic.id == wanted_next.id
+    end
+
+    test "get_next_lesson_or_topic/1 should return the next lesson after the prev lesson & topics are completed.",
+         %{student: student} do
+      course = course_fixture()
+
+      first_lesson = lesson_fixture(course)
+      second_lesson = lesson_fixture(course)
+
+      first_topic = text_topic_fixture(first_lesson)
+      second_topic = text_topic_fixture(first_lesson)
+
+      {:ok, _} = Learning.enroll_student(course, student)
+
+      Learning.progress_through_lesson(student, first_lesson)
+      Learning.progress_through_topic(student, first_topic)
+      Learning.progress_through_topic(student, second_topic)
+
+      {_, lessons} = Learning.get_progress(student, course.id)
+      {:lesson, next_lesson} = Learning.get_next_lesson_or_topic(lessons)
+      assert next_lesson.id == second_lesson.id
+    end
+
+    test "get_next_lesson_or_topic/1 should return :course_home if there are no lessons.", %{
+      student: student
+    } do
+      course = course_fixture()
+      {:ok, _} = Learning.enroll_student(course, student)
+
+      {_, lessons} = Learning.get_progress(student, course.id)
+      assert :course_home == Learning.get_next_lesson_or_topic(lessons)
+    end
+
+    test "get_next_lesson_or_topic/1 should return :course_home if all lessons are completed.", %{
+      student: student
+    } do
+      course = course_fixture()
+
+      lesson1 = lesson_fixture(course)
+      lesson2 = lesson_fixture(course)
+      lesson3 = lesson_fixture(course)
+
+      topic1 = text_topic_fixture(lesson1)
+      topic2 = text_topic_fixture(lesson2)
+      topic3 = text_topic_fixture(lesson3)
+
+      {:ok, _} = Learning.enroll_student(course, student)
+
+      Learning.progress_through_lesson(student, lesson1)
+      Learning.progress_through_topic(student, topic1)
+
+      Learning.progress_through_lesson(student, lesson2)
+      Learning.progress_through_topic(student, topic2)
+
+      Learning.progress_through_lesson(student, lesson3)
+      Learning.progress_through_topic(student, topic3)
+
+      {_, lessons} = Learning.get_progress(student, course.id)
+      assert :course_home == Learning.get_next_lesson_or_topic(lessons)
+    end
+  end
 end
