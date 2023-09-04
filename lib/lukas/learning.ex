@@ -58,6 +58,13 @@ defmodule Lukas.Learning do
     nil
   end
 
+  def watch_progress(student, course_id) do
+    Phoenix.PubSub.subscribe(
+      Lukas.PubSub,
+      "progress/#{student.id}/#{course_id}"
+    )
+  end
+
   defp emit_progress_update(student, course_id) do
     prog = get_progress(student, course_id)
 
@@ -88,7 +95,13 @@ defmodule Lukas.Learning do
             from(
               t in Lesson.Topic,
               where: t.lesson_id == ^l.id,
-              select: %{id: t.id, title: t.title, kind: t.kind, inserted_at: t.inserted_at}
+              select: %{
+                id: t.id,
+                title: t.title,
+                kind: t.kind,
+                inserted_at: t.inserted_at,
+                lesson_id: t.lesson_id
+              }
             )
             |> Repo.all()
             |> Enum.map(fn t ->
@@ -263,6 +276,10 @@ defmodule Lukas.Learning do
     from(l in Lesson, where: l.course_id == ^course_id and l.id == ^lesson_id) |> Repo.one()
   end
 
+  def get_lesson!(course_id, lesson_id) when is_integer(course_id) and is_integer(lesson_id) do
+    from(l in Lesson, where: l.course_id == ^course_id and l.id == ^lesson_id) |> Repo.one!()
+  end
+
   def get_lesson_and_topic_names(course_id, lesson_id) do
     Ecto.Multi.new()
     |> Ecto.Multi.one(
@@ -330,6 +347,17 @@ defmodule Lukas.Learning do
     |> Lesson.Topic.changeset(attrs)
     |> Repo.insert()
     |> maybe_emit_topic_added(lesson)
+  end
+
+  def get_topic!(course_id, lesson_id, topic_id)
+      when is_integer(lesson_id) and is_integer(topic_id) do
+    from(
+      t in Lesson.Topic,
+      join: l in Lesson,
+      on: t.lesson_id == l.id,
+      where: t.id == ^topic_id and l.course_id == ^course_id
+    )
+    |> Repo.one!()
   end
 
   def get_topic(lesson_id, topic_id) when is_integer(lesson_id) and is_integer(topic_id) do

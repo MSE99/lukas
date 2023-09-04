@@ -30,7 +30,7 @@ defmodule LukasWeb.Students.CourseLive do
       Enroll
     </.button>
 
-    <.link :if={@is_enrolled} navigate={~p"/home/courses/#{@course.id}/lessons"}>
+    <.link :if={@is_enrolled} navigate={~p"/home/courses/#{@course.id}/study"}>
       <.button>
         Lessons
       </.button>

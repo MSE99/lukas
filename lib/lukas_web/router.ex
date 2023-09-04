@@ -77,6 +77,8 @@ defmodule LukasWeb.Router do
       live("/courses/:id/lessons", Students.LessonsLive)
       live("/courses/:id/lessons/:lesson_id", Students.LessonsLive, :lesson)
       live("/courses/:id/lessons/:lesson_id/topics/:topic_id", Students.LessonsLive, :topic)
+
+      live "/courses/:id/study", Students.StudyLive
     end
   end
 
