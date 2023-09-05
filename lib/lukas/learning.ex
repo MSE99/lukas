@@ -1,4 +1,8 @@
 defmodule Lukas.Learning do
+  ## NOTE: MODULE IS IN DIRE NEED OF REFACTORING
+  ## TOO MUCH DUPLICATION + LOW PERF CODE PROBABLY
+  ## HELLA BUGGY TOO
+
   import Ecto.Query, warn: false
   import Lukas.Accounts.User, only: [must_be_lecturer: 1, must_be_student: 1]
 
@@ -278,6 +282,74 @@ defmodule Lukas.Learning do
 
   def get_lesson!(course_id, lesson_id) when is_integer(course_id) and is_integer(lesson_id) do
     from(l in Lesson, where: l.course_id == ^course_id and l.id == ^lesson_id) |> Repo.one!()
+  end
+
+  def get_lesson_for_student!(%Accounts.User{} = student, course_id, lesson_id) do
+    Multi.new()
+    |> Multi.one(
+      :lesson,
+      from(l in Lesson, where: l.id == ^lesson_id and l.course_id == ^course_id)
+    )
+    |> Multi.one(
+      :prog,
+      from(
+        prog in Progress,
+        where:
+          prog.lesson_id == ^lesson_id and prog.student_id == ^student.id and
+            prog.course_id == ^course_id and is_nil(prog.topic_id)
+      )
+    )
+    |> Multi.one(
+      :enrollment,
+      from(
+        enr in Enrollment,
+        where: enr.student_id == ^student.id and enr.course_id == ^course_id
+      )
+    )
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{lesson: lesson, prog: prog, enrollment: enr}} when enr != nil ->
+        lesson
+        |> Map.from_struct()
+        |> Map.put(:progressed, prog != nil)
+    end
+  end
+
+  def get_topic_for_student!(%Accounts.User{} = student, course_id, lesson_id, topic_id) do
+    Multi.new()
+    |> Multi.one(
+      :topic,
+      from(
+        t in Lesson.Topic,
+        join: l in Lesson,
+        on: l.id == t.lesson_id,
+        where: t.id == ^topic_id and l.course_id == ^course_id and l.id == ^lesson_id,
+        select: t
+      )
+    )
+    |> Multi.one(
+      :prog,
+      from(
+        prog in Progress,
+        where:
+          prog.lesson_id == ^lesson_id and prog.student_id == ^student.id and
+            prog.topic_id == ^topic_id
+      )
+    )
+    |> Multi.one(
+      :enrollment,
+      from(
+        enr in Enrollment,
+        where: enr.student_id == ^student.id and enr.course_id == ^course_id
+      )
+    )
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{topic: topic, prog: prog, enrollment: enr}} when enr != nil ->
+        topic
+        |> Map.from_struct()
+        |> Map.put(:progressed, prog != nil)
+    end
   end
 
   def get_lesson_and_topic_names(course_id, lesson_id) do

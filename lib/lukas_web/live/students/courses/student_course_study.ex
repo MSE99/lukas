@@ -27,14 +27,23 @@ defmodule LukasWeb.Students.StudyLive do
     topic_id = String.to_integer(raw_topic_id)
     lesson_id = String.to_integer(raw_lesson_id)
 
-    topic = Learning.get_topic!(socket.assigns.course.id, lesson_id, topic_id)
+    topic =
+      Learning.get_topic_for_student!(
+        socket.assigns.current_user,
+        socket.assigns.course.id,
+        lesson_id,
+        topic_id
+      )
 
     {:noreply, assign(socket, topic: topic, lesson: nil)}
   end
 
   def handle_params(%{"lesson_id" => raw_lesson_id}, _, socket) do
+    student = socket.assigns.current_user
+    course = socket.assigns.course
     lesson_id = String.to_integer(raw_lesson_id)
-    lesson = Learning.get_lesson!(socket.assigns.course.id, lesson_id)
+
+    lesson = Learning.get_lesson_for_student!(student, course.id, lesson_id)
 
     {:noreply, assign(socket, topic: nil, lesson: lesson)}
   end
@@ -95,13 +104,13 @@ defmodule LukasWeb.Students.StudyLive do
       <h1 class="text-xl font-bold mb-5"><%= @lesson.title %></h1>
       <p class="mb-10"><%= @lesson.description %></p>
 
-      <.button phx-click="progress-lesson">next</.button>
+      <.button :if={@lesson.progressed == false} phx-click="progress-lesson">next</.button>
     </div>
 
     <div :if={@topic}>
       <h1 class="text-xl font-bold mb-5"><%= @topic.title %></h1>
       <p class="mb-10"><%= @topic.content %></p>
-      <.button phx-click="progress-topic">next</.button>
+      <.button :if={@topic.progressed == false} phx-click="progress-topic">next</.button>
     </div>
     """
   end

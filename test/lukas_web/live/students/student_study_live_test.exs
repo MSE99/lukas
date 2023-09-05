@@ -189,5 +189,38 @@ defmodule LukasWeb.Students.StudyLiveTest do
       refute html =~ lesson2.description
       refute html =~ lesson3.description
     end
+
+    test "should remove next button when the lesson is progressed through", %{
+      conn: conn,
+      course: course,
+      user: student
+    } do
+      lesson1 = lesson_fixture(course)
+      Learning.progress_through_lesson(student, lesson1)
+
+      {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}/study?lesson_id=#{lesson1.id}")
+
+      refute lv |> element("button", "next") |> has_element?()
+    end
+
+    test "should remove next button when the topic is progressed through", %{
+      conn: conn,
+      course: course,
+      user: student
+    } do
+      lesson1 = lesson_fixture(course)
+      topic1 = text_topic_fixture(lesson1)
+
+      Learning.progress_through_lesson(student, lesson1)
+      Learning.progress_through_topic(student, topic1)
+
+      {:ok, lv, _} =
+        live(
+          conn,
+          ~p"/home/courses/#{course.id}/study?lesson_id=#{lesson1.id}&topic_id=#{topic1.id}"
+        )
+
+      refute lv |> element("button", "next") |> has_element?()
+    end
   end
 end
