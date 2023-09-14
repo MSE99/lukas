@@ -6,13 +6,15 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
   import Lukas.AccountsFixtures
 
   alias Lukas.Learning
+  alias Lukas.Learning.Course
+  alias Lukas.Learning.Course.Students
 
   def setup_course(ctx) do
     course = course_fixture()
     lecturers = [lecturer_fixture(), lecturer_fixture(), lecturer_fixture()]
     tags = [tag_fixture(), tag_fixture()]
 
-    Enum.each(lecturers, fn lect -> Learning.add_lecturer_to_course(course, lect) end)
+    Enum.each(lecturers, fn lect -> Course.Staff.add_lecturer_to_course(course, lect) end)
     Enum.each(tags, fn tag -> Learning.tag_course(course.id, tag.id) end)
 
     Map.merge(ctx, %{course: course, lecturers: lecturers, tags: tags})
@@ -60,7 +62,9 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
     } do
       {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}")
 
-      Enum.each(lecturers, fn lect -> Learning.remove_lecturer_from_course(course, lect) end)
+      Enum.each(lecturers, fn lect ->
+        Learning.Course.Staff.remove_lecturer_from_course(course, lect)
+      end)
 
       new_lecturers = [
         lecturer_fixture(),
@@ -69,7 +73,7 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
         lecturer_fixture()
       ]
 
-      Enum.each(new_lecturers, fn lect -> Learning.add_lecturer_to_course(course, lect) end)
+      Enum.each(new_lecturers, fn lect -> Course.Staff.add_lecturer_to_course(course, lect) end)
 
       html = render(lv)
 
@@ -120,7 +124,7 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
       course: course,
       user: user
     } do
-      {:ok, _} = Learning.enroll_student(course, user)
+      {:ok, _} = Students.enroll_student(course, user)
       {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}")
       refute lv |> element("button#enroll-button") |> has_element?()
     end
@@ -132,7 +136,7 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
     } do
       {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}")
       assert lv |> element("button#enroll-button") |> has_element?()
-      {:ok, _} = Learning.enroll_student(course, user)
+      {:ok, _} = Students.enroll_student(course, user)
       refute lv |> element("button#enroll-button") |> has_element?()
     end
   end

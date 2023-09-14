@@ -6,6 +6,7 @@ defmodule LukasWeb.Operator.CourseEnrollmentsLiveTest do
   import Lukas.AccountsFixtures
 
   alias Lukas.Learning
+  alias Lukas.Learning.Course.Students
 
   setup do
     course = course_fixture()
@@ -33,9 +34,9 @@ defmodule LukasWeb.Operator.CourseEnrollmentsLiveTest do
       student2 = user_fixture(%{kind: :student})
       student3 = user_fixture(%{kind: :student})
 
-      {:ok, _} = Learning.enroll_student(course, student1)
-      {:ok, _} = Learning.enroll_student(course, student2)
-      {:ok, _} = Learning.enroll_student(course, student3)
+      {:ok, _} = Students.enroll_student(course, student1)
+      {:ok, _} = Students.enroll_student(course, student2)
+      {:ok, _} = Students.enroll_student(course, student3)
 
       {:ok, _lv, html} = live(conn, ~p"/controls/courses/#{course.id}/enrollments")
 
@@ -51,9 +52,9 @@ defmodule LukasWeb.Operator.CourseEnrollmentsLiveTest do
       student2 = user_fixture(%{kind: :student})
       student3 = user_fixture(%{kind: :student})
 
-      {:ok, _} = Learning.enroll_student(course, student1)
-      {:ok, _} = Learning.enroll_student(course, student2)
-      {:ok, _} = Learning.enroll_student(course, student3)
+      {:ok, _} = Students.enroll_student(course, student1)
+      {:ok, _} = Students.enroll_student(course, student2)
+      {:ok, _} = Students.enroll_student(course, student3)
 
       html = render(lv)
       assert html =~ "#{student1.name}"
@@ -68,9 +69,9 @@ defmodule LukasWeb.Operator.CourseEnrollmentsLiveTest do
       student2 = user_fixture(%{kind: :student})
       student3 = user_fixture(%{kind: :student})
 
-      {:ok, _} = Learning.enroll_student(course, student1)
-      {:ok, _} = Learning.enroll_student(course, student2)
-      {:ok, _} = Learning.enroll_student(course, student3)
+      {:ok, _} = Students.enroll_student(course, student1)
+      {:ok, _} = Students.enroll_student(course, student2)
+      {:ok, _} = Students.enroll_student(course, student3)
 
       {:ok, _} = Learning.update_course(course, %{"name" => "cool course"})
 

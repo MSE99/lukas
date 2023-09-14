@@ -2,10 +2,13 @@ defmodule LukasWeb.Operator.CourseLive do
   use LukasWeb, :live_view
 
   alias Lukas.{Learning, Accounts}
+  alias Lukas.Learning.Course
+  alias Lukas.Learning.Course.Content
 
   def mount(%{"id" => raw_id}, _session, socket) do
     with {id, _} <- Integer.parse(raw_id),
-         {course, lecturers} when course != nil <- Learning.get_course_with_lecturers(id) do
+         {course, lecturers} when course != nil <-
+           Course.Staff.get_course_with_lecturers(id) do
       Learning.watch_course(course)
 
       {:ok,
@@ -16,7 +19,7 @@ defmodule LukasWeb.Operator.CourseLive do
   end
 
   def handle_params(_, _, socket) when socket.assigns.live_action == :new_lesson do
-    cs = Learning.create_lesson_changeset(socket.assigns.course, %{})
+    cs = Content.create_lesson_changeset(socket.assigns.course, %{})
     form = to_form(cs)
     {:noreply, assign(socket, form: form)}
   end
@@ -24,8 +27,9 @@ defmodule LukasWeb.Operator.CourseLive do
   def handle_params(%{"lesson_id" => raw_id}, _, socket)
       when socket.assigns.live_action == :edit_lesson do
     with {lesson_id, _} <- Integer.parse(raw_id),
-         lesson when lesson != nil <- Learning.get_lesson(socket.assigns.course.id, lesson_id) do
-      cs = Learning.edit_lesson_changeset(lesson)
+         lesson when lesson != nil <-
+           Content.get_lesson(socket.assigns.course.id, lesson_id) do
+      cs = Content.edit_lesson_changeset(lesson)
       form = to_form(cs)
       {:noreply, assign(socket, form: form, lesson: lesson)}
     else
@@ -34,7 +38,7 @@ defmodule LukasWeb.Operator.CourseLive do
   end
 
   def handle_params(_, _, socket) when socket.assigns.live_action == :add_lecturer do
-    possible_lecturers = Learning.possible_lecturers_for(socket.assigns.course)
+    possible_lecturers = Course.Staff.possible_lecturers_for(socket.assigns.course)
     {:noreply, stream(socket, :possible_lecturers, possible_lecturers, reset: true)}
   end
 
@@ -118,12 +122,12 @@ defmodule LukasWeb.Operator.CourseLive do
   end
 
   def handle_event("validate", %{"lesson" => params}, socket) do
-    form = to_form(Learning.validate_lesson(socket.assigns.course, params))
+    form = to_form(Content.validate_lesson(socket.assigns.course, params))
     {:noreply, assign(socket, form: form)}
   end
 
   def handle_event("create", %{"lesson" => params}, socket) do
-    case Learning.create_lesson(socket.assigns.course, params) do
+    case Content.create_lesson(socket.assigns.course, params) do
       {:ok, _} ->
         {:noreply, push_patch(socket, to: ~p"/controls/courses/#{socket.assigns.course.id}")}
 
@@ -133,7 +137,7 @@ defmodule LukasWeb.Operator.CourseLive do
   end
 
   def handle_event("update", %{"lesson" => params}, socket) do
-    case Learning.update_lesson(socket.assigns.lesson, params) do
+    case Content.update_lesson(socket.assigns.lesson, params) do
       {:ok, _} ->
         {:noreply, push_patch(socket, to: ~p"/controls/courses/#{socket.assigns.course.id}")}
 
@@ -145,7 +149,7 @@ defmodule LukasWeb.Operator.CourseLive do
   def handle_event("add-lecturer", %{"lecturer-id" => raw_lecturer_id}, socket) do
     {lecturer_id, _} = Integer.parse(raw_lecturer_id)
     lect = Accounts.get_lecturer!(lecturer_id)
-    {:ok, _} = Learning.add_lecturer_to_course(socket.assigns.course, lect)
+    {:ok, _} = Course.Staff.add_lecturer_to_course(socket.assigns.course, lect)
 
     {:noreply, push_patch(socket, to: ~p"/controls/courses/#{socket.assigns.course.id}")}
   end
@@ -153,14 +157,14 @@ defmodule LukasWeb.Operator.CourseLive do
   def handle_event("delete-lecturer", %{"lecturer-id" => raw_lecturer_id}, socket) do
     {lecturer_id, _} = Integer.parse(raw_lecturer_id)
     lect = Accounts.get_lecturer!(lecturer_id)
-    {:ok, _} = Learning.remove_lecturer_from_course(socket.assigns.course, lect)
+    {:ok, _} = Learning.Course.Staff.remove_lecturer_from_course(socket.assigns.course, lect)
 
     {:noreply, socket}
   end
 
   def handle_event("delete-lesson", %{"id" => raw_id}, socket) do
     {lesson_id, _} = Integer.parse(raw_id)
-    {:ok, _} = Learning.remove_lesson(lesson_id)
+    {:ok, _} = Content.remove_lesson(lesson_id)
     {:noreply, socket}
   end
 

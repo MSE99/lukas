@@ -1,11 +1,11 @@
 defmodule LukasWeb.TagLive.Show do
   use LukasWeb, :live_view
 
-  alias Lukas.Learning
+  alias Lukas.Categories
 
   @impl true
   def mount(_params, _session, socket) do
-    Learning.watch_tags()
+    Categories.watch_tags()
     {:ok, socket}
   end
 
@@ -14,7 +14,7 @@ defmodule LukasWeb.TagLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:tag, Learning.get_tag!(id))}
+     |> assign(:tag, Categories.get_tag!(id))}
   end
 
   defp page_title(:show), do: "Show Tag"

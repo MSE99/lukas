@@ -4,14 +4,15 @@ defmodule LukasWeb.Students.StudyLiveTest do
   import Lukas.LearningFixtures
   import Phoenix.LiveViewTest
 
-  alias Lukas.Learning
+  alias Lukas.Learning.Course
+  alias Lukas.Learning.Course.Students
 
   def setup_tests(ctx) do
     auth_ctx = register_and_log_in_student(ctx)
 
     course = course_fixture()
 
-    {:ok, _} = Learning.enroll_student(course, auth_ctx.user)
+    {:ok, _} = Students.enroll_student(course, auth_ctx.user)
 
     Map.merge(auth_ctx, %{course: course})
   end
@@ -54,12 +55,14 @@ defmodule LukasWeb.Students.StudyLiveTest do
       Enum.each(1..15, fn _ -> text_topic_fixture(lesson2) end)
       Enum.each(1..15, fn _ -> text_topic_fixture(lesson3) end)
 
-      {_, lessons} = Learning.get_progress(student, course.id)
-      wanted_topic = Learning.get_topic(lesson1.id, Enum.at(Enum.at(lessons, 0).topics, 0).id)
+      {_, lessons} = Students.get_progress(student, course.id)
+
+      wanted_topic =
+        Course.Content.get_topic(lesson1.id, Enum.at(Enum.at(lessons, 0).topics, 0).id)
 
       {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}/study?lesson_id=#{lesson1.id}")
 
-      Learning.progress_through_lesson(student, lesson1)
+      Students.progress_through_lesson(student, lesson1)
 
       html = render(lv)
 
@@ -83,8 +86,8 @@ defmodule LukasWeb.Students.StudyLiveTest do
 
       {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}/study?lesson_id=#{lesson1.id}")
 
-      Learning.progress_through_lesson(student, lesson1)
-      Learning.progress_through_lesson(student, lesson2)
+      Students.progress_through_lesson(student, lesson1)
+      Students.progress_through_lesson(student, lesson2)
 
       assert render(lv) =~ lesson3.title
       assert render(lv) =~ lesson3.description
@@ -196,7 +199,7 @@ defmodule LukasWeb.Students.StudyLiveTest do
       user: student
     } do
       lesson1 = lesson_fixture(course)
-      Learning.progress_through_lesson(student, lesson1)
+      Students.progress_through_lesson(student, lesson1)
 
       {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}/study?lesson_id=#{lesson1.id}")
 
@@ -211,8 +214,8 @@ defmodule LukasWeb.Students.StudyLiveTest do
       lesson1 = lesson_fixture(course)
       topic1 = text_topic_fixture(lesson1)
 
-      Learning.progress_through_lesson(student, lesson1)
-      Learning.progress_through_topic(student, topic1)
+      Students.progress_through_lesson(student, lesson1)
+      Students.progress_through_topic(student, topic1)
 
       {:ok, lv, _} =
         live(

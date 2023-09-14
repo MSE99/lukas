@@ -5,7 +5,7 @@ defmodule LukasWeb.Courses.CourseLiveTest do
   import Lukas.LearningFixtures
   import Lukas.AccountsFixtures
 
-  alias Lukas.Learning
+  alias Lukas.Learning.Course.{Content, Students}
 
   def create_course(ctx) do
     course = course_fixture()
@@ -54,7 +54,7 @@ defmodule LukasWeb.Courses.CourseLiveTest do
       {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}")
 
       student = user_fixture(%{kind: :student})
-      {:ok, _} = Learning.enroll_student(course, student)
+      {:ok, _} = Students.enroll_student(course, student)
 
       assert render(lv) =~ course.name
     end
@@ -219,7 +219,7 @@ defmodule LukasWeb.Courses.CourseLiveTest do
       teaching_fixture(course, lect1)
       teaching_fixture(course, lect2)
 
-      Lukas.Learning.remove_lecturer_from_course(course, lect1)
+      Lukas.Learning.Course.Staff.remove_lecturer_from_course(course, lect1)
 
       html = render(lv)
 
@@ -285,7 +285,7 @@ defmodule LukasWeb.Courses.CourseLiveTest do
       lesson = lesson_fixture(course)
       assert render(lv) =~ lesson.title
 
-      Learning.remove_lesson(lesson)
+      Content.remove_lesson(lesson)
 
       refute render(lv) =~ lesson.title
     end

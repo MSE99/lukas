@@ -1,13 +1,13 @@
 defmodule LukasWeb.TagLive.Index do
   use LukasWeb, :live_view
 
-  alias Lukas.Learning
-  alias Lukas.Learning.Tag
+  alias Lukas.Categories
+  alias Lukas.Categories.Tag
 
   @impl true
   def mount(_params, _session, socket) do
-    Learning.watch_tags()
-    {:ok, stream(socket, :tags, Learning.list_tags())}
+    Categories.watch_tags()
+    {:ok, stream(socket, :tags, Categories.list_tags())}
   end
 
   @impl true
@@ -18,7 +18,7 @@ defmodule LukasWeb.TagLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Tag")
-    |> assign(:tag, Learning.get_tag!(id))
+    |> assign(:tag, Categories.get_tag!(id))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -50,8 +50,8 @@ defmodule LukasWeb.TagLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    tag = Learning.get_tag!(id)
-    {:ok, _} = Learning.delete_tag(tag)
+    tag = Categories.get_tag!(id)
+    {:ok, _} = Categories.delete_tag(tag)
 
     {:noreply, stream_delete(socket, :tags, tag)}
   end

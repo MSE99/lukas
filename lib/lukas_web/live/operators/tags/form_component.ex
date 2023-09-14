@@ -1,7 +1,7 @@
 defmodule LukasWeb.TagLive.FormComponent do
   use LukasWeb, :live_component
 
-  alias Lukas.Learning
+  alias Lukas.Categories
 
   @impl true
   def render(assigns) do
@@ -30,7 +30,7 @@ defmodule LukasWeb.TagLive.FormComponent do
 
   @impl true
   def update(%{tag: tag} = assigns, socket) do
-    changeset = Learning.change_tag(tag)
+    changeset = Categories.change_tag(tag)
 
     {:ok,
      socket
@@ -42,7 +42,7 @@ defmodule LukasWeb.TagLive.FormComponent do
   def handle_event("validate", %{"tag" => tag_params}, socket) do
     changeset =
       socket.assigns.tag
-      |> Learning.change_tag(tag_params)
+      |> Categories.change_tag(tag_params)
       |> Map.put(:action, :validate)
 
     {:noreply, assign_form(socket, changeset)}
@@ -53,7 +53,7 @@ defmodule LukasWeb.TagLive.FormComponent do
   end
 
   defp save_tag(socket, :edit, tag_params) do
-    case Learning.update_tag(socket.assigns.tag, tag_params) do
+    case Categories.update_tag(socket.assigns.tag, tag_params) do
       {:ok, _} ->
         {:noreply,
          socket
@@ -66,7 +66,7 @@ defmodule LukasWeb.TagLive.FormComponent do
   end
 
   defp save_tag(socket, :new, tag_params) do
-    case Learning.create_tag(tag_params) do
+    case Categories.create_tag(tag_params) do
       {:ok, _} ->
         {:noreply,
          socket

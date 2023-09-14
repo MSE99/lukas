@@ -2,12 +2,13 @@ defmodule LukasWeb.Students.AvailableCoursesLive do
   use LukasWeb, :live_view
 
   alias Lukas.Learning
+  alias Lukas.Learning.Course.Students
 
   def mount(_, _, socket) do
     Learning.watch_courses()
-    Learning.watch_student_enrollments(socket.assigns.current_user)
+    Students.watch_student_enrollments(socket.assigns.current_user)
 
-    available_courses = Learning.list_open_courses_for_student(socket.assigns.current_user)
+    available_courses = Students.list_open_courses_for_student(socket.assigns.current_user)
     {:ok, socket |> stream(:available_courses, available_courses)}
   end
 

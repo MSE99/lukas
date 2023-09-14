@@ -2,6 +2,7 @@ defmodule LukasWeb.Students.CourseLive do
   use LukasWeb, :live_view
 
   alias Lukas.Learning
+  alias Lukas.Learning.Course.Students
 
   def mount(%{"id" => raw_course_id}, _session, socket) do
     with {id, _} <- Integer.parse(raw_course_id),
@@ -51,7 +52,7 @@ defmodule LukasWeb.Students.CourseLive do
   end
 
   def handle_event("enroll", _params, socket) do
-    {:ok, _} = Learning.enroll_student(socket.assigns.course, socket.assigns.current_user)
+    {:ok, _} = Students.enroll_student(socket.assigns.course, socket.assigns.current_user)
     {:noreply, push_patch(socket, to: ~p"/home/courses/#{socket.assigns.course.id}")}
   end
 

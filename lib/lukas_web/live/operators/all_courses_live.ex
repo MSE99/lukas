@@ -2,10 +2,11 @@ defmodule LukasWeb.Operator.AllCoursesLive do
   use LukasWeb, :live_view
 
   alias Lukas.Learning
+  alias Lukas.Categories
 
   def mount(params, _, socket) do
     Learning.watch_courses()
-    tags = Learning.list_tags()
+    tags = Categories.list_tags()
 
     courses = Learning.list_courses()
 

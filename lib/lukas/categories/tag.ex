@@ -1,4 +1,4 @@
-defmodule Lukas.Learning.Tag do
+defmodule Lukas.Categories.Tag do
   use Ecto.Schema
   import Ecto.Changeset
 

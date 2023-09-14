@@ -4,7 +4,7 @@ defmodule LukasWeb.Operator.LessonLiveTest do
   import Phoenix.LiveViewTest
   import Lukas.LearningFixtures
 
-  alias Lukas.Learning
+  alias Lukas.Learning.Course.Content
 
   test "should require an authenticated admin.", %{conn: conn} do
     assert {:error, {:redirect, _}} = live(conn, ~p"/controls/courses/15/lessons/10")
@@ -73,7 +73,7 @@ defmodule LukasWeb.Operator.LessonLiveTest do
       assert html =~ lesson.title
 
       {:ok, next_lesson} =
-        Learning.update_lesson(lesson, %{title: "New title", description: "new description"})
+        Content.update_lesson(lesson, %{title: "New title", description: "new description"})
 
       assert render(lv) =~ next_lesson.title
     end
@@ -166,7 +166,7 @@ defmodule LukasWeb.Operator.LessonLiveTest do
     } do
       {:ok, lv, _html} = live(conn, path)
       assert render(lv) =~ topic1.title
-      {:ok, _} = Learning.remove_topic(topic1)
+      {:ok, _} = Content.remove_topic(topic1)
       refute render(lv) =~ topic1.title
     end
 
@@ -179,7 +179,7 @@ defmodule LukasWeb.Operator.LessonLiveTest do
       assert render(lv) =~ topic1.title
 
       {:ok, updated_topic} =
-        Learning.update_topic(topic1, %{
+        Content.update_topic(topic1, %{
           "title" => "Bar",
           "content" => "bar is great foo is none",
           "kind" => "text"

@@ -4,7 +4,7 @@ defmodule Lukas.Learning.Tagging do
   import Ecto.Changeset
 
   schema "taggings" do
-    belongs_to(:tag, Lukas.Learning.Tag)
+    belongs_to(:tag, Lukas.Categories.Tag)
     belongs_to(:course, Lukas.Learning.Course)
 
     timestamps()

@@ -4,7 +4,7 @@ defmodule LukasWeb.Students.CoursesLiveTest do
   import Phoenix.LiveViewTest
   import Lukas.LearningFixtures
 
-  alias Lukas.Learning
+  alias Lukas.Learning.Course.Students
 
   test "should require an authenticated student", %{conn: conn} do
     assert {:error, {:redirect, _}} = live(conn, ~p"/home/courses")
@@ -18,9 +18,9 @@ defmodule LukasWeb.Students.CoursesLiveTest do
       course2 = course_fixture()
       course3 = course_fixture()
 
-      {:ok, _} = Learning.enroll_student(course1, user)
-      {:ok, _} = Learning.enroll_student(course2, user)
-      {:ok, _} = Learning.enroll_student(course3, user)
+      {:ok, _} = Students.enroll_student(course1, user)
+      {:ok, _} = Students.enroll_student(course2, user)
+      {:ok, _} = Students.enroll_student(course3, user)
 
       {:ok, _, html} = live(conn, ~p"/home/courses")
 
@@ -36,9 +36,9 @@ defmodule LukasWeb.Students.CoursesLiveTest do
 
       {:ok, lv, _} = live(conn, ~p"/home/courses")
 
-      {:ok, _} = Learning.enroll_student(course1, user)
-      {:ok, _} = Learning.enroll_student(course2, user)
-      {:ok, _} = Learning.enroll_student(course3, user)
+      {:ok, _} = Students.enroll_student(course1, user)
+      {:ok, _} = Students.enroll_student(course2, user)
+      {:ok, _} = Students.enroll_student(course3, user)
 
       html = render(lv)
 

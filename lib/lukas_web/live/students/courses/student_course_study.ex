@@ -2,15 +2,16 @@ defmodule LukasWeb.Students.StudyLive do
   use LukasWeb, :live_view
 
   alias Lukas.Learning
+  alias Lukas.Learning.Course.Students
 
   def mount(%{"id" => raw_course_id}, _, socket) do
     student = socket.assigns.current_user
     course_id = String.to_integer(raw_course_id)
 
-    Learning.watch_progress(student, course_id)
+    Students.watch_progress(student, course_id)
 
-    {course, lessons} = Learning.get_progress(student, course_id)
-    next = Learning.get_next_lesson_or_topic(lessons)
+    {course, lessons} = Students.get_progress(student, course_id)
+    next = Students.get_next_lesson_or_topic(lessons)
 
     next_socket =
       socket
@@ -28,7 +29,7 @@ defmodule LukasWeb.Students.StudyLive do
     lesson_id = String.to_integer(raw_lesson_id)
 
     topic =
-      Learning.get_topic_for_student!(
+      Learning.Course.Content.get_topic_for_student!(
         socket.assigns.current_user,
         socket.assigns.course.id,
         lesson_id,
@@ -43,7 +44,7 @@ defmodule LukasWeb.Students.StudyLive do
     course = socket.assigns.course
     lesson_id = String.to_integer(raw_lesson_id)
 
-    lesson = Learning.get_lesson_for_student!(student, course.id, lesson_id)
+    lesson = Learning.Course.Content.get_lesson_for_student!(student, course.id, lesson_id)
 
     {:noreply, assign(socket, topic: nil, lesson: lesson)}
   end
@@ -116,7 +117,7 @@ defmodule LukasWeb.Students.StudyLive do
   end
 
   def handle_info({:progress, _, {course, lessons}}, socket) do
-    next = Learning.get_next_lesson_or_topic(lessons)
+    next = Students.get_next_lesson_or_topic(lessons)
 
     next_socket =
       socket
@@ -132,7 +133,7 @@ defmodule LukasWeb.Students.StudyLive do
     lesson = socket.assigns.lesson
     student = socket.assigns.current_user
 
-    Learning.progress_through_lesson(student, lesson)
+    Students.progress_through_lesson(student, lesson)
 
     {:noreply, socket}
   end
@@ -141,7 +142,7 @@ defmodule LukasWeb.Students.StudyLive do
     topic = socket.assigns.topic
     student = socket.assigns.current_user
 
-    Learning.progress_through_topic(student, topic)
+    Students.progress_through_topic(student, topic)
 
     {:noreply, socket}
   end

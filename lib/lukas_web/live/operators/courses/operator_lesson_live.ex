@@ -2,12 +2,13 @@ defmodule LukasWeb.Operator.LessonLive do
   use LukasWeb, :live_view
 
   alias Lukas.Learning
+  alias Lukas.Learning.Course.Content
 
   def mount(%{"id" => raw_course_id, "lesson_id" => raw_lesson_id}, _session, socket) do
     with {course_id, _} <- Integer.parse(raw_course_id),
          {lesson_id, _} <- Integer.parse(raw_lesson_id),
          {lesson, topics} when lesson != nil <-
-           Learning.get_lesson_and_topic_names(course_id, lesson_id) do
+           Content.get_lesson_and_topic_names(course_id, lesson_id) do
       Learning.watch_course(course_id)
 
       {:ok, socket |> assign(lesson: lesson) |> stream(:topics, topics)}
@@ -19,8 +20,8 @@ defmodule LukasWeb.Operator.LessonLive do
   def handle_params(%{"topic_id" => raw_topic_id}, _, socket)
       when socket.assigns.live_action == :edit_topic do
     with {id, _} <- Integer.parse(raw_topic_id),
-         topic when topic != nil <- Learning.get_topic(socket.assigns.lesson.id, id) do
-      cs = Learning.update_topic_changeset(Map.from_struct(topic))
+         topic when topic != nil <- Content.get_topic(socket.assigns.lesson.id, id) do
+      cs = Content.update_topic_changeset(Map.from_struct(topic))
       form = to_form(cs)
       {:noreply, assign(socket, form: form, topic_kind: "#{topic.kind}", topic: topic)}
     else
@@ -29,7 +30,7 @@ defmodule LukasWeb.Operator.LessonLive do
   end
 
   def handle_params(_, _, socket) when socket.assigns.live_action == :new_topic do
-    cs = Learning.create_topic_changeset(socket.assigns.lesson)
+    cs = Content.create_topic_changeset(socket.assigns.lesson)
     form = to_form(cs)
     {:noreply, assign(socket, form: form, topic_kind: "text")}
   end
@@ -54,7 +55,7 @@ defmodule LukasWeb.Operator.LessonLive do
           field={@form[:kind]}
           type="select"
           label="Kind"
-          options={Learning.topic_kinds()}
+          options={Content.topic_kinds()}
           phx-change="update-topic-kind"
         />
 
@@ -91,19 +92,19 @@ defmodule LukasWeb.Operator.LessonLive do
 
   def handle_event("delete-topic", %{"id" => raw_topic_id}, socket) do
     {id, _} = Integer.parse(raw_topic_id)
-    topic = Learning.get_topic(socket.assigns.lesson.id, id)
-    {:ok, _} = Learning.remove_topic(topic)
+    topic = Content.get_topic(socket.assigns.lesson.id, id)
+    {:ok, _} = Content.remove_topic(topic)
     {:noreply, socket}
   end
 
   def handle_event("validate", %{"topic" => params}, socket) do
-    cs = Learning.validate_topic(socket.assigns.lesson, params)
+    cs = Content.validate_topic(socket.assigns.lesson, params)
     form = to_form(cs)
     {:noreply, assign(socket, form: form)}
   end
 
   def handle_event("update", %{"topic" => params}, socket) do
-    case Learning.update_topic(socket.assigns.topic, params) do
+    case Content.update_topic(socket.assigns.topic, params) do
       {:error, cs} ->
         {:noreply, assign(socket, form: to_form(cs))}
 
@@ -118,7 +119,7 @@ defmodule LukasWeb.Operator.LessonLive do
 
   def handle_event("create", %{"topic" => params}, socket)
       when socket.assigns.topic_kind == "text" do
-    case Learning.create_text_topic(socket.assigns.lesson, params) do
+    case Content.create_text_topic(socket.assigns.lesson, params) do
       {:error, cs} ->
         {:noreply, assign(socket, form: to_form(cs))}
 

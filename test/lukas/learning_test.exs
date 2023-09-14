@@ -2,63 +2,10 @@ defmodule Lukas.LearningTest do
   use Lukas.DataCase
 
   alias Lukas.Learning
+  alias Lukas.Learning.Course.{Content, Students}
 
   import Lukas.LearningFixtures
   import Lukas.AccountsFixtures
-
-  describe "tags" do
-    alias Lukas.Learning.Tag
-
-    import Lukas.LearningFixtures
-
-    @invalid_attrs %{name: nil}
-
-    test "list_tags/0 returns all tags" do
-      tag = tag_fixture()
-      assert Learning.list_tags() == [tag]
-    end
-
-    test "get_tag!/1 returns the tag with given id" do
-      tag = tag_fixture()
-      assert Learning.get_tag!(tag.id) == tag
-    end
-
-    test "create_tag/1 with valid data creates a tag" do
-      valid_attrs = %{name: "some name"}
-
-      assert {:ok, %Tag{} = tag} = Learning.create_tag(valid_attrs)
-      assert tag.name == "some name"
-    end
-
-    test "create_tag/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Learning.create_tag(@invalid_attrs)
-    end
-
-    test "update_tag/2 with valid data updates the tag" do
-      tag = tag_fixture()
-      update_attrs = %{name: "some updated name"}
-
-      assert {:ok, %Tag{} = tag} = Learning.update_tag(tag, update_attrs)
-      assert tag.name == "some updated name"
-    end
-
-    test "update_tag/2 with invalid data returns error changeset" do
-      tag = tag_fixture()
-      assert {:error, %Ecto.Changeset{}} = Learning.update_tag(tag, @invalid_attrs)
-      assert tag == Learning.get_tag!(tag.id)
-    end
-
-    test "delete_tag/1 deletes the tag" do
-      tag = tag_fixture()
-      assert {:ok, %Tag{}} = Learning.delete_tag(tag)
-      assert_raise Ecto.NoResultsError, fn -> Learning.get_tag!(tag.id) end
-    end
-
-    test "change_tag/1 returns a tag changeset" do
-      tag = tag_fixture()
-      assert %Ecto.Changeset{} = Learning.change_tag(tag)
-    end
-  end
 
   describe "courses" do
     setup do
@@ -120,7 +67,7 @@ defmodule Lukas.LearningTest do
       Learning.watch_course(course)
 
       {:ok, lesson} =
-        Learning.create_lesson(course, %{"title" => "Lesson 1", "description" => "Mathematics I"})
+        Content.create_lesson(course, %{"title" => "Lesson 1", "description" => "Mathematics I"})
 
       assert_received({:course, _, :lesson_added, ^lesson})
     end
@@ -129,12 +76,12 @@ defmodule Lukas.LearningTest do
       Learning.watch_course(course)
 
       {:ok, lesson} =
-        Learning.create_lesson(course, %{"title" => "Lesson 1", "description" => "Mathematics I"})
+        Content.create_lesson(course, %{"title" => "Lesson 1", "description" => "Mathematics I"})
 
       assert_received({:course, _, :lesson_added, ^lesson})
 
       {:ok, next_lesson} =
-        Learning.update_lesson(lesson, %{"title" => "Lesson 2", "description" => "Mathematics I"})
+        Content.update_lesson(lesson, %{"title" => "Lesson 2", "description" => "Mathematics I"})
 
       assert_received({:course, _, :lesson_updated, ^next_lesson})
     end
@@ -143,16 +90,16 @@ defmodule Lukas.LearningTest do
       Learning.watch_course(course)
 
       {:ok, lesson} =
-        Learning.create_lesson(course, %{"title" => "Lesson 1", "description" => "Mathematics I"})
+        Content.create_lesson(course, %{"title" => "Lesson 1", "description" => "Mathematics I"})
 
       text_topic_fixture(lesson, %{"content" => "foo is great bar is none", "title" => "FOO"})
 
       assert_received({:course, _, :lesson_added, ^lesson})
 
-      {:ok, removed_lesson} = Learning.remove_lesson(lesson)
+      {:ok, removed_lesson} = Content.remove_lesson(lesson)
       assert_received({:course, _, :lesson_deleted, ^removed_lesson})
 
-      assert Learning.get_lesson_and_topic_names(course.id, lesson.id) == {nil, []}
+      assert Content.get_lesson_and_topic_names(course.id, lesson.id) == {nil, []}
     end
   end
 
@@ -161,7 +108,7 @@ defmodule Lukas.LearningTest do
       course = course_fixture()
 
       {:ok, lesson} =
-        Learning.create_lesson(course, %{"title" => "Lesson 1", "description" => "Mathematics I"})
+        Content.create_lesson(course, %{"title" => "Lesson 1", "description" => "Mathematics I"})
 
       %{course: course, lesson: lesson}
     end
@@ -173,7 +120,7 @@ defmodule Lukas.LearningTest do
       Learning.watch_course(course)
 
       {:ok, topic} =
-        Learning.create_text_topic(lesson, %{
+        Content.create_text_topic(lesson, %{
           "title" => "Topic 1",
           "content" => "foo is great bar is none."
         })
@@ -192,14 +139,14 @@ defmodule Lukas.LearningTest do
       Learning.watch_course(course)
 
       {:ok, topic} =
-        Learning.create_text_topic(lesson, %{
+        Content.create_text_topic(lesson, %{
           "title" => "Topic 1",
           "content" => "foo is great bar is none."
         })
 
       assert_receive({:course, _, :topic_added, ^topic})
 
-      {:ok, removed_topic} = Learning.remove_topic(topic)
+      {:ok, removed_topic} = Content.remove_topic(topic)
 
       assert_receive({:course, _, :topic_removed, ^removed_topic})
     end
@@ -211,7 +158,7 @@ defmodule Lukas.LearningTest do
       Learning.watch_course(course)
 
       {:ok, topic} =
-        Learning.create_text_topic(lesson, %{
+        Content.create_text_topic(lesson, %{
           "title" => "Topic 1",
           "content" => "foo is great bar is none."
         })
@@ -219,7 +166,7 @@ defmodule Lukas.LearningTest do
       assert_receive({:course, _, :topic_added, ^topic})
 
       {:ok, updated_topic} =
-        Learning.update_topic(topic, %{
+        Content.update_topic(topic, %{
           "title" => "Topic 2",
           "content" => "foo is great bar is none."
         })
@@ -237,22 +184,22 @@ defmodule Lukas.LearningTest do
     end
 
     test "list_course_lecturers/1 should return an empty list.", %{course: course} do
-      assert Learning.list_course_lecturers(course) == []
+      assert Learning.Course.Staff.list_course_lecturers(course) == []
     end
 
     test "list_course_lecturers/1 should return a list of all lecturers for the given course.", %{
       course: course,
       lecturer: lecturer
     } do
-      {:ok, _} = Learning.add_lecturer_to_course(course, lecturer)
-      assert Learning.list_course_lecturers(course) == [lecturer]
+      {:ok, _} = Learning.Course.Staff.add_lecturer_to_course(course, lecturer)
+      assert Learning.Course.Staff.list_course_lecturers(course) == [lecturer]
     end
 
     test "possible_lecturers_for/1 should return list of possible lecturers for course.", %{
       course: course,
       lecturer: lecturer
     } do
-      lecturers = Learning.possible_lecturers_for(course)
+      lecturers = Learning.Course.Staff.possible_lecturers_for(course)
 
       assert Enum.find(lecturers, fn lect -> lect.id == lecturer.id end)
     end
@@ -273,7 +220,7 @@ defmodule Lukas.LearningTest do
          } do
       course_id = course.id
       Learning.watch_course(course_id)
-      {:ok, enrollment} = Learning.enroll_student(course, student)
+      {:ok, enrollment} = Students.enroll_student(course, student)
 
       assert enrollment.student_id == student.id
       assert enrollment.course_id == course.id
@@ -285,8 +232,8 @@ defmodule Lukas.LearningTest do
       student: student,
       course: course
     } do
-      Learning.enroll_student(course, student)
-      assert {:error, _} = Learning.enroll_student(course, student)
+      Students.enroll_student(course, student)
+      assert {:error, _} = Students.enroll_student(course, student)
     end
 
     test "list_enrolled/0 should list all the enrolled students of the course.", %{course: course} do
@@ -294,11 +241,11 @@ defmodule Lukas.LearningTest do
       student2 = user_fixture(%{kind: :student})
       student3 = user_fixture(%{kind: :student})
 
-      {:ok, _} = Learning.enroll_student(course, student1)
-      {:ok, _} = Learning.enroll_student(course, student2)
-      {:ok, _} = Learning.enroll_student(course, student3)
+      {:ok, _} = Students.enroll_student(course, student1)
+      {:ok, _} = Students.enroll_student(course, student2)
+      {:ok, _} = Students.enroll_student(course, student3)
 
-      assert Learning.list_enrolled() == [student1, student2, student3]
+      assert Students.list_enrolled(course.id) == [student1, student2, student3]
     end
   end
 
@@ -319,7 +266,7 @@ defmodule Lukas.LearningTest do
 
     student = student_fixture()
 
-    Learning.enroll_student(course, student)
+    Students.enroll_student(course, student)
 
     Map.merge(ctx, %{course: course, student: student, lessons: lessons})
   end
@@ -331,7 +278,7 @@ defmodule Lukas.LearningTest do
       student: student,
       course: course
     } do
-      {_, lessons} = Learning.get_progress(student, course.id)
+      {_, lessons} = Students.get_progress(student, course.id)
 
       Enum.each(
         lessons,
@@ -347,16 +294,16 @@ defmodule Lukas.LearningTest do
       student: student,
       lessons: [lesson | _]
     } do
-      Learning.progress_through_lesson(student, lesson)
+      Students.progress_through_lesson(student, lesson)
 
-      {_, lessons} = Learning.get_progress(student, course.id)
+      {_, lessons} = Students.get_progress(student, course.id)
 
       lesson_from_prog = Enum.at(lessons, 0)
 
       assert lesson_from_prog.progressed
       first_topic = Enum.at(lesson_from_prog.topics, 0)
 
-      assert {:topic, ^first_topic} = Learning.get_next_lesson_or_topic(lessons)
+      assert {:topic, ^first_topic} = Students.get_next_lesson_or_topic(lessons)
     end
 
     test "get_progress/2 should mark a topic as having been progressed.", %{
@@ -364,10 +311,10 @@ defmodule Lukas.LearningTest do
       student: student,
       lessons: [lesson | [next_lesson | _]]
     } do
-      Learning.progress_through_lesson(student, lesson)
-      Learning.progress_through_topic(student, Enum.at(lesson.topics, 0))
+      Students.progress_through_lesson(student, lesson)
+      Students.progress_through_topic(student, Enum.at(lesson.topics, 0))
 
-      {_, lessons} = Learning.get_progress(student, course.id)
+      {_, lessons} = Students.get_progress(student, course.id)
 
       lesson_from_prog = Enum.at(lessons, 0)
 
@@ -375,24 +322,24 @@ defmodule Lukas.LearningTest do
 
       assert Enum.at(lesson_from_prog.topics, 0).progressed
 
-      {:lesson, gotten_next_lesson} = Learning.get_next_lesson_or_topic(lessons)
+      {:lesson, gotten_next_lesson} = Students.get_next_lesson_or_topic(lessons)
 
       assert gotten_next_lesson.id == next_lesson.id
     end
 
     test "get_next_lesson_or_topic/1 should return the next topic.", %{student: student} do
       course = course_fixture()
-      {:ok, _} = Learning.enroll_student(course, student)
+      {:ok, _} = Students.enroll_student(course, student)
 
       lesson = lesson_fixture(course)
       first_topic = text_topic_fixture(lesson)
       wanted_next = text_topic_fixture(lesson)
 
-      Learning.progress_through_lesson(student, lesson)
-      Learning.progress_through_topic(student, first_topic)
+      Students.progress_through_lesson(student, lesson)
+      Students.progress_through_topic(student, first_topic)
 
-      {_, lessons} = Learning.get_progress(student, course.id)
-      {:topic, next_topic} = Learning.get_next_lesson_or_topic(lessons)
+      {_, lessons} = Students.get_progress(student, course.id)
+      {:topic, next_topic} = Students.get_next_lesson_or_topic(lessons)
       assert next_topic.id == wanted_next.id
     end
 
@@ -406,14 +353,14 @@ defmodule Lukas.LearningTest do
       first_topic = text_topic_fixture(first_lesson)
       second_topic = text_topic_fixture(first_lesson)
 
-      {:ok, _} = Learning.enroll_student(course, student)
+      {:ok, _} = Students.enroll_student(course, student)
 
-      Learning.progress_through_lesson(student, first_lesson)
-      Learning.progress_through_topic(student, first_topic)
-      Learning.progress_through_topic(student, second_topic)
+      Students.progress_through_lesson(student, first_lesson)
+      Students.progress_through_topic(student, first_topic)
+      Students.progress_through_topic(student, second_topic)
 
-      {_, lessons} = Learning.get_progress(student, course.id)
-      {:lesson, next_lesson} = Learning.get_next_lesson_or_topic(lessons)
+      {_, lessons} = Students.get_progress(student, course.id)
+      {:lesson, next_lesson} = Students.get_next_lesson_or_topic(lessons)
       assert next_lesson.id == second_lesson.id
     end
 
@@ -421,10 +368,10 @@ defmodule Lukas.LearningTest do
       student: student
     } do
       course = course_fixture()
-      {:ok, _} = Learning.enroll_student(course, student)
+      {:ok, _} = Students.enroll_student(course, student)
 
-      {_, lessons} = Learning.get_progress(student, course.id)
-      assert :course_home == Learning.get_next_lesson_or_topic(lessons)
+      {_, lessons} = Students.get_progress(student, course.id)
+      assert :course_home == Students.get_next_lesson_or_topic(lessons)
     end
 
     test "get_next_lesson_or_topic/1 should return :course_home if all lessons are completed.", %{
@@ -440,19 +387,19 @@ defmodule Lukas.LearningTest do
       topic2 = text_topic_fixture(lesson2)
       topic3 = text_topic_fixture(lesson3)
 
-      {:ok, _} = Learning.enroll_student(course, student)
+      {:ok, _} = Students.enroll_student(course, student)
 
-      Learning.progress_through_lesson(student, lesson1)
-      Learning.progress_through_topic(student, topic1)
+      Students.progress_through_lesson(student, lesson1)
+      Students.progress_through_topic(student, topic1)
 
-      Learning.progress_through_lesson(student, lesson2)
-      Learning.progress_through_topic(student, topic2)
+      Students.progress_through_lesson(student, lesson2)
+      Students.progress_through_topic(student, topic2)
 
-      Learning.progress_through_lesson(student, lesson3)
-      Learning.progress_through_topic(student, topic3)
+      Students.progress_through_lesson(student, lesson3)
+      Students.progress_through_topic(student, topic3)
 
-      {_, lessons} = Learning.get_progress(student, course.id)
-      assert :course_home == Learning.get_next_lesson_or_topic(lessons)
+      {_, lessons} = Students.get_progress(student, course.id)
+      assert :course_home == Students.get_next_lesson_or_topic(lessons)
     end
   end
 end
