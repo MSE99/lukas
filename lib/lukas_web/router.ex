@@ -64,6 +64,10 @@ defmodule LukasWeb.Router do
       live("/", Lecturers.HomeLive)
       live("/my-courses", Lecturers.CoursesLive, :index)
       live("/my-courses/new", Lecturers.CoursesLive, :new)
+
+      live("/my-courses/:id", Lecturers.CourseLive)
+      live("/my-courses/:id/new-lesson", Lecturers.CourseLive, :new_lesson)
+      live("/my-courses/:id/lessons/:lesson_id/edit-lesson", Lecturers.CourseLive, :edit_lesson)
     end
   end
 
