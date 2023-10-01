@@ -62,6 +62,7 @@ defmodule LukasWeb.Router do
 
     live_session :tutor, on_mount: [{LukasWeb.UserAuth, :ensure_authenticated_lecturer}] do
       live("/", Lecturers.HomeLive)
+      live("/my-courses", Lecturers.CoursesLive)
     end
   end
 

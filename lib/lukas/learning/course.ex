@@ -27,6 +27,16 @@ defmodule Lukas.Learning.Course do
     )
   end
 
+  def query_by_lecturer_id(lecturer_id) do
+    from(
+      c in __MODULE__,
+      join: t in Lukas.Learning.Teaching,
+      on: c.id == t.course_id,
+      where: t.lecturer_id == ^lecturer_id,
+      select: c
+    )
+  end
+
   def query_student_courses(student_id) do
     from(
       c in __MODULE__,

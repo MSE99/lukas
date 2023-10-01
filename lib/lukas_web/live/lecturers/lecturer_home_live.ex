@@ -5,7 +5,7 @@ defmodule LukasWeb.Lecturers.HomeLive do
 
   def render(assigns) do
     ~H"""
-    <h1>Operator's home</h1>
+    <h1>Lecturer's home</h1>
     """
   end
 end
