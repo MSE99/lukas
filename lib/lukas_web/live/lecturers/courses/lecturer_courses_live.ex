@@ -1,4 +1,4 @@
-defmodule LukasWeb.Lecturers.CoursesLive do
+defmodule LukasWeb.Lecturer.CoursesLive do
   use LukasWeb, :live_view
 
   alias Lukas.{Learning, Categories}

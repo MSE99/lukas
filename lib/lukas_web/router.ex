@@ -61,19 +61,19 @@ defmodule LukasWeb.Router do
     pipe_through([:browser, :require_authenticated_lecturer])
 
     live_session :tutor, on_mount: [{LukasWeb.UserAuth, :ensure_authenticated_lecturer}] do
-      live("/", Lecturers.HomeLive)
-      live("/my-courses", Lecturers.CoursesLive, :index)
-      live("/my-courses/new", Lecturers.CoursesLive, :new)
+      live("/", Lecturer.HomeLive)
+      live("/my-courses", Lecturer.CoursesLive, :index)
+      live("/my-courses/new", Lecturer.CoursesLive, :new)
 
-      live("/my-courses/:id", Lecturers.CourseLive)
-      live("/my-courses/:id/new-lesson", Lecturers.CourseLive, :new_lesson)
-      live("/my-courses/:id/lessons/:lesson_id/edit-lesson", Lecturers.CourseLive, :edit_lesson)
-      live("/my-courses/:id/lessons/:lesson_id", Lecturers.LessonLive)
-      live("/my-courses/:id/lessons/:lesson_id/new-topic", Lecturers.LessonLive, :new_topic)
+      live("/my-courses/:id", Lecturer.CourseLive)
+      live("/my-courses/:id/new-lesson", Lecturer.CourseLive, :new_lesson)
+      live("/my-courses/:id/lessons/:lesson_id/edit-lesson", Lecturer.CourseLive, :edit_lesson)
+      live("/my-courses/:id/lessons/:lesson_id", Lecturer.LessonLive)
+      live("/my-courses/:id/lessons/:lesson_id/new-topic", Lecturer.LessonLive, :new_topic)
 
       live(
         "/my-courses/:id/lessons/:lesson_id/topics/:topic_id/edit-topic",
-        Lecturers.LessonLive,
+        Lecturer.LessonLive,
         :edit_topic
       )
     end

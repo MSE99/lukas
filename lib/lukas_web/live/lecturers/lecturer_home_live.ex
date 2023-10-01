@@ -1,4 +1,4 @@
-defmodule LukasWeb.Lecturers.HomeLive do
+defmodule LukasWeb.Lecturer.HomeLive do
   use LukasWeb, :live_view
 
   def mount(_, _, socket), do: {:ok, socket}
