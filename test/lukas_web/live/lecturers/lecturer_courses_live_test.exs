@@ -8,59 +8,114 @@ defmodule LukasWeb.Lecturers.CoursesLiveTest do
 
   setup :register_and_log_in_lecturer
 
-  test "should render all lecturers courses.", %{conn: conn, user: user} do
-    c1 = course_fixture()
-    c2 = course_fixture()
+  describe "index" do
+    test "should render all lecturers courses.", %{conn: conn, user: user} do
+      c1 = course_fixture()
+      c2 = course_fixture()
 
-    {:ok, _} = Learning.Course.Staff.add_lecturer_to_course(c1, user)
-    {:ok, _} = Learning.Course.Staff.add_lecturer_to_course(c2, user)
+      {:ok, _} = Learning.Course.Staff.add_lecturer_to_course(c1, user)
+      {:ok, _} = Learning.Course.Staff.add_lecturer_to_course(c2, user)
 
-    not_given = course_fixture()
+      not_given = course_fixture()
 
-    {:ok, _, html} = live(conn, ~p"/tutor/my-courses")
+      {:ok, _, html} = live(conn, ~p"/tutor/my-courses")
 
-    assert html =~ c1.name
-    assert html =~ c2.name
-    refute html =~ not_given.name
+      assert html =~ c1.name
+      assert html =~ c2.name
+      refute html =~ not_given.name
+    end
+
+    test "should react to user being added to course.", %{conn: conn, user: user} do
+      {:ok, lv, _} = live(conn, ~p"/tutor/my-courses")
+
+      c1 = course_fixture()
+      c2 = course_fixture()
+
+      {:ok, _} = Learning.Course.Staff.add_lecturer_to_course(c1, user)
+      {:ok, _} = Learning.Course.Staff.add_lecturer_to_course(c2, user)
+
+      not_given = course_fixture()
+
+      html = render(lv)
+
+      assert html =~ c1.name
+      assert html =~ c2.name
+      refute html =~ not_given.name
+    end
+
+    test "should react to user being removed from course.", %{conn: conn, user: user} do
+      c1 = course_fixture()
+      c2 = course_fixture()
+      c3 = course_fixture()
+
+      {:ok, _} = Learning.Course.Staff.add_lecturer_to_course(c1, user)
+      {:ok, _} = Learning.Course.Staff.add_lecturer_to_course(c2, user)
+
+      {:ok, lv, _} = live(conn, ~p"/tutor/my-courses")
+
+      {:ok, _} = Learning.Course.Staff.remove_lecturer_from_course(c1, user)
+      {:ok, _} = Learning.Course.Staff.remove_lecturer_from_course(c2, user)
+      {:ok, _} = Learning.Course.Staff.add_lecturer_to_course(c3, user)
+
+      html = render(lv)
+
+      refute html =~ c1.name
+      refute html =~ c2.name
+
+      assert html =~ c3.name
+    end
   end
 
-  test "should react to user being added to course.", %{conn: conn, user: user} do
-    {:ok, lv, _} = live(conn, ~p"/tutor/my-courses")
+  describe "new" do
+    test "should render errors on change.", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/tutor/my-courses/new")
 
-    c1 = course_fixture()
-    c2 = course_fixture()
+      lv |> form("form", %{"course" => %{"name" => ""}}) |> render_change()
 
-    {:ok, _} = Learning.Course.Staff.add_lecturer_to_course(c1, user)
-    {:ok, _} = Learning.Course.Staff.add_lecturer_to_course(c2, user)
+      assert render(lv) =~ "can&#39;t be blank"
+    end
 
-    not_given = course_fixture()
+    test "should render errors on submit.", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/tutor/my-courses/new")
 
-    html = render(lv)
+      lv |> form("form", %{"course" => %{"name" => ""}}) |> render_submit()
 
-    assert html =~ c1.name
-    assert html =~ c2.name
-    refute html =~ not_given.name
-  end
+      assert render(lv) =~ "can&#39;t be blank"
+    end
 
-  test "should react to user being removed from course.", %{conn: conn, user: user} do
-    c1 = course_fixture()
-    c2 = course_fixture()
-    c3 = course_fixture()
+    test "should create new course and patch back to courses page.", %{conn: conn, user: user} do
+      wanted_tag1 = tag_fixture()
+      wanted_tag2 = tag_fixture()
+      unwanted_tag = tag_fixture()
 
-    {:ok, _} = Learning.Course.Staff.add_lecturer_to_course(c1, user)
-    {:ok, _} = Learning.Course.Staff.add_lecturer_to_course(c2, user)
+      {:ok, lv, _html} = live(conn, ~p"/tutor/my-courses/new")
 
-    {:ok, lv, _} = live(conn, ~p"/tutor/my-courses")
+      html = render(lv)
+      assert html =~ wanted_tag1.name
+      assert html =~ wanted_tag2.name
+      assert html =~ unwanted_tag.name
 
-    {:ok, _} = Learning.Course.Staff.remove_lecturer_from_course(c1, user)
-    {:ok, _} = Learning.Course.Staff.remove_lecturer_from_course(c2, user)
-    {:ok, _} = Learning.Course.Staff.add_lecturer_to_course(c3, user)
+      lv |> element("#tags-#{wanted_tag1.id}") |> render_click()
+      lv |> element("#tags-#{wanted_tag2.id}") |> render_click()
 
-    html = render(lv)
+      lv |> element("#tags-#{unwanted_tag.id}") |> render_click()
+      lv |> element("#tags-#{unwanted_tag.id}") |> render_click()
 
-    refute html =~ c1.name
-    refute html =~ c2.name
+      lv
+      |> form("form", %{"course" => %{"name" => "FOO IS GREAT BAR IS NONE!"}})
+      |> render_submit()
 
-    assert html =~ c3.name
+      assert_patched(lv, ~p"/tutor/my-courses")
+
+      assert render(lv) =~ "FOO IS GREAT BAR IS NONE!"
+
+      [course] = Learning.list_courses()
+
+      assert Enum.find(course.tags, fn t -> t.tag_id == wanted_tag1.id end) != nil
+      assert Enum.find(course.tags, fn t -> t.tag_id == wanted_tag2.id end) != nil
+      assert Enum.find(course.tags, fn t -> t.tag_id == unwanted_tag.id end) == nil
+
+      assert Learning.Course.Staff.list_course_lecturers(course) == [user]
+    end
   end
 end

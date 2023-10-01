@@ -7,6 +7,10 @@ defmodule Lukas.Learning.Course.Staff do
 
   import Lukas.Accounts.User, only: [must_be_lecturer: 1]
 
+  def emit_course_created_by_lecturer(course, lecturer) do
+    emit(staff_status_topic(lecturer.id), {:staff_status, :added_to_course, course})
+  end
+
   def list_lecturer_courses(lecturer_id) when is_integer(lecturer_id) do
     Course.query_by_lecturer_id(lecturer_id)
     |> Repo.all()

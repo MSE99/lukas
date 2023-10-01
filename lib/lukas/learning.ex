@@ -118,6 +118,43 @@ defmodule Lukas.Learning do
 
   def create_course(attrs, tag_ids) do
     Ecto.Multi.new()
+    |> create_course_multi(attrs, tag_ids)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{course: course}} ->
+        :ok
+        emit("courses", {:courses, :course_created, course})
+        {:ok, course}
+
+      {:error, :course, cs, _} ->
+        {:error, cs}
+    end
+  end
+
+  def create_course_by_lecturer(attrs, tag_ids, lecturer, side_effect \\ fn _ -> nil end) do
+    Ecto.Multi.new()
+    |> create_course_multi(attrs, tag_ids)
+    |> Ecto.Multi.run(:teachings, fn _, %{course: course} ->
+      Teaching.changeset(%Teaching{}, %{course_id: course.id, lecturer_id: lecturer.id})
+      |> Repo.insert!()
+
+      {:ok, nil}
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{course: course}} ->
+        :ok
+        side_effect.(course)
+        emit("courses", {:courses, :course_created, course})
+        {:ok, course}
+
+      {:error, :course, cs, _} ->
+        {:error, cs}
+    end
+  end
+
+  def create_course_multi(m, attrs, tag_ids) do
+    m
     |> Ecto.Multi.insert(:course, Course.changeset(%Course{}, attrs))
     |> Ecto.Multi.run(
       :tags,
@@ -131,16 +168,6 @@ defmodule Lukas.Learning do
         {:ok, taggings}
       end
     )
-    |> Repo.transaction()
-    |> case do
-      {:ok, %{course: course}} ->
-        :ok
-        emit("courses", {:courses, :course_created, course})
-        {:ok, course}
-
-      {:error, :course, cs, _} ->
-        {:error, cs}
-    end
   end
 
   def tag_course(course, tag) when is_integer(course) and is_integer(tag) do
