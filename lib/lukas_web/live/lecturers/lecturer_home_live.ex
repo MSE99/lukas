@@ -6,6 +6,10 @@ defmodule LukasWeb.Lecturer.HomeLive do
   def render(assigns) do
     ~H"""
     <h1>Lecturer's home</h1>
+
+    <.link navigate={~p"/tutor/my-courses"}>
+      My Courses
+    </.link>
     """
   end
 end

@@ -8,7 +8,9 @@ defmodule LukasWeb.Lecturer.CourseLive do
   def mount(%{"id" => raw_id}, _session, socket) do
     with {id, _} <- Integer.parse(raw_id),
          {course, lecturers} when course != nil <-
-           Course.Staff.get_course_with_lecturers(id) do
+           Course.Staff.get_course_with_lecturers(id),
+         current_lect when current_lect != nil <-
+           Enum.find(lecturers, fn lect -> lect.id == socket.assigns.current_user.id end) do
       Learning.watch_course(course)
 
       {:ok,
@@ -81,7 +83,7 @@ defmodule LukasWeb.Lecturer.CourseLive do
 
     <ul id="lessons" phx-update="stream">
       <li :for={{id, lesson} <- @streams.lessons} id={id}>
-        <%= lesson.title %> |
+        <.link navigate={~p"/tutor/my-courses/#{@course.id}/lessons/#{lesson.id}"}><%= lesson.title %></.link> |
         <.link patch={~p"/tutor/my-courses/#{@course.id}/lessons/#{lesson.id}/edit-lesson"}>
           Edit
         </.link>
@@ -96,14 +98,7 @@ defmodule LukasWeb.Lecturer.CourseLive do
 
     <ul id="lecturers" phx-update="stream">
       <li :for={{id, lect} <- @streams.lecturers} id={id}>
-        <%= lect.name %> |
-        <.button
-          id={"lecturer-delete-#{lect.id}"}
-          phx-click="delete-lecturer"
-          phx-value-lecturer-id={lect.id}
-        >
-          Remove
-        </.button>
+        <%= lect.name %>
       </li>
     </ul>
     """

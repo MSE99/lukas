@@ -8,7 +8,10 @@ defmodule LukasWeb.Lecturer.CourseLiveTest do
   alias Lukas.Learning.Course.{Content, Students}
 
   def create_course(ctx) do
+    %{user: user} = ctx
     course = course_fixture()
+
+    {:ok, _} = Lukas.Learning.Course.Staff.add_lecturer_to_course(course, user)
 
     lesson =
       lesson_fixture(course, %{
