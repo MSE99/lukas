@@ -23,8 +23,8 @@ defmodule LukasWeb.Operator.AllCoursesLive do
   def handle_async(:loading, {:ok, courses}, socket) do
     {:noreply,
      socket
-     |> assign(loading: AsyncResult.ok(socket.assigns.loading, nil))
-     |> stream(:async_courses, courses)}
+     |> assign(loading: AsyncResult.ok(socket.assigns.loading, false))
+     |> stream(:courses, courses)}
   end
 
   def handle_async(:loading, {:exit, reason}, socket) do
@@ -82,7 +82,7 @@ defmodule LukasWeb.Operator.AllCoursesLive do
       <:failed>Failed to load courses</:failed>
 
       <ul phx-update="stream" id="async-courses">
-        <li :for={{id, course} <- @streams.async_courses} id={id}>
+        <li :for={{id, course} <- @streams.courses} id={id}>
           <.link navigate={~p"/controls/courses/#{course.id}"}><%= course.name %></.link>
         </li>
       </ul>

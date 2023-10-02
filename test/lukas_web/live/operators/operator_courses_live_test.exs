@@ -20,12 +20,16 @@ defmodule LukasWeb.Operator.AllCoursesLiveTest do
 
     test "should render all courses.", %{conn: conn} do
       courses = 1..50 |> Enum.map(fn _ -> course_fixture() end)
-      {:ok, _lv, html} = live(conn, ~p"/controls/courses")
-      courses |> Enum.each(fn %{name: name} -> assert html =~ name end)
+
+      {:ok, lv, _} = live(conn, ~p"/controls/courses")
+
+      Enum.each(courses, fn %{name: name} -> assert render(lv) =~ name end)
     end
 
     test "should react to courses being added.", %{conn: conn} do
       {:ok, lv, _} = live(conn, ~p"/controls/courses")
+      render(lv)
+
       courses = 1..50 |> Enum.map(fn _ -> course_fixture() end)
       html = render(lv)
       courses |> Enum.each(fn %{name: name} -> assert html =~ name end)
