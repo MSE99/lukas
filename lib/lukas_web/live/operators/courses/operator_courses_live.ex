@@ -3,20 +3,34 @@ defmodule LukasWeb.Operator.AllCoursesLive do
 
   alias Lukas.Learning
   alias Lukas.Categories
+  alias Phoenix.LiveView.AsyncResult
 
   def mount(params, _, socket) do
-    Learning.watch_courses()
-    tags = Categories.list_tags()
-
-    courses = Learning.list_courses()
+    if connected?(socket) do
+      Learning.watch_courses()
+    end
 
     next_socket =
       socket
-      |> stream(:courses, courses)
-      |> assign(:tags, tags)
+      |> assign(:tags, Categories.list_tags())
+      |> assign(:loading, AsyncResult.loading())
+      |> start_async(:loading, &Learning.list_courses/0)
       |> apply_action(params, socket.assigns.live_action)
 
     {:ok, next_socket}
+  end
+
+  def handle_async(:loading, {:ok, courses}, socket) do
+    {:noreply,
+     socket
+     |> assign(loading: AsyncResult.ok(socket.assigns.loading, nil))
+     |> stream(:async_courses, courses)}
+  end
+
+  def handle_async(:loading, {:exit, reason}, socket) do
+    {:noreply,
+     socket
+     |> assign(loading: AsyncResult.failed(socket.assigns.loading, reason))}
   end
 
   def handle_params(_, _, socket), do: {:noreply, socket}
@@ -63,11 +77,16 @@ defmodule LukasWeb.Operator.AllCoursesLive do
 
     <h1>All courses</h1>
 
-    <ul phx-update="stream" id="courses">
-      <li :for={{id, course} <- @streams.courses} id={id}>
-        <.link navigate={~p"/controls/courses/#{course.id}"}><%= course.name %></.link>
-      </li>
-    </ul>
+    <.async_result assign={@loading}>
+      <:loading>Loading courses</:loading>
+      <:failed>Failed to load courses</:failed>
+
+      <ul phx-update="stream" id="async-courses">
+        <li :for={{id, course} <- @streams.async_courses} id={id}>
+          <.link navigate={~p"/controls/courses/#{course.id}"}><%= course.name %></.link>
+        </li>
+      </ul>
+    </.async_result>
     """
   end
 
