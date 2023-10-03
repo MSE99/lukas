@@ -31,8 +31,8 @@ defmodule LukasWeb.Operator.AllCoursesLiveTest do
       {:ok, lv, _} = live(conn, ~p"/controls/courses")
 
       courses = Enum.map(1..50, fn _ -> course_fixture() end)
-      html = render_async(lv)
 
+      html = render(lv)
       Enum.each(courses, fn %{name: name} -> assert html =~ name end)
     end
 

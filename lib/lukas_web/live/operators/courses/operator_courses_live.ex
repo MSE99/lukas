@@ -13,19 +13,26 @@ defmodule LukasWeb.Operator.AllCoursesLive do
     next_socket =
       socket
       |> stream_configure(:courses, [])
-      |> assign(:tags, Categories.list_tags())
+      |> stream_configure(:tags, [])
       |> assign(:loading, AsyncResult.loading())
-      |> start_async(:loading, &Learning.list_courses/0)
+      |> start_async(:loading, &load_courses_and_tags/0)
       |> apply_action(params, socket.assigns.live_action)
 
     {:ok, next_socket}
   end
 
-  def handle_async(:loading, {:ok, courses}, socket) do
-    {:noreply,
-     socket
-     |> assign(loading: AsyncResult.ok(socket.assigns.loading, false))
-     |> stream(:courses, courses)}
+  defp load_courses_and_tags() do
+    {Learning.list_courses(), Categories.list_tags()}
+  end
+
+  def handle_async(:loading, {:ok, {courses, tags}}, socket) do
+    next_socket =
+      socket
+      |> assign(loading: AsyncResult.ok(socket.assigns.loading, nil))
+      |> stream(:courses, courses)
+      |> stream(:tags, tags)
+
+    {:noreply, next_socket}
   end
 
   def handle_async(:loading, {:exit, reason}, socket) do
@@ -45,37 +52,14 @@ defmodule LukasWeb.Operator.AllCoursesLive do
     |> assign(tag_ids: [])
   end
 
-  def apply_action(socket, _, _), do: socket
+  def apply_action(socket, _, _) do
+    socket
+    |> assign(form: nil)
+    |> assign(tag_ids: nil)
+  end
 
   def render(assigns) do
     ~H"""
-    <.modal
-      :if={@live_action == :new}
-      id="new-course-modal"
-      on_cancel={JS.patch(~p"/controls/courses")}
-      show
-    >
-      <.form for={@form} phx-change="validate" phx-submit="create">
-        <.input field={@form[:name]} type="text" label="Name" phx-debounce="blur" />
-
-        <div>
-          <span
-            :for={tag <- @tags}
-            id={"tags-#{tag.id}"}
-            phx-click="toggle-tag"
-            phx-value-id={tag.id}
-            class={[
-              tag.id in @tag_ids && "font-bold blue"
-            ]}
-          >
-            <%= tag.name %>
-          </span>
-        </div>
-
-        <.button>Create</.button>
-      </.form>
-    </.modal>
-
     <h1>All courses</h1>
 
     <.async_result assign={@loading}>
@@ -88,6 +72,38 @@ defmodule LukasWeb.Operator.AllCoursesLive do
         </li>
       </ul>
     </.async_result>
+
+    <.modal
+      :if={@live_action == :new}
+      id="new-course-modal"
+      on_cancel={JS.patch(~p"/controls/courses")}
+      show
+    >
+      <.form for={@form} phx-change="validate" phx-submit="create">
+        <.input field={@form[:name]} type="text" label="Name" phx-debounce="blur" />
+
+        <.async_result assign={@loading}>
+          <:loading>Loading courses</:loading>
+          <:failed>Failed to load courses</:failed>
+
+          <div id="tags" phx-update="stream">
+            <span
+              :for={{id, tag} <- @streams.tags}
+              id={id}
+              phx-click="toggle-tag"
+              phx-value-id={tag.id}
+              class={[
+                tag.id in @tag_ids && "font-bold"
+              ]}
+            >
+              <%= tag.name %>
+            </span>
+          </div>
+        </.async_result>
+
+        <.button>Create</.button>
+      </.form>
+    </.modal>
     """
   end
 
@@ -108,13 +124,19 @@ defmodule LukasWeb.Operator.AllCoursesLive do
   end
 
   def handle_event("toggle-tag", %{"id" => raw_id}, socket) do
-    {id, _} = Integer.parse(raw_id)
-    %{tag_ids: tag_ids} = socket.assigns
+    id = String.to_integer(raw_id)
+    tag = Categories.get_tag!(id)
+    tag_ids = socket.assigns.tag_ids
 
     if Enum.find(tag_ids, nil, fn other_id -> other_id == id end) do
-      {:noreply, assign(socket, tag_ids: Enum.filter(tag_ids, fn other_id -> other_id != id end))}
+      next_socket =
+        socket
+        |> assign(tag_ids: Enum.filter(tag_ids, fn other_id -> other_id != id end))
+        |> stream_insert(:tags, tag)
+
+      {:noreply, next_socket}
     else
-      {:noreply, assign(socket, tag_ids: [id | tag_ids])}
+      {:noreply, socket |> assign(tag_ids: [id | tag_ids]) |> stream_insert(:tags, tag)}
     end
   end
 

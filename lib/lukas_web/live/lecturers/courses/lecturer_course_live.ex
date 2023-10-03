@@ -83,7 +83,10 @@ defmodule LukasWeb.Lecturer.CourseLive do
 
     <ul id="lessons" phx-update="stream">
       <li :for={{id, lesson} <- @streams.lessons} id={id}>
-        <.link navigate={~p"/tutor/my-courses/#{@course.id}/lessons/#{lesson.id}"}><%= lesson.title %></.link> |
+        <.link navigate={~p"/tutor/my-courses/#{@course.id}/lessons/#{lesson.id}"}>
+          <%= lesson.title %>
+        </.link>
+        |
         <.link patch={~p"/tutor/my-courses/#{@course.id}/lessons/#{lesson.id}/edit-lesson"}>
           Edit
         </.link>
