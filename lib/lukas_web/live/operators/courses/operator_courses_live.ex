@@ -12,6 +12,7 @@ defmodule LukasWeb.Operator.AllCoursesLive do
 
     next_socket =
       socket
+      |> stream_configure(:courses, [])
       |> assign(:tags, Categories.list_tags())
       |> assign(:loading, AsyncResult.loading())
       |> start_async(:loading, &Learning.list_courses/0)
