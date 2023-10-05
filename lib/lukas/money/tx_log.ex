@@ -2,6 +2,7 @@ defmodule Lukas.Money.TxLog do
   use Ecto.Schema
 
   import Ecto.Changeset
+  import Ecto.Query
 
   schema "transaction_logs" do
     field(:count, :integer)
@@ -10,6 +11,10 @@ defmodule Lukas.Money.TxLog do
     belongs_to(:student, Lukas.Accounts.User)
 
     timestamps()
+  end
+
+  def new(count, student_id) do
+    changeset(%__MODULE__{}, %{count: count, student_id: student_id, amount: 0})
   end
 
   def changeset(log, attrs \\ %{}) do
@@ -36,5 +41,14 @@ defmodule Lukas.Money.TxLog do
   defp validate_student_id(changeset) do
     changeset
     |> validate_required(:student_id)
+  end
+
+  def query_last_count_for_student(student_id) do
+    from(
+      log in __MODULE__,
+      where: log.student_id == ^student_id,
+      order_by: [desc: :inserted_at],
+      select: log.count
+    )
   end
 end
