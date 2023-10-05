@@ -30,4 +30,12 @@ defmodule Lukas.Money.DirectDepositTx do
       where: d.student_id == ^student_id
     )
   end
+
+  def query_sum_by_student_id(student_id) do
+    from(
+      d in __MODULE__,
+      where: d.student_id == ^student_id,
+      select: sum(d.amount)
+    )
+  end
 end

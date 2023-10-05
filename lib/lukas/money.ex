@@ -8,11 +8,44 @@ defmodule Lukas.Money do
 
   alias Ecto.Multi
 
+  def purchase_course_for(%User{} = student, %Course{} = course) when must_be_student(student) do
+    Multi.new()
+    |> multi_log_tx(student)
+    |> Multi.insert(:purchase, CoursePurchase.new(student.id, course.id, course.price))
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{purchase: purchase}} -> purchase
+    end
+  end
+
   def directly_deposit_to_student!(%User{} = clerk, %User{} = student, amount)
       when must_be_operator(clerk) and must_be_student(student) do
     Multi.new()
-    |> Multi.one(:count, TxLog.query_last_count_for_student(student.id))
+    |> multi_log_tx(student)
     |> Multi.insert(:deposit, DirectDepositTx.new(amount, clerk.id, student.id))
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{deposit: deposit}} -> deposit
+    end
+  end
+
+  def get_deposited_amount!(%User{} = student) when must_be_student(student) do
+    Multi.new()
+    |> Multi.one(:deposits, DirectDepositTx.query_sum_by_student_id(student.id))
+    |> Multi.one(:purchases, CoursePurchase.query_sum_by_buyer_id(student.id))
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{deposits: deposits, purchases: purchases}} ->
+        ensure_sum_not_nil(deposits) - ensure_sum_not_nil(purchases)
+    end
+  end
+
+  defp ensure_sum_not_nil(nil), do: 0.0
+  defp ensure_sum_not_nil(sum), do: sum
+
+  defp multi_log_tx(multi, student) do
+    multi
+    |> Multi.one(:count, TxLog.query_last_count_for_student(student.id))
     |> Multi.run(:log, fn _, %{count: count} ->
       normalized_count = count || 0
 
@@ -22,30 +55,5 @@ defmodule Lukas.Money do
 
       {:ok, log}
     end)
-    |> Repo.transaction()
-    |> case do
-      {:ok, %{deposit: deposit}} -> deposit
-    end
   end
-
-  def get_deposited_amount!(%User{} = student) when must_be_student(student) do
-    Multi.new()
-    |> Multi.all(:deposits, DirectDepositTx.query_by_student_id(student.id))
-    |> Multi.all(:purchases, CoursePurchase.query_by_buyer_id(student.id))
-    |> Multi.run(:combined_txs, fn _, %{deposits: deposits, purchases: purchases} ->
-      combined =
-        Enum.concat(deposits, purchases)
-        |> Enum.sort_by(fn tx -> tx.inserted_at end, :desc)
-
-      {:ok, combined}
-    end)
-    |> Repo.transaction()
-    |> case do
-      {:ok, %{combined_txs: combined}} ->
-        Enum.reduce(combined, 0.0, fn tx, acc -> apply_tx_to_amount(tx, acc) end)
-    end
-  end
-
-  defp apply_tx_to_amount(%DirectDepositTx{} = deposit, amount), do: deposit.amount + amount
-  defp apply_tx_to_amount(%CoursePurchase{} = purchase, amount), do: purchase.amount + amount
 end
