@@ -70,7 +70,7 @@ defmodule LukasWeb.Lecturers.CoursesLiveTest do
     test "should render errors on change.", %{conn: conn} do
       {:ok, lv, _html} = live(conn, ~p"/tutor/my-courses/new")
 
-      lv |> form("form", %{"course" => %{"name" => ""}}) |> render_change()
+      lv |> form("form", %{"course" => %{"name" => "", "price" => -0.5}}) |> render_change()
 
       assert render(lv) =~ "can&#39;t be blank"
     end
@@ -78,9 +78,10 @@ defmodule LukasWeb.Lecturers.CoursesLiveTest do
     test "should render errors on submit.", %{conn: conn} do
       {:ok, lv, _html} = live(conn, ~p"/tutor/my-courses/new")
 
-      lv |> form("form", %{"course" => %{"name" => ""}}) |> render_submit()
+      lv |> form("form", %{"course" => %{"name" => "", "price" => -0.5}}) |> render_submit()
 
       assert render(lv) =~ "can&#39;t be blank"
+      assert render(lv) =~ "must be greater than or equal to 0"
     end
 
     test "should create new course and patch back to courses page.", %{conn: conn, user: user} do
@@ -102,7 +103,7 @@ defmodule LukasWeb.Lecturers.CoursesLiveTest do
       lv |> element("#tags-#{unwanted_tag.id}") |> render_click()
 
       lv
-      |> form("form", %{"course" => %{"name" => "FOO IS GREAT BAR IS NONE!"}})
+      |> form("form", %{"course" => %{"name" => "FOO IS GREAT BAR IS NONE!", "price" => 500.0}})
       |> render_submit()
 
       assert_patched(lv, ~p"/tutor/my-courses")
@@ -114,6 +115,7 @@ defmodule LukasWeb.Lecturers.CoursesLiveTest do
       assert Enum.find(course.tags, fn t -> t.tag_id == wanted_tag1.id end) != nil
       assert Enum.find(course.tags, fn t -> t.tag_id == wanted_tag2.id end) != nil
       assert Enum.find(course.tags, fn t -> t.tag_id == unwanted_tag.id end) == nil
+      assert course.price == 500.0
 
       assert Learning.Course.Staff.list_course_lecturers(course) == [user]
     end

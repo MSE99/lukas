@@ -101,7 +101,7 @@ defmodule LukasWeb.Operator.AllCoursesLiveTest do
       lv |> element("span", tag3.name) |> render_click()
 
       lv
-      |> form("form", %{"course" => %{"name" => "foo bar baz"}})
+      |> form("form", %{"course" => %{"name" => "foo bar baz", "price" => 500}})
       |> render_submit()
 
       assert_patched(lv, ~p"/controls/courses")

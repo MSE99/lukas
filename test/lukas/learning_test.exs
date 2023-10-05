@@ -15,15 +15,18 @@ defmodule Lukas.LearningTest do
     test "should create a new course and dispatch an event.", %{tag: tag} do
       Learning.watch_courses()
 
-      {:ok, course} = Learning.create_course(%{"name" => "Japanese basic"}, [tag.id])
+      {:ok, course} =
+        Learning.create_course(%{"name" => "Japanese basic", "price" => 50.0}, [tag.id])
+
       assert course.name == "Japanese basic"
+      assert course.price == 50.0
 
       assert_received({:courses, :course_created, ^course})
     end
 
     test "tag_course/2 should add the tag to the course with the given id and update the course.",
          %{tag: tag} do
-      {:ok, course} = Learning.create_course(%{"name" => "Japanese basic"})
+      {:ok, course} = Learning.create_course(%{"name" => "Japanese basic", "price" => 500})
       Learning.tag_course(course.id, tag.id)
 
       assert Learning.get_course_and_tags(course.id) == {course, [tag]}
@@ -31,16 +34,21 @@ defmodule Lukas.LearningTest do
 
     test "untag_course/2 should remove the tag to the course with the given id and update the course.",
          %{tag: tag} do
-      {:ok, course} = Learning.create_course(%{"name" => "Japanese basic"}, [tag.id])
+      {:ok, course} =
+        Learning.create_course(%{"name" => "Japanese basic", "price" => 500}, [tag.id])
 
       Learning.untag_course(course.id, tag.id)
       assert Learning.get_course_and_tags(course.id) == {course, []}
     end
 
     test "update_course/2 should update the course." do
-      {:ok, course} = Learning.create_course(%{"name" => "Japanese basic"}, [])
-      {:ok, next_course} = Learning.update_course(course, %{"name" => "Japanese advanced"})
+      {:ok, course} = Learning.create_course(%{"name" => "Japanese basic", "price" => 50}, [])
+
+      {:ok, next_course} =
+        Learning.update_course(course, %{"name" => "Japanese advanced", "price" => 500.0})
+
       assert next_course.name =~ "Japanese advanced"
+      assert next_course.price == 500.0
     end
 
     test "watch_course/1 should allow us to watch a course for any updates.", %{tag: tag} do

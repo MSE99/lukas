@@ -6,6 +6,7 @@ defmodule Lukas.Learning.Course do
 
   schema "courses" do
     field(:name, :string)
+    field(:price, :float)
 
     has_many(:tags, Lukas.Learning.Tagging)
     has_many(:teachings, Lukas.Learning.Teaching)
@@ -16,8 +17,9 @@ defmodule Lukas.Learning.Course do
 
   def changeset(course, attrs) do
     course
-    |> cast(attrs, [:name])
-    |> validate_required([:name])
+    |> cast(attrs, [:name, :price])
+    |> validate_required([:name, :price])
+    |> validate_number(:price, greater_than_or_equal_to: 0)
   end
 
   def query_by_id(id) do
