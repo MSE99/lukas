@@ -9,6 +9,7 @@ defmodule Lukas.Repo.Migrations.CreateUsersAuthTables do
       add(:confirmed_at, :naive_datetime)
       add(:kind, :string, null: false)
       add(:name, :string, null: false)
+      add(:profile_image, :string, null: false)
 
       timestamps()
     end

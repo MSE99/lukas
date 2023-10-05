@@ -17,6 +17,7 @@ defmodule Lukas.Accounts.User do
     field(:confirmed_at, :naive_datetime)
     field(:kind, Ecto.Enum, values: @user_kinds)
     field(:name, :string)
+    field(:profile_image, :string, default: "default-profile.png")
 
     timestamps()
   end
