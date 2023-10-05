@@ -24,5 +24,16 @@ defmodule Lukas.Repo.Migrations.AddTransactions do
 
     create(index(:direct_deposits, [:student]))
     create(index(:direct_deposits, [:clerk]))
+
+    create table(:course_purchases) do
+      add :amount, :float
+      add :course_id, references(:courses)
+      add :buyer_id, references(:users)
+
+      timestamps()
+    end
+
+    create unique_index(:course_purchases, [:course_id, :buyer_id])
+    create index(:course_purchases, [:buyer_id])
   end
 end
