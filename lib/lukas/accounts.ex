@@ -72,15 +72,23 @@ defmodule Lukas.Accounts do
 
   ## User registration
 
-  def register_user(%Invite{} = invite, attrs) do
+  def register_user(%Invite{} = invite, attrs, get_image_path \\ fn -> "default-profile.png" end) do
     filled = attrs |> Map.put("kind", "lecturer")
 
     Ecto.Multi.new()
     |> Ecto.Multi.insert(:user, User.registration_changeset(%User{}, filled))
     |> Ecto.Multi.delete(:invite, invite)
+    |> Ecto.Multi.run(:user_with_image, fn _, %{user: user} ->
+      updated =
+        user
+        |> User.profile_image_changeset(%{profile_image: get_image_path.()})
+        |> Repo.update!()
+
+      {:ok, updated}
+    end)
     |> Repo.transaction()
     |> case do
-      {:ok, %{user: user, invite: invite}} ->
+      {:ok, %{user_with_image: user, invite: invite}} ->
         emit_invite_deleted(invite)
         {:ok, user}
 

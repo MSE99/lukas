@@ -32,6 +32,13 @@ defmodule Lukas.Accounts.User do
     |> validate_name()
   end
 
+  def profile_image_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:profile_image])
+    |> validate_required([:profile_image])
+    |> unique_constraint([:profile_image])
+  end
+
   defp validate_name(changeset) do
     changeset
     |> validate_required(:name)
