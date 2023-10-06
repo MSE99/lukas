@@ -9,15 +9,48 @@ defmodule LukasWeb.Students.WalletLive do
       Money.watch_wallet(socket.assigns.current_user)
     end
 
-    {:ok,
+    next_socket =
+      socket
+      |> stream_configure(:transactions, dom_id: &Money.tag_from_tx/1)
+      |> assign(:loading, AsyncResult.loading())
+      |> start_async(:loading, fn ->
+        {Money.list_transactions!(socket.assigns.current_user),
+         Money.get_deposited_amount!(socket.assigns.current_user)}
+      end)
+
+    {:ok, next_socket}
+  end
+
+  def handle_async(:loading, {:ok, {txs, wallet_amount}}, socket) do
+    {:noreply,
      socket
-     |> assign(:wallet_amount, Money.get_deposited_amount!(socket.assigns.current_user))}
+     |> stream(:transactions, txs)
+     |> assign(:wallet_amount, wallet_amount)
+     |> assign(:loading, AsyncResult.ok(socket.assigns.loading, nil))}
+  end
+
+  def handle_async(:loading, {:exit, reason}, socket) do
+    {:noreply,
+     socket
+     |> assign(:loading, AsyncResult.failed(socket.assigns.loading, reason))}
   end
 
   def render(assigns) do
     ~H"""
     <h1>Wallet</h1>
-    <p><%= @wallet_amount |> format_amount() %> LYD</p>
+
+    <.async_result assign={@loading}>
+      <:loading>Loading...</:loading>
+      <:failed>Failed to load wallet</:failed>
+
+      <p><%= @wallet_amount |> format_amount() %> LYD</p>
+
+      <ul id="txs" phx-update="stream">
+        <li :for={{id, tx} <- @streams.transactions} id={id}>
+          <%= Money.describe_tx(tx) %>
+        </li>
+      </ul>
+    </.async_result>
     """
   end
 

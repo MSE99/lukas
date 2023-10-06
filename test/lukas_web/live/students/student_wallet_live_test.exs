@@ -23,12 +23,18 @@ defmodule LukasWeb.Students.WalletLiveTest do
   end
 
   test "should react to deposits being created.", %{conn: conn, user: user} do
-    {:ok, lv, _} = live(conn, ~p"/home/wallet")
-
     clerk = user_fixture()
 
-    Enum.each(1..10, fn _ -> direct_deposit_fixture(clerk, user, 100) end)
+    deposits = Enum.map(1..10, fn _ -> direct_deposit_fixture(clerk, user, 100) end)
 
-    assert render_async(lv) =~ "1000.0 LYD"
+    {:ok, lv, _} = live(conn, ~p"/home/wallet")
+
+    html = render_async(lv)
+
+    assert html =~ "1000.0 LYD"
+
+    Enum.each(deposits, fn d ->
+      assert lv |> element("#tx-deposit-#{d.id}") |> has_element?()
+    end)
   end
 end

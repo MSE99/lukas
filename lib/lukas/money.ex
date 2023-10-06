@@ -8,6 +8,30 @@ defmodule Lukas.Money do
 
   alias Ecto.Multi
 
+  def tag_from_tx(%CoursePurchase{} = c), do: "tx-purchase-#{c.id}"
+  def tag_from_tx(%DirectDepositTx{} = d), do: "tx-deposit-#{d.id}"
+
+  def describe_tx(%CoursePurchase{} = c) do
+    "Course #{c.id} was purchased for #{c.amount}"
+  end
+
+  def describe_tx(%DirectDepositTx{} = dtx) do
+    "Operator with id #{dtx.id} deposited #{dtx.amount} in your account"
+  end
+
+  def list_transactions!(%User{} = student) when must_be_student(student) do
+    Multi.new()
+    |> Multi.all(:deposits, DirectDepositTx.query_by_student_id(student.id))
+    |> Multi.all(:purchases, CoursePurchase.query_by_buyer_id(student.id))
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{deposits: deposits, purchases: purchases}} ->
+        deposits
+        |> Enum.concat(purchases)
+        |> Enum.sort_by(fn tx -> tx.inserted_at end, {:desc, Date})
+    end
+  end
+
   def watch_wallet(%User{} = student) when must_be_student(student) do
     Phoenix.PubSub.subscribe(Lukas.PubSub, "user/#{student.id}/wallet")
   end
