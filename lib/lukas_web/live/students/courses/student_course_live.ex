@@ -1,6 +1,7 @@
 defmodule LukasWeb.Students.CourseLive do
   use LukasWeb, :live_view
 
+  alias Lukas.Money
   alias Lukas.Learning
   alias Lukas.Learning.Course.Students
 
@@ -9,11 +10,15 @@ defmodule LukasWeb.Students.CourseLive do
          {course, lect, tags, is_enrolled} when course != nil <-
            Learning.get_course_for_student(id, socket.assigns.current_user) do
       Learning.watch_course(id)
+      Money.watch_wallet(socket.assigns.current_user)
+
+      wallet_amount = Money.get_deposited_amount!(socket.assigns.current_user)
 
       {:ok,
        socket
        |> assign(course: course)
        |> assign(is_enrolled: is_enrolled)
+       |> assign(wallet_amount: wallet_amount)
        |> stream(:lecturers, lect)
        |> stream(:tags, tags)}
     else
@@ -27,7 +32,7 @@ defmodule LukasWeb.Students.CourseLive do
     ~H"""
     <h1>Course <%= @course.name %></h1>
 
-    <.button :if={!@is_enrolled} id="enroll-button" phx-click="enroll">
+    <.button :if={!@is_enrolled && @wallet_amount >= @course.price} id="enroll-button" phx-click="enroll">
       Enroll
     </.button>
 
@@ -82,4 +87,8 @@ defmodule LukasWeb.Students.CourseLive do
   end
 
   def handle_info({:course, _, _, _}, socket), do: {:noreply, socket}
+
+  def handle_info({:wallet, _, :amount_updated, next_amount}, socket) do
+    {:noreply, assign(socket, wallet_amount: next_amount)}
+  end
 end
