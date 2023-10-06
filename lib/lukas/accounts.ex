@@ -8,9 +8,8 @@ defmodule Lukas.Accounts do
     Phoenix.PubSub.subscribe(Lukas.PubSub, "students")
   end
 
-  def list_students() do
-    User.query_students()
-    |> Repo.all()
+  def list_students(opts \\ []) do
+    User.query_students(opts) |> Repo.all()
   end
 
   def get_lecturer!(lecturer_id) when is_integer(lecturer_id) do

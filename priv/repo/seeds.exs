@@ -30,6 +30,18 @@
 
 Lukas.Money.directly_deposit_to_student!(clerk, student, 5000)
 
+1..15
+|> Enum.each(fn _ ->
+  {:ok, student} =
+    Lukas.Accounts.register_user(%{
+      "kind" => "student",
+      "phone_number" => "092 #{System.unique_integer([:positive])}",
+      "password" => "123123123123",
+      "email" => "mail_#{System.unique_integer([:positive])}@gmail.com",
+      "name" => "Student #{System.unique_integer([:positive])}"
+    })
+end)
+
 {:ok, _} =
   Lukas.Accounts.register_user(%{
     "kind" => "lecturer",
