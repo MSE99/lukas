@@ -80,8 +80,8 @@ defmodule LukasWeb.Operator.AllCoursesLive do
       show
     >
       <.form for={@form} phx-change="validate" phx-submit="create">
-      <.input field={@form[:name]} type="text" label="Name" phx-debounce="blur" />
-      <.input field={@form[:price]} type="number" label="Price" phx-debounce="blur" />
+        <.input field={@form[:name]} type="text" label="Name" phx-debounce="blur" />
+        <.input field={@form[:price]} type="number" label="Price" phx-debounce="blur" />
 
         <.async_result assign={@loading}>
           <:loading>Loading courses</:loading>

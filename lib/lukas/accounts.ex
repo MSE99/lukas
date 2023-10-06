@@ -4,6 +4,15 @@ defmodule Lukas.Accounts do
 
   alias Lukas.Accounts.{User, UserToken, UserNotifier, Invite}
 
+  def watch_students() do
+    Phoenix.PubSub.subscribe(Lukas.PubSub, "students")
+  end
+
+  def list_students() do
+    User.query_students()
+    |> Repo.all()
+  end
+
   def get_lecturer!(lecturer_id) when is_integer(lecturer_id) do
     Repo.get_by!(User, kind: :lecturer, id: lecturer_id)
   end
@@ -101,7 +110,15 @@ defmodule Lukas.Accounts do
     %User{}
     |> User.registration_changeset(attrs)
     |> Repo.insert()
+    |> maybe_emit_student_registered()
   end
+
+  defp maybe_emit_student_registered({:ok, user} = res) when user.kind == :student do
+    Phoenix.PubSub.broadcast(Lukas.PubSub, "students", {:students, :student_registered, user})
+    res
+  end
+
+  defp maybe_emit_student_registered(res), do: res
 
   def change_user_registration(%User{} = user, attrs \\ %{}) do
     User.registration_changeset(user, attrs, hash_password: false, validate_email: false)

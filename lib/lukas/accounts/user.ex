@@ -146,6 +146,10 @@ defmodule Lukas.Accounts.User do
   def is_lecturer?(%__MODULE__{kind: :lecturer}), do: true
   def is_lecturer?(_), do: false
 
+  def query_students() do
+    from(u in __MODULE__, where: u.kind == :student)
+  end
+
   def query_whose_id_not_in(exclusion_list, opts \\ []) do
     kind = Keyword.get(opts, :kind, :student)
     from(u in __MODULE__, where: u.kind == ^kind and u.id not in ^exclusion_list)
