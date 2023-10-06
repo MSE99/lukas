@@ -4,6 +4,7 @@ defmodule LukasWeb.Operator.CourseEnrollmentsLiveTest do
   import Phoenix.LiveViewTest
   import Lukas.LearningFixtures
   import Lukas.AccountsFixtures
+  import Lukas.MoneyFixtures
 
   alias Lukas.Learning
   alias Lukas.Learning.Course.Students
@@ -31,8 +32,13 @@ defmodule LukasWeb.Operator.CourseEnrollmentsLiveTest do
 
     test "should render all enrolled students.", %{conn: conn, course: course} do
       student1 = user_fixture(%{kind: :student})
+      direct_deposit_fixture(user_fixture(), student1, course.price)
+
       student2 = user_fixture(%{kind: :student})
+      direct_deposit_fixture(user_fixture(), student2, course.price)
+
       student3 = user_fixture(%{kind: :student})
+      direct_deposit_fixture(user_fixture(), student3, course.price)
 
       {:ok, _} = Students.enroll_student(course, student1)
       {:ok, _} = Students.enroll_student(course, student2)
@@ -49,8 +55,13 @@ defmodule LukasWeb.Operator.CourseEnrollmentsLiveTest do
       {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}/enrollments")
 
       student1 = user_fixture(%{kind: :student})
+      direct_deposit_fixture(user_fixture(), student1, course.price)
+
       student2 = user_fixture(%{kind: :student})
+      direct_deposit_fixture(user_fixture(), student2, course.price)
+
       student3 = user_fixture(%{kind: :student})
+      direct_deposit_fixture(user_fixture(), student3, course.price)
 
       {:ok, _} = Students.enroll_student(course, student1)
       {:ok, _} = Students.enroll_student(course, student2)
@@ -66,8 +77,13 @@ defmodule LukasWeb.Operator.CourseEnrollmentsLiveTest do
       {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}/enrollments")
 
       student1 = user_fixture(%{kind: :student})
+      direct_deposit_fixture(user_fixture(), student1, course.price)
+
       student2 = user_fixture(%{kind: :student})
+      direct_deposit_fixture(user_fixture(), student2, course.price)
+
       student3 = user_fixture(%{kind: :student})
+      direct_deposit_fixture(user_fixture(), student3, course.price)
 
       {:ok, _} = Students.enroll_student(course, student1)
       {:ok, _} = Students.enroll_student(course, student2)

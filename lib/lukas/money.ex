@@ -41,19 +41,29 @@ defmodule Lukas.Money do
   end
 
   def purchase_course_for(%User{} = student, %Course{} = course) when must_be_student(student) do
-    Multi.new()
+    purchase_course_for(Multi.new(), student, course)
+  end
+
+  def purchase_course_for(m, %User{} = student, %Course{} = course)
+      when must_be_student(student) do
+    m
+    |> purchase_course_multi(student, course)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{purchase: purchase, wallet_amount: wallet_amount}} = res ->
+        emit_wallet_update(student, wallet_amount)
+        emit_purchase(student, purchase)
+
+        res
+    end
+  end
+
+  def purchase_course_multi(m, %User{} = student, %Course{} = course) do
+    m
     |> multi_log_tx(student)
     |> Multi.insert(:purchase, CoursePurchase.new(student.id, course.id, course.price))
     |> multi_current_wallet(student)
     |> Multi.run(:wallet_check, fn _, %{wallet_amount: amount} when amount >= 0 -> {:ok, nil} end)
-    |> Repo.transaction()
-    |> case do
-      {:ok, %{purchase: purchase, wallet_amount: wallet_amount}} ->
-        emit_wallet_update(student, wallet_amount)
-        emit_purchase(student, purchase)
-
-        purchase
-    end
   end
 
   defp emit_purchase(student, purchase) do

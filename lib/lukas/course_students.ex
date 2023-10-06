@@ -1,11 +1,12 @@
 defmodule Lukas.Learning.Course.Students do
+  import Lukas.Accounts.User, only: [must_be_student: 1]
+
+  alias Lukas.Money
   alias Lukas.Accounts
   alias Lukas.Learning.{Enrollment, Course, Lesson, Progress}
   alias Lukas.Repo
 
   alias Ecto.Multi
-
-  import Lukas.Accounts.User, only: [must_be_student: 1]
 
   def list_student_courses(%Accounts.User{} = student) do
     Course.query_student_courses(student.id) |> Repo.all()
@@ -31,12 +32,15 @@ defmodule Lukas.Learning.Course.Students do
   end
 
   def enroll_student(%Course{} = course, student) when must_be_student(student) do
-    Enrollment.new(course.id, student.id)
-    |> Repo.insert()
-    |> maybe_emit_student_enrolled(student, course)
+    Multi.new()
+    |> Multi.insert(:enrollment, Enrollment.new(course.id, student.id))
+    |> Money.purchase_course_for(student, course)
+    |> case do
+      {:ok, %{enrollment: enr}} -> emit_student_enrolled(enr, student, course)
+    end
   end
 
-  def maybe_emit_student_enrolled({:ok, enrollment} = res, student, course) do
+  def emit_student_enrolled(enrollment, student, course) do
     emit(
       course_topic(enrollment.course_id),
       {:course, enrollment.course_id, :student_enrolled, student}
@@ -44,10 +48,8 @@ defmodule Lukas.Learning.Course.Students do
 
     emit(enrollments_topic(student), {:enrollments, :enrolled, course})
 
-    res
+    {:ok, enrollment}
   end
-
-  def maybe_emit_student_enrolled(res, _, _), do: res
 
   def watch_student_enrollments(%Accounts.User{} = user), do: enrollments_topic(user) |> watch()
 

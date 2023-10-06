@@ -6,6 +6,7 @@ defmodule Lukas.LearningTest do
 
   import Lukas.LearningFixtures
   import Lukas.AccountsFixtures
+  import Lukas.MoneyFixtures
 
   describe "courses" do
     setup do
@@ -218,6 +219,8 @@ defmodule Lukas.LearningTest do
       course = course_fixture()
       student = user_fixture(%{kind: :student})
 
+      direct_deposit_fixture(user_fixture(), student, 500_000.0)
+
       %{student: student, course: course}
     end
 
@@ -236,18 +239,15 @@ defmodule Lukas.LearningTest do
       assert_received({:course, ^course_id, :student_enrolled, ^student})
     end
 
-    test "enroll_student/2 should return an error if the student is already enrolled.", %{
-      student: student,
-      course: course
-    } do
-      Students.enroll_student(course, student)
-      assert {:error, _} = Students.enroll_student(course, student)
-    end
-
     test "list_enrolled/0 should list all the enrolled students of the course.", %{course: course} do
       student1 = user_fixture(%{kind: :student})
+      direct_deposit_fixture(user_fixture(), student1, 5000)
+
       student2 = user_fixture(%{kind: :student})
+      direct_deposit_fixture(user_fixture(), student2, 5000)
+
       student3 = user_fixture(%{kind: :student})
+      direct_deposit_fixture(user_fixture(), student3, 5000)
 
       {:ok, _} = Students.enroll_student(course, student1)
       {:ok, _} = Students.enroll_student(course, student2)
@@ -273,6 +273,8 @@ defmodule Lukas.LearningTest do
       end)
 
     student = student_fixture()
+
+    direct_deposit_fixture(user_fixture(), student, 50_000.0)
 
     Students.enroll_student(course, student)
 

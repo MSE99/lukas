@@ -3,6 +3,7 @@ defmodule LukasWeb.Students.AvailableCoursesLiveTest do
 
   import Phoenix.LiveViewTest
   import Lukas.LearningFixtures
+  import Lukas.AccountsFixtures
 
   alias Lukas.Learning.Course.Students
 
@@ -45,6 +46,8 @@ defmodule LukasWeb.Students.AvailableCoursesLiveTest do
       course3 = course_fixture()
 
       {:ok, lv, _} = live(conn, ~p"/home/courses/available")
+
+      Lukas.MoneyFixtures.direct_deposit_fixture(user_fixture(), user, 50_000.0)
 
       {:ok, _} = Students.enroll_student(course1, user)
       {:ok, _} = Students.enroll_student(course2, user)

@@ -4,6 +4,7 @@ defmodule LukasWeb.Courses.CourseLiveTest do
   import Phoenix.LiveViewTest
   import Lukas.LearningFixtures
   import Lukas.AccountsFixtures
+  import Lukas.MoneyFixtures
 
   alias Lukas.Learning.Course.{Content, Students}
 
@@ -54,6 +55,7 @@ defmodule LukasWeb.Courses.CourseLiveTest do
       {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}")
 
       student = user_fixture(%{kind: :student})
+      direct_deposit_fixture(user_fixture(), student, 50_000.0)
       {:ok, _} = Students.enroll_student(course, student)
 
       assert render(lv) =~ course.name

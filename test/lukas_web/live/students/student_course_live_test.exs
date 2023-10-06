@@ -6,6 +6,7 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
   import Lukas.AccountsFixtures
   import Lukas.MoneyFixtures
 
+  alias Lukas.Money
   alias Lukas.Learning
   alias Lukas.Learning.Course
   alias Lukas.Learning.Course.Students
@@ -192,5 +193,19 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
     )
 
     refute lv |> element("button#enroll-button") |> has_element?()
+  end
+
+  test "should register a purchase when enrolling in a course", %{
+    conn: conn,
+    course: course,
+    user: student
+  } do
+    {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}")
+
+    lv
+    |> element("button#enroll-button")
+    |> render_click()
+
+    assert Money.get_deposited_amount!(student) == 0.0
   end
 end

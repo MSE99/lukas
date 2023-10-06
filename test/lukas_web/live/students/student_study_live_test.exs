@@ -2,6 +2,8 @@ defmodule LukasWeb.Students.StudyLiveTest do
   use LukasWeb.ConnCase
 
   import Lukas.LearningFixtures
+  import Lukas.MoneyFixtures
+  import Lukas.AccountsFixtures
   import Phoenix.LiveViewTest
 
   alias Lukas.Learning.Course
@@ -11,6 +13,8 @@ defmodule LukasWeb.Students.StudyLiveTest do
     auth_ctx = register_and_log_in_student(ctx)
 
     course = course_fixture()
+
+    direct_deposit_fixture(user_fixture(), auth_ctx.user, 50_000.0)
 
     {:ok, _} = Students.enroll_student(course, auth_ctx.user)
 
