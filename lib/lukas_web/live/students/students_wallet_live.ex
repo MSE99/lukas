@@ -54,7 +54,7 @@ defmodule LukasWeb.Students.WalletLive do
 
   defp format_amount(amount), do: :erlang.float_to_binary(amount, decimals: 1)
 
-  def handle_info({:wallet, _, :deposit_made, deposit}, socket) do
-    {:noreply, update(socket, :wallet_amount, fn current -> deposit.amount + current end)}
+  def handle_info({:wallet, _, :amount_updated, next_amount}, socket) do
+    {:noreply, assign(socket, wallet_amount: next_amount)}
   end
 end

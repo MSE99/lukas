@@ -10,7 +10,7 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-{:ok, _} =
+{:ok, clerk} =
   Lukas.Accounts.register_user(%{
     "kind" => "operator",
     "phone_number" => "091",
@@ -19,7 +19,7 @@
     "name" => "Mohamed Edrah"
   })
 
-{:ok, _} =
+{:ok, student} =
   Lukas.Accounts.register_user(%{
     "kind" => "student",
     "phone_number" => "092",
@@ -27,6 +27,8 @@
     "email" => "cool@gmail.com",
     "name" => "Abu bakr sadiq"
   })
+
+Lukas.Money.directly_deposit_to_student!(clerk, student, 5000)
 
 {:ok, _} =
   Lukas.Accounts.register_user(%{
