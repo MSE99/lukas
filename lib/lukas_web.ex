@@ -55,6 +55,14 @@ defmodule LukasWeb do
         layout: {LukasWeb.Layouts, :app}
 
       unquote(html_helpers())
+
+      def assign_connected(socket, key, func) do
+        if connected?(socket) do
+          assign(socket, key, func.())
+        else
+          socket
+        end
+      end
     end
   end
 

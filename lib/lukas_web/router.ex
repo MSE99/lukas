@@ -95,6 +95,8 @@ defmodule LukasWeb.Router do
       live("/courses/:id/lessons/:lesson_id/topics/:topic_id", Students.LessonsLive, :topic)
 
       live("/courses/:id/study", Students.StudyLive)
+
+      live("/wallet", Students.WalletLive)
     end
   end
 
