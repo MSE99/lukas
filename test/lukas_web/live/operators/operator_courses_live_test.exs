@@ -38,6 +38,7 @@ defmodule LukasWeb.Operator.AllCoursesLiveTest do
 
     test "should react to courses being updated.", %{conn: conn} do
       {:ok, lv, _} = live(conn, ~p"/controls/courses")
+      render_async(lv)
 
       course = course_fixture()
       assert render(lv) =~ course.name
