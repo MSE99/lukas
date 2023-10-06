@@ -59,18 +59,13 @@ defmodule Lukas.MoneyTest do
     Money.watch_wallet(student)
 
     course = course_fixture(%{price: 500.0})
-
     direct_deposit_fixture(clerk, student, 1000)
 
     Money.purchase_course_for(student, course)
 
     assert Money.get_deposited_amount!(student) == 500.0
-
     student_id = student.id
-
-    assert_received({:wallet, ^student_id, :purchase_made, purchase})
-
-    assert purchase.amount == 500.0
+    assert_received({:wallet, ^student_id, :amount_updated, 500.0})
   end
 
   test "directly_deposit_to_student/3 should emit a wallet post deposit", %{
@@ -83,8 +78,6 @@ defmodule Lukas.MoneyTest do
 
     student_id = student.id
 
-    assert_received({:wallet, ^student_id, :deposit_made, deposit})
-
-    assert deposit.amount == 10_000.0
+    assert_received({:wallet, ^student_id, :amount_updated, 10_000.0})
   end
 end

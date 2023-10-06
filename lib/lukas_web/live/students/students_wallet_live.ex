@@ -5,10 +5,6 @@ defmodule LukasWeb.Students.WalletLive do
   alias Phoenix.LiveView.AsyncResult
 
   def mount(_, _, socket) do
-    if connected?(socket) do
-      Money.watch_wallet(socket.assigns.current_user)
-    end
-
     next_socket =
       socket
       |> stream_configure(:transactions, dom_id: &Money.tag_from_tx/1)
@@ -22,6 +18,8 @@ defmodule LukasWeb.Students.WalletLive do
   end
 
   def handle_async(:loading, {:ok, {txs, wallet_amount}}, socket) do
+    Money.watch_wallet(socket.assigns.current_user)
+
     {:noreply,
      socket
      |> stream(:transactions, txs)

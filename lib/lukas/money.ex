@@ -36,6 +36,10 @@ defmodule Lukas.Money do
     Phoenix.PubSub.subscribe(Lukas.PubSub, "user/#{student.id}/wallet")
   end
 
+  def watch_txs(%User{} = student) when must_be_student(student) do
+    Phoenix.PubSub.subscribe(Lukas.PubSub, "user/#{student.id}/transactions")
+  end
+
   def purchase_course_for(%User{} = student, %Course{} = course) when must_be_student(student) do
     Multi.new()
     |> multi_log_tx(student)
@@ -44,7 +48,8 @@ defmodule Lukas.Money do
     |> Multi.run(:wallet_check, fn _, %{wallet_amount: amount} when amount >= 0 -> {:ok, nil} end)
     |> Repo.transaction()
     |> case do
-      {:ok, %{purchase: purchase}} ->
+      {:ok, %{purchase: purchase, wallet_amount: wallet_amount}} ->
+        emit_wallet_update(student, wallet_amount)
         emit_purchase(student, purchase)
 
         purchase
@@ -54,8 +59,8 @@ defmodule Lukas.Money do
   defp emit_purchase(student, purchase) do
     Phoenix.PubSub.broadcast(
       Lukas.PubSub,
-      "user/#{student.id}/wallet",
-      {:wallet, student.id, :purchase_made, purchase}
+      "user/#{student.id}/transactions",
+      {:transactions, student.id, :purchase_made, purchase}
     )
   end
 
@@ -64,19 +69,30 @@ defmodule Lukas.Money do
     Multi.new()
     |> multi_log_tx(student)
     |> Multi.insert(:deposit, DirectDepositTx.new(amount, clerk.id, student.id))
+    |> multi_current_wallet(student)
     |> Repo.transaction()
     |> case do
-      {:ok, %{deposit: deposit}} ->
+      {:ok, %{deposit: deposit, wallet_amount: amount}} ->
+        emit_wallet_update(student, amount)
         emit_deposit(student, deposit)
+
         deposit
     end
+  end
+
+  defp emit_wallet_update(student, amount) do
+    Phoenix.PubSub.broadcast(
+      Lukas.PubSub,
+      "user/#{student.id}/wallet",
+      {:wallet, student.id, :amount_updated, amount}
+    )
   end
 
   defp emit_deposit(student, deposit) do
     Phoenix.PubSub.broadcast(
       Lukas.PubSub,
-      "user/#{student.id}/wallet",
-      {:wallet, student.id, :deposit_made, deposit}
+      "user/#{student.id}/transactions",
+      {:transactions, student.id, :deposit_made, deposit}
     )
   end
 
