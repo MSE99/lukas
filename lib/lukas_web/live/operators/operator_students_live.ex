@@ -109,6 +109,10 @@ defmodule LukasWeb.Operator.StudentsLive do
   end
 
   def handle_info({:students, :student_registered, student}, socket) do
-    {:noreply, socket |> stream_insert(:students, student)}
+    if socket.assigns.page == 1 do
+      {:noreply, socket |> stream_insert(:students, student, at: 0)}
+    else
+      {:noreply, socket}
+    end
   end
 end
