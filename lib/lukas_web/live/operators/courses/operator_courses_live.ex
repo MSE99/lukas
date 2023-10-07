@@ -6,10 +6,6 @@ defmodule LukasWeb.Operator.AllCoursesLive do
   alias Phoenix.LiveView.AsyncResult
 
   def mount(params, _, socket) do
-    if connected?(socket) do
-      Learning.watch_courses()
-    end
-
     next_socket =
       socket
       |> stream_configure(:courses, [])
@@ -26,6 +22,10 @@ defmodule LukasWeb.Operator.AllCoursesLive do
   end
 
   def handle_async(:loading, {:ok, {courses, tags}}, socket) do
+    if connected?(socket) do
+      Learning.watch_courses()
+    end
+
     next_socket =
       socket
       |> assign(loading: AsyncResult.ok(socket.assigns.loading, nil))
