@@ -10,7 +10,7 @@ defmodule Lukas.Learning do
   alias Lukas.Categories.Tag
   alias Lukas.Learning.{Enrollment, Course, Lesson, Tagging, Teaching}
 
-  def list_courses(), do: from(c in Course, preload: [:tags]) |> Repo.all()
+  def list_courses(opts \\ []), do: Course.query_all_with_tags(opts) |> Repo.all()
 
   def get_course_and_tags(course_id) when is_integer(course_id) do
     Ecto.Multi.new()

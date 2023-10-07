@@ -12,11 +12,11 @@ defmodule Lukas.Money do
   def tag_from_tx(%DirectDepositTx{} = d), do: "tx-deposit-#{d.id}"
 
   def describe_tx(%CoursePurchase{} = c) do
-    "Course #{c.id} was purchased for #{c.amount}"
+    "Course #{c.id} was purchased for #{c.amount |> :erlang.float_to_binary(decimals: 1)}"
   end
 
   def describe_tx(%DirectDepositTx{} = dtx) do
-    "Operator with id #{dtx.id} deposited #{dtx.amount} in your account"
+    "Operator with id #{dtx.id} deposited #{dtx.amount |> :erlang.float_to_binary(decimals: 1)} in your account"
   end
 
   def list_transactions!(%User{} = student) when must_be_student(student) do

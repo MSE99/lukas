@@ -22,13 +22,14 @@ defmodule LukasWeb.Operator.AllCoursesLive do
   end
 
   def handle_async(:loading, {:ok, {courses, tags}}, socket) do
-    if connected?(socket) do
-      Learning.watch_courses()
-    end
+    Learning.watch_courses()
 
     next_socket =
       socket
       |> assign(loading: AsyncResult.ok(socket.assigns.loading, nil))
+      |> assign(:per_page, 50)
+      |> assign(:page, 1)
+      |> assign(:end_of_timeline?, false)
       |> stream(:courses, courses)
       |> stream(:tags, tags)
 
@@ -42,6 +43,31 @@ defmodule LukasWeb.Operator.AllCoursesLive do
   end
 
   def handle_params(_, _, socket), do: {:noreply, socket}
+
+  defp paginate_courses(socket, page) when page >= 1 do
+    %{page: current_page, per_page: per_page} = socket
+
+    courses = Learning.list_courses(limit: per_page, offset: (page - 1) * per_page)
+
+    {items, limit, at} =
+      if page >= current_page do
+        {courses, per_page * 3 * -1, -1}
+      else
+        {Enum.reverse(courses), per_page * 3, 0}
+      end
+
+    case items do
+      [] ->
+        socket
+        |> assign(:end_of_timeline?, at == -1)
+
+      [_ | _] ->
+        socket
+        |> assign(:end_of_timeline?, false)
+        |> assign(:page, page)
+        |> stream(:courses, items, limit: limit, at: at)
+    end
+  end
 
   def apply_action(socket, _, :new) do
     cs = Learning.create_course_changeset()
@@ -66,7 +92,16 @@ defmodule LukasWeb.Operator.AllCoursesLive do
       <:loading>Loading courses</:loading>
       <:failed>Failed to load courses</:failed>
 
-      <ul phx-update="stream" id="async-courses">
+      <ul
+        phx-update="stream"
+        id="async-courses"
+        phx-viewport-top={@page > 1 && "reached-top"}
+        phx-viewport-bottom={@end_of_timeline? == false && "reached-bottom"}
+        class={[
+          @end_of_timeline? == false && "pb-[200vh]",
+          @page > 1 && "pt-[200vh]"
+        ]}
+      >
         <li :for={{id, course} <- @streams.courses} id={id}>
           <.link navigate={~p"/controls/courses/#{course.id}"}><%= course.name %></.link>
         </li>
@@ -106,6 +141,21 @@ defmodule LukasWeb.Operator.AllCoursesLive do
       </.form>
     </.modal>
     """
+  end
+
+  def handle_event("reached-top", _, socket) do
+    next_page =
+      if socket.assigns.page == 1 do
+        1
+      else
+        socket.assigns.page - 1
+      end
+
+    {:noreply, paginate_courses(socket, next_page)}
+  end
+
+  def handle_event("reached-bottom", _, socket) do
+    {:noreply, paginate_courses(socket, socket.assigns.page + 1)}
   end
 
   def handle_event("validate", %{"course" => course_attrs}, socket) do

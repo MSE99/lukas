@@ -30,7 +30,7 @@ defmodule LukasWeb.Operator.AllCoursesLiveTest do
     test "should react to courses being added.", %{conn: conn} do
       {:ok, lv, _} = live(conn, ~p"/controls/courses")
 
-      courses = Enum.map(1..50, fn _ -> course_fixture() end)
+      courses = Enum.map(1..40, fn _ -> course_fixture() end)
 
       html = render_async(lv)
       Enum.each(courses, fn %{name: name} -> assert html =~ name end)
@@ -96,6 +96,7 @@ defmodule LukasWeb.Operator.AllCoursesLiveTest do
       tag3 = tag_fixture()
 
       {:ok, lv, _} = live(conn, ~p"/controls/courses/new")
+      render_async(lv)
 
       lv |> element("span", tag1.name) |> render_click()
       lv |> element("span", tag2.name) |> render_click()

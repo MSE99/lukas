@@ -30,7 +30,7 @@
 
 Lukas.Money.directly_deposit_to_student!(clerk, student, 5000)
 
-1..15
+1..300
 |> Enum.each(fn _ ->
   {:ok, student} =
     Lukas.Accounts.register_user(%{
