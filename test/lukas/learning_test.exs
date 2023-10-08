@@ -187,7 +187,7 @@ defmodule Lukas.LearningTest do
   describe "teaching" do
     setup do
       course = course_fixture()
-      lecturer = user_fixture(%{kind: :lecturer})
+      lecturer = lecturer_fixture()
 
       %{course: course, lecturer: lecturer}
     end
@@ -217,7 +217,7 @@ defmodule Lukas.LearningTest do
   describe "enrollment" do
     setup do
       course = course_fixture()
-      student = user_fixture(%{kind: :student})
+      student = student_fixture()
 
       direct_deposit_fixture(user_fixture(), student, 500_000.0)
 
@@ -240,13 +240,13 @@ defmodule Lukas.LearningTest do
     end
 
     test "list_enrolled/0 should list all the enrolled students of the course.", %{course: course} do
-      student1 = user_fixture(%{kind: :student})
+      student1 = student_fixture()
       direct_deposit_fixture(user_fixture(), student1, 5000)
 
-      student2 = user_fixture(%{kind: :student})
+      student2 = student_fixture()
       direct_deposit_fixture(user_fixture(), student2, 5000)
 
-      student3 = user_fixture(%{kind: :student})
+      student3 = student_fixture()
       direct_deposit_fixture(user_fixture(), student3, 5000)
 
       {:ok, _} = Students.enroll_student(course, student1)

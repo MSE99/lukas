@@ -54,7 +54,7 @@ defmodule LukasWeb.Courses.CourseLiveTest do
     test "should handle students enrollments.", %{conn: conn, course: course} do
       {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}")
 
-      student = user_fixture(%{kind: :student})
+      student = student_fixture()
       direct_deposit_fixture(user_fixture(), student, 50_000.0)
       {:ok, _} = Students.enroll_student(course, student)
 
@@ -179,8 +179,8 @@ defmodule LukasWeb.Courses.CourseLiveTest do
       conn: conn,
       course: course
     } do
-      lect1 = user_fixture(%{kind: :lecturer})
-      lect2 = user_fixture(%{kind: :lecturer})
+      lect1 = lecturer_fixture()
+      lect2 = lecturer_fixture()
 
       teaching_fixture(course, lect1)
       teaching_fixture(course, lect2)
@@ -197,8 +197,8 @@ defmodule LukasWeb.Courses.CourseLiveTest do
     } do
       {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}")
 
-      lect1 = user_fixture(%{kind: :lecturer})
-      lect2 = user_fixture(%{kind: :lecturer})
+      lect1 = lecturer_fixture()
+      lect2 = lecturer_fixture()
 
       teaching_fixture(course, lect1)
       teaching_fixture(course, lect2)
@@ -215,8 +215,8 @@ defmodule LukasWeb.Courses.CourseLiveTest do
     } do
       {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}")
 
-      lect1 = user_fixture(%{kind: :lecturer})
-      lect2 = user_fixture(%{kind: :lecturer})
+      lect1 = lecturer_fixture()
+      lect2 = lecturer_fixture()
 
       teaching_fixture(course, lect1)
       teaching_fixture(course, lect2)
@@ -235,8 +235,8 @@ defmodule LukasWeb.Courses.CourseLiveTest do
     } do
       {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}")
 
-      lect1 = user_fixture(%{kind: :lecturer})
-      lect2 = user_fixture(%{kind: :lecturer})
+      lect1 = lecturer_fixture()
+      lect2 = lecturer_fixture()
 
       teaching_fixture(course, lect1)
       teaching_fixture(course, lect2)
@@ -255,7 +255,7 @@ defmodule LukasWeb.Courses.CourseLiveTest do
       conn: conn,
       course: course
     } do
-      lect = user_fixture(%{kind: :lecturer})
+      lect = lecturer_fixture()
       {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}/add-lecturer")
 
       lv |> element("button", lect.name) |> render_click()

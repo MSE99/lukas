@@ -57,7 +57,7 @@ defmodule LukasWeb.Lecturer.CourseLiveTest do
     test "should handle students enrollments.", %{conn: conn, course: course} do
       {:ok, lv, _} = live(conn, ~p"/tutor/my-courses/#{course.id}")
 
-      student = user_fixture(%{kind: :student})
+      student = student_fixture()
       direct_deposit_fixture(user_fixture(), student, course.price)
 
       {:ok, _} = Students.enroll_student(course, student)
@@ -183,8 +183,8 @@ defmodule LukasWeb.Lecturer.CourseLiveTest do
       conn: conn,
       course: course
     } do
-      lect1 = user_fixture(%{kind: :lecturer})
-      lect2 = user_fixture(%{kind: :lecturer})
+      lect1 = lecturer_fixture()
+      lect2 = lecturer_fixture()
 
       teaching_fixture(course, lect1)
       teaching_fixture(course, lect2)
@@ -201,8 +201,8 @@ defmodule LukasWeb.Lecturer.CourseLiveTest do
     } do
       {:ok, lv, _} = live(conn, ~p"/tutor/my-courses/#{course.id}")
 
-      lect1 = user_fixture(%{kind: :lecturer})
-      lect2 = user_fixture(%{kind: :lecturer})
+      lect1 = lecturer_fixture()
+      lect2 = lecturer_fixture()
 
       teaching_fixture(course, lect1)
       teaching_fixture(course, lect2)
@@ -219,8 +219,8 @@ defmodule LukasWeb.Lecturer.CourseLiveTest do
     } do
       {:ok, lv, _} = live(conn, ~p"/tutor/my-courses/#{course.id}")
 
-      lect1 = user_fixture(%{kind: :lecturer})
-      lect2 = user_fixture(%{kind: :lecturer})
+      lect1 = lecturer_fixture()
+      lect2 = lecturer_fixture()
 
       teaching_fixture(course, lect1)
       teaching_fixture(course, lect2)

@@ -31,13 +31,13 @@ defmodule LukasWeb.Lecturers.CourseEnrollmentsLiveTest do
     end
 
     test "should render all enrolled students.", %{conn: conn, course: course} do
-      student1 = user_fixture(%{kind: :student})
+      student1 = student_fixture()
       direct_deposit_fixture(user_fixture(), student1, course.price)
 
-      student2 = user_fixture(%{kind: :student})
+      student2 = student_fixture()
       direct_deposit_fixture(user_fixture(), student2, course.price)
 
-      student3 = user_fixture(%{kind: :student})
+      student3 = student_fixture()
       direct_deposit_fixture(user_fixture(), student3, course.price)
 
       {:ok, _} = Students.enroll_student(course, student1)
@@ -54,13 +54,13 @@ defmodule LukasWeb.Lecturers.CourseEnrollmentsLiveTest do
     test "should react to enrolled students being added.", %{conn: conn, course: course} do
       {:ok, lv, _} = live(conn, ~p"/tutor/my-courses/#{course.id}/enrollments")
 
-      student1 = user_fixture(%{kind: :student})
+      student1 = student_fixture()
       direct_deposit_fixture(user_fixture(), student1, course.price)
 
-      student2 = user_fixture(%{kind: :student})
+      student2 = student_fixture()
       direct_deposit_fixture(user_fixture(), student2, course.price)
 
-      student3 = user_fixture(%{kind: :student})
+      student3 = student_fixture()
       direct_deposit_fixture(user_fixture(), student3, course.price)
 
       {:ok, _} = Students.enroll_student(course, student1)
@@ -76,13 +76,13 @@ defmodule LukasWeb.Lecturers.CourseEnrollmentsLiveTest do
     test "should ignore non enrollment related course events.", %{conn: conn, course: course} do
       {:ok, lv, _} = live(conn, ~p"/tutor/my-courses/#{course.id}/enrollments")
 
-      student1 = user_fixture(%{kind: :student})
+      student1 = student_fixture()
       direct_deposit_fixture(user_fixture(), student1, course.price)
 
-      student2 = user_fixture(%{kind: :student})
+      student2 = student_fixture()
       direct_deposit_fixture(user_fixture(), student2, course.price)
 
-      student3 = user_fixture(%{kind: :student})
+      student3 = student_fixture()
       direct_deposit_fixture(user_fixture(), student3, course.price)
 
       {:ok, _} = Students.enroll_student(course, student1)

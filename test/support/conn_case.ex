@@ -50,12 +50,12 @@ defmodule LukasWeb.ConnCase do
   end
 
   def register_and_log_in_student(%{conn: conn}) do
-    user = Lukas.AccountsFixtures.user_fixture(%{kind: :student})
+    user = Lukas.AccountsFixtures.student_fixture()
     %{conn: log_in_user(conn, user), user: user}
   end
 
   def register_and_log_in_lecturer(%{conn: conn}) do
-    user = Lukas.AccountsFixtures.user_fixture(%{kind: :lecturer})
+    user = Lukas.AccountsFixtures.lecturer_fixture()
     %{conn: log_in_user(conn, user), user: user}
   end
 

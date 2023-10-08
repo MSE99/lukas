@@ -1,9 +1,4 @@
 defmodule Lukas.AccountsFixtures do
-  @moduledoc """
-  This module defines test helpers for creating
-  entities via the `Lukas.Accounts` context.
-  """
-
   alias Lukas.Accounts
 
   def unique_user_phone_number,
@@ -23,9 +18,13 @@ defmodule Lukas.AccountsFixtures do
   end
 
   def student_fixture(attrs \\ %{}) do
-    attrs
-    |> Map.put(:kind, :student)
-    |> user_fixture()
+    {:ok, student} =
+      attrs
+      |> valid_user_attributes()
+      |> Map.put(:kind, :student)
+      |> Accounts.register_user()
+
+    student
   end
 
   def lecturer_fixture(attrs \\ %{}) do
@@ -44,12 +43,12 @@ defmodule Lukas.AccountsFixtures do
   end
 
   def user_fixture(attrs \\ %{}) do
-    {:ok, user} =
+    {:ok, operator} =
       attrs
       |> valid_user_attributes()
-      |> Lukas.Accounts.register_user()
+      |> Accounts.register_operator()
 
-    user
+    operator
   end
 
   def extract_user_token(fun) do

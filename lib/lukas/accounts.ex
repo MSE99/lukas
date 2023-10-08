@@ -4,6 +4,22 @@ defmodule Lukas.Accounts do
 
   alias Lukas.Accounts.{User, UserToken, UserNotifier, Invite}
 
+  # Operators
+
+  def register_operator(attrs \\ %{}) do
+    %User{kind: :operator}
+    |> User.operator_changeset(attrs)
+    |> Repo.insert()
+    |> maybe_emit_operator_registered()
+  end
+
+  defp maybe_emit_operator_registered({:ok, opr} = res) do
+    Phoenix.PubSub.broadcast(Lukas.PubSub, "operators", {:operators, :operator_registered, opr})
+    res
+  end
+
+  defp maybe_emit_operator_registered(res), do: res
+
   def watch_students() do
     Phoenix.PubSub.subscribe(Lukas.PubSub, "students")
   end

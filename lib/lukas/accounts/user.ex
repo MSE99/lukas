@@ -23,6 +23,21 @@ defmodule Lukas.Accounts.User do
     timestamps()
   end
 
+  def operator_changeset(user, attrs, opts \\ []) do
+    user
+    |> cast(attrs, [:email, :password, :phone_number, :kind, :name])
+    |> validate_inclusion(:kind, [:operator])
+    |> validate_user_props(opts)
+  end
+
+  defp validate_user_props(changeset, opts) do
+    changeset
+    |> validate_phone_number()
+    |> validate_email(opts)
+    |> validate_password(opts)
+    |> validate_name()
+  end
+
   def registration_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:email, :password, :phone_number, :kind, :name])
