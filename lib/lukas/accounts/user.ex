@@ -176,4 +176,8 @@ defmodule Lukas.Accounts.User do
     kind = Keyword.get(opts, :kind, :student)
     from(u in __MODULE__, where: u.kind == ^kind and u.id not in ^exclusion_list)
   end
+
+  def query_student_by_id(id) do
+    from(u in __MODULE__, where: u.kind == :student and u.id == ^id)
+  end
 end
