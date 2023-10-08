@@ -8,8 +8,16 @@ defmodule Lukas.Accounts do
     Phoenix.PubSub.subscribe(Lukas.PubSub, "students")
   end
 
+  def watch_lecturers() do
+    Phoenix.PubSub.subscribe(Lukas.PubSub, "lecturers")
+  end
+
   def list_students(opts \\ []) do
     User.query_students(opts) |> Repo.all()
+  end
+
+  def list_lecturers(opts \\ []) do
+    User.query_lecturers(opts) |> Repo.all()
   end
 
   def get_lecturer!(lecturer_id) when is_integer(lecturer_id) do
@@ -97,6 +105,7 @@ defmodule Lukas.Accounts do
     |> Repo.transaction()
     |> case do
       {:ok, %{user_with_image: user, invite: invite}} ->
+        emit_lecturer_registered(user)
         emit_invite_deleted(invite)
         {:ok, user}
 
@@ -118,6 +127,10 @@ defmodule Lukas.Accounts do
   end
 
   defp maybe_emit_student_registered(res), do: res
+
+  def emit_lecturer_registered(lect) do
+    Phoenix.PubSub.broadcast(Lukas.PubSub, "lecturers", {:lecturers, :lecturer_registered, lect})
+  end
 
   def change_user_registration(%User{} = user, attrs \\ %{}) do
     User.registration_changeset(user, attrs, hash_password: false, validate_email: false)

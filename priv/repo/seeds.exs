@@ -40,6 +40,15 @@ Lukas.Money.directly_deposit_to_student!(clerk, student, 5000)
       "email" => "mail_#{System.unique_integer([:positive])}@gmail.com",
       "name" => "Student #{System.unique_integer([:positive])}"
     })
+
+  {:ok, student} =
+    Lukas.Accounts.register_user(%{
+      "kind" => "student",
+      "phone_number" => "092 #{System.unique_integer([:positive])}",
+      "password" => "123123123123",
+      "email" => "mail_#{System.unique_integer([:positive])}@gmail.com",
+      "name" => "Student #{System.unique_integer([:positive])}"
+    })
 end)
 
 {:ok, _} =
