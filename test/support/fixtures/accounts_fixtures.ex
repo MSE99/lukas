@@ -26,17 +26,9 @@ defmodule Lukas.AccountsFixtures do
   end
 
   def lecturer_fixture(attrs \\ %{}) do
-    full_attrs =
-      Enum.into(attrs, %{
-        "phone_number" => unique_user_phone_number(),
-        "email" => unique_user_email(),
-        "password" => valid_user_password(),
-        "kind" => "lecturer",
-        "name" => "Name ##{System.unique_integer([:positive])}"
-      })
-
+    full_attrs = attrs |> valid_user_attributes()
     inv = invite_fixture()
-    {:ok, lect} = Lukas.Accounts.register_user(inv, full_attrs)
+    {:ok, lect} = Lukas.Accounts.register_lecturer(inv, full_attrs)
     lect
   end
 

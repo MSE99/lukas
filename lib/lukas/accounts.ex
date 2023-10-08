@@ -5,7 +5,6 @@ defmodule Lukas.Accounts do
   alias Lukas.Accounts.{User, UserToken, UserNotifier, Invite}
 
   # Operators
-
   def register_operator(attrs \\ %{}) do
     %User{kind: :operator}
     |> User.operator_changeset(attrs)
@@ -44,12 +43,13 @@ defmodule Lukas.Accounts do
   end
 
   # Lecturers
-
-  def register_user(%Invite{} = invite, attrs, get_image_path \\ fn -> "default-profile.png" end) do
-    filled = attrs |> Map.put("kind", "lecturer")
-
+  def register_lecturer(
+        %Invite{} = invite,
+        attrs,
+        get_image_path \\ fn -> "default-profile.png" end
+      ) do
     Ecto.Multi.new()
-    |> Ecto.Multi.insert(:user, User.registration_changeset(%User{}, filled))
+    |> Ecto.Multi.insert(:user, User.lecturer_changeset(%User{kind: :lecturer}, attrs))
     |> Ecto.Multi.delete(:invite, invite)
     |> Ecto.Multi.run(:user_with_image, fn _, %{user: user} ->
       updated =

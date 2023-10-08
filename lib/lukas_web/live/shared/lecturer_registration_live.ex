@@ -38,7 +38,7 @@ defmodule LukasWeb.Shared.LecturerRegistrationLive do
   end
 
   def handle_event("register", %{"user" => params}, socket) do
-    case Accounts.register_user(socket.assigns.invite, params) do
+    case Accounts.register_lecturer(socket.assigns.invite, params) do
       {:ok, _} ->
         {:noreply, redirect(socket, to: ~p"/users/log_in")}
 
