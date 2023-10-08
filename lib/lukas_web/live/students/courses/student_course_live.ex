@@ -32,7 +32,11 @@ defmodule LukasWeb.Students.CourseLive do
     ~H"""
     <h1>Course <%= @course.name %></h1>
 
-    <.button :if={!@is_enrolled && @wallet_amount >= @course.price} id="enroll-button" phx-click="enroll">
+    <.button
+      :if={!@is_enrolled && @wallet_amount >= @course.price}
+      id="enroll-button"
+      phx-click="enroll"
+    >
       Enroll
     </.button>
 

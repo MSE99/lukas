@@ -20,16 +20,63 @@ defmodule Lukas.Accounts do
 
   defp maybe_emit_operator_registered(res), do: res
 
+  # Students
+  def register_student(attrs) do
+    %User{kind: :student}
+    |> User.student_changeset(attrs)
+    |> Repo.insert()
+    |> maybe_emit_student_registered()
+  end
+
+  defp maybe_emit_student_registered({:ok, user} = res) when user.kind == :student do
+    Phoenix.PubSub.broadcast(Lukas.PubSub, "students", {:students, :student_registered, user})
+    res
+  end
+
+  defp maybe_emit_student_registered(res), do: res
+
   def watch_students() do
     Phoenix.PubSub.subscribe(Lukas.PubSub, "students")
   end
 
-  def watch_lecturers() do
-    Phoenix.PubSub.subscribe(Lukas.PubSub, "lecturers")
-  end
-
   def list_students(opts \\ []) do
     User.query_students(opts) |> Repo.all()
+  end
+
+  # Lecturers
+
+  def register_user(%Invite{} = invite, attrs, get_image_path \\ fn -> "default-profile.png" end) do
+    filled = attrs |> Map.put("kind", "lecturer")
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:user, User.registration_changeset(%User{}, filled))
+    |> Ecto.Multi.delete(:invite, invite)
+    |> Ecto.Multi.run(:user_with_image, fn _, %{user: user} ->
+      updated =
+        user
+        |> User.profile_image_changeset(%{profile_image: get_image_path.()})
+        |> Repo.update!()
+
+      {:ok, updated}
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user_with_image: user, invite: invite}} ->
+        emit_lecturer_registered(user)
+        emit_invite_deleted(invite)
+        {:ok, user}
+
+      {:error, :user, changeset, _} ->
+        {:error, changeset}
+    end
+  end
+
+  def emit_lecturer_registered(lect) do
+    Phoenix.PubSub.broadcast(Lukas.PubSub, "lecturers", {:lecturers, :lecturer_registered, lect})
+  end
+
+  def watch_lecturers() do
+    Phoenix.PubSub.subscribe(Lukas.PubSub, "lecturers")
   end
 
   def list_lecturers(opts \\ []) do
@@ -40,6 +87,7 @@ defmodule Lukas.Accounts do
     Repo.get_by!(User, kind: :lecturer, id: lecturer_id)
   end
 
+  # Generic
   def get_user_by_phone_number(phone_number) when is_binary(phone_number) do
     Repo.get_by(User, phone_number: phone_number)
   end
@@ -66,6 +114,7 @@ defmodule Lukas.Accounts do
 
   def get_user!(id), do: Repo.get!(User, id)
 
+  # Invites
   def list_invites() do
     Repo.all(Invite)
   end
@@ -107,51 +156,6 @@ defmodule Lukas.Accounts do
   end
 
   ## User registration
-
-  def register_user(%Invite{} = invite, attrs, get_image_path \\ fn -> "default-profile.png" end) do
-    filled = attrs |> Map.put("kind", "lecturer")
-
-    Ecto.Multi.new()
-    |> Ecto.Multi.insert(:user, User.registration_changeset(%User{}, filled))
-    |> Ecto.Multi.delete(:invite, invite)
-    |> Ecto.Multi.run(:user_with_image, fn _, %{user: user} ->
-      updated =
-        user
-        |> User.profile_image_changeset(%{profile_image: get_image_path.()})
-        |> Repo.update!()
-
-      {:ok, updated}
-    end)
-    |> Repo.transaction()
-    |> case do
-      {:ok, %{user_with_image: user, invite: invite}} ->
-        emit_lecturer_registered(user)
-        emit_invite_deleted(invite)
-        {:ok, user}
-
-      {:error, :user, changeset, _} ->
-        {:error, changeset}
-    end
-  end
-
-  def register_user(attrs) do
-    %User{}
-    |> User.registration_changeset(attrs)
-    |> Repo.insert()
-    |> maybe_emit_student_registered()
-  end
-
-  defp maybe_emit_student_registered({:ok, user} = res) when user.kind == :student do
-    Phoenix.PubSub.broadcast(Lukas.PubSub, "students", {:students, :student_registered, user})
-    res
-  end
-
-  defp maybe_emit_student_registered(res), do: res
-
-  def emit_lecturer_registered(lect) do
-    Phoenix.PubSub.broadcast(Lukas.PubSub, "lecturers", {:lecturers, :lecturer_registered, lect})
-  end
-
   def change_user_registration(%User{} = user, attrs \\ %{}) do
     User.registration_changeset(user, attrs, hash_password: false, validate_email: false)
   end

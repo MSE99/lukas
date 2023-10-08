@@ -36,27 +36,27 @@ defmodule LukasWeb.Operator.LecturersLive do
 
   def render(assigns) do
     ~H"""
-      <h1>Lecturers in the system</h1>
+    <h1>Lecturers in the system</h1>
 
-      <.async_result assign={@loading}>
-        <:loading>Loading...</:loading>
-        <:failed>Failed to load lecturers...</:failed>
+    <.async_result assign={@loading}>
+      <:loading>Loading...</:loading>
+      <:failed>Failed to load lecturers...</:failed>
 
-        <ul
-          phx-update="stream"
-          id="lecturers"
-          phx-viewport-top={@page > 1 && "reached-top"}
-          phx-viewport-bottom={@end_of_timeline? == false && "reached-bottom"}
-          class={[
-            @end_of_timeline? == false && "pb-[200vh]",
-            @page > 1 && "pt-[200vh]"
-          ]}
-        >
-          <li :for={{id, lect} <- @streams.lecturers} id={id}>
-            <%= lect.name %>
-          </li>
-        </ul>
-      </.async_result>
+      <ul
+        phx-update="stream"
+        id="lecturers"
+        phx-viewport-top={@page > 1 && "reached-top"}
+        phx-viewport-bottom={@end_of_timeline? == false && "reached-bottom"}
+        class={[
+          @end_of_timeline? == false && "pb-[200vh]",
+          @page > 1 && "pt-[200vh]"
+        ]}
+      >
+        <li :for={{id, lect} <- @streams.lecturers} id={id}>
+          <%= lect.name %>
+        </li>
+      </ul>
+    </.async_result>
     """
   end
 

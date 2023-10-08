@@ -44,8 +44,8 @@ defmodule LukasWeb.Lecturer.CoursesLive do
       show
     >
       <.form for={@form} phx-change="validate" phx-submit="create">
-      <.input field={@form[:name]} type="text" label="Name" phx-debounce="blur" />
-      <.input field={@form[:price]} type="number" label="Name" phx-debounce="blur" />
+        <.input field={@form[:name]} type="text" label="Name" phx-debounce="blur" />
+        <.input field={@form[:price]} type="number" label="Name" phx-debounce="blur" />
 
         <div>
           <span

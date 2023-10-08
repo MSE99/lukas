@@ -12,7 +12,6 @@ defmodule Lukas.AccountsFixtures do
       phone_number: unique_user_phone_number(),
       email: unique_user_email(),
       password: valid_user_password(),
-      kind: :operator,
       name: "Name ##{System.unique_integer([:positive])}"
     })
   end
@@ -21,8 +20,7 @@ defmodule Lukas.AccountsFixtures do
     {:ok, student} =
       attrs
       |> valid_user_attributes()
-      |> Map.put(:kind, :student)
-      |> Accounts.register_user()
+      |> Accounts.register_student()
 
     student
   end
