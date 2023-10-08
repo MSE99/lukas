@@ -10,6 +10,7 @@ defmodule LukasWeb.Operator.StudentsLive do
       |> stream_configure(:students, [])
       |> assign(:page, 1)
       |> assign(:per_page, 50)
+      |> assign(:end_of_timeline?, false)
       |> assign(:loading, AsyncResult.loading())
       |> start_async(:loading, fn ->
         Accounts.list_students(limit: 50, offset: 0)
@@ -24,21 +25,23 @@ defmodule LukasWeb.Operator.StudentsLive do
     {:noreply,
      socket
      |> assign(loading: AsyncResult.ok(socket.assigns.loading, nil))
-     |> paginate_students(students, socket.assigns.page)}
+     |> stream(:students, students, limit: socket.assigns.per_page, at: 0)}
   end
 
   def handle_async(:loading, {:exit, reason}, socket) do
     {:noreply, assign(socket, loading: AsyncResult.failed(socket.assigns.loading, reason))}
   end
 
-  defp paginate_students(socket, students, page) when page >= 1 do
+  defp paginate_students(socket, page) when page >= 1 do
     %{per_page: per_page, page: current_page} = socket.assigns
+
+    items = Accounts.list_students(limit: per_page * 3, offset: (page - 1) * per_page)
 
     {students, at, limit} =
       if page >= current_page do
-        {students, -1, -1 * per_page * 3}
+        {items, -1, -1 * per_page * 3}
       else
-        {Enum.reverse(students), 0, per_page * 3}
+        {Enum.reverse(items), 0, per_page * 3}
       end
 
     case students do
@@ -87,25 +90,12 @@ defmodule LukasWeb.Operator.StudentsLive do
         socket.assigns.page - 1
       end
 
-    next_students =
-      Accounts.list_students(
-        limit: socket.assigns.per_page,
-        offset: (next_page - 1) * socket.assigns.per_page
-      )
-
-    {:noreply, paginate_students(socket, next_students, next_page)}
+    {:noreply, paginate_students(socket, next_page)}
   end
 
   def handle_event("reached-bottom", _, socket) do
     next_page = socket.assigns.page + 1
-
-    next_students =
-      Accounts.list_students(
-        limit: socket.assigns.per_page,
-        offset: (next_page - 1) * socket.assigns.per_page
-      )
-
-    {:noreply, paginate_students(socket, next_students, next_page)}
+    {:noreply, paginate_students(socket, next_page)}
   end
 
   def handle_info({:students, :student_registered, student}, socket) do

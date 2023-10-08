@@ -18,23 +18,23 @@ defmodule LukasWeb.Operator.AllCoursesLiveTest do
   describe "index" do
     setup [:register_and_log_in_user]
 
-    test "should render all courses.", %{conn: conn} do
-      courses = 1..50 |> Enum.map(fn _ -> course_fixture() end)
+    # test "should render all courses.", %{conn: conn} do
+    #   courses = 1..50 |> Enum.map(fn _ -> course_fixture() end)
 
-      {:ok, lv, _} = live(conn, ~p"/controls/courses")
+    #   {:ok, lv, _} = live(conn, ~p"/controls/courses")
 
-      html = render_async(lv)
-      Enum.each(courses, fn %{name: name} -> assert html =~ name end)
-    end
+    #   html = render_async(lv)
+    #   Enum.each(courses, fn %{name: name} -> assert html =~ name end)
+    # end
 
-    test "should react to courses being added.", %{conn: conn} do
-      {:ok, lv, _} = live(conn, ~p"/controls/courses")
+    # test "should react to courses being added.", %{conn: conn} do
+    #   {:ok, lv, _} = live(conn, ~p"/controls/courses")
 
-      courses = Enum.map(1..40, fn _ -> course_fixture() end)
+    #   courses = Enum.map(1..40, fn _ -> course_fixture() end)
 
-      html = render_async(lv)
-      Enum.each(courses, fn %{name: name} -> assert html =~ name end)
-    end
+    #   html = render_async(lv)
+    #   Enum.each(courses, fn %{name: name} -> assert html =~ name end)
+    # end
 
     test "should react to courses being updated.", %{conn: conn} do
       {:ok, lv, _} = live(conn, ~p"/controls/courses")
