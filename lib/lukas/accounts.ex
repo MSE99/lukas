@@ -11,7 +11,7 @@ defmodule Lukas.Accounts do
     |> Repo.all()
   end
 
-  def register_operator_with(
+  def register_operator(
         %Invite{kind: :operator} = invite,
         attrs,
         get_image_path \\ fn -> "default-profile.png" end
@@ -37,13 +37,6 @@ defmodule Lukas.Accounts do
       {:error, :user, changeset, _} ->
         {:error, changeset}
     end
-  end
-
-  def register_operator(attrs \\ %{}) do
-    %User{kind: :operator}
-    |> User.operator_changeset(attrs)
-    |> Repo.insert()
-    |> maybe_emit_operator_registered()
   end
 
   defp maybe_emit_operator_registered({:ok, opr} = res) do

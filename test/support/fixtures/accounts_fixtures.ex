@@ -33,10 +33,12 @@ defmodule Lukas.AccountsFixtures do
   end
 
   def user_fixture(attrs \\ %{}) do
+    inv = operator_invite_fixture()
+
     {:ok, operator} =
       attrs
       |> valid_user_attributes()
-      |> Accounts.register_operator()
+      |> then(&Accounts.register_operator(inv, &1))
 
     operator
   end

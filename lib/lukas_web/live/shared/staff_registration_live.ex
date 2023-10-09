@@ -59,6 +59,6 @@ defmodule LukasWeb.Shared.StaffRegistrationLive do
   end
 
   defp register(params, invite) when invite.kind == :operator do
-    Accounts.register_operator_with(invite, params)
+    Accounts.register_operator(invite, params)
   end
 end
