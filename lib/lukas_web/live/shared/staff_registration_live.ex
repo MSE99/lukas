@@ -15,7 +15,14 @@ defmodule LukasWeb.Shared.StaffRegistrationLive do
 
   def render(assigns) do
     ~H"""
-    Register lecturer
+    <span :if={@invite.kind == :lecturer}>
+      Register lecturer
+    </span>
+
+    <span :if={@invite.kind == :operator}>
+      Register operator
+    </span>
+
     <.form for={@form} phx-change="validate" phx-submit="register">
       <.input type="text" label="Phone" field={@form[:phone_number]} />
       <.input type="password" label="Password" field={@form[:password]} />
@@ -38,12 +45,20 @@ defmodule LukasWeb.Shared.StaffRegistrationLive do
   end
 
   def handle_event("register", %{"user" => params}, socket) do
-    case Accounts.register_lecturer(socket.assigns.invite, params) do
+    case register(params, socket.assigns.invite) do
       {:ok, _} ->
         {:noreply, redirect(socket, to: ~p"/users/log_in")}
 
       {:error, cs} ->
         {:noreply, assign(socket, form: to_form(cs))}
     end
+  end
+
+  defp register(params, invite) when invite.kind == :lecturer do
+    Accounts.register_lecturer(invite, params)
+  end
+
+  defp register(params, invite) when invite.kind == :operator do
+    Accounts.register_operator_with(invite, params)
   end
 end

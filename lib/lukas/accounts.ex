@@ -5,6 +5,40 @@ defmodule Lukas.Accounts do
   alias Lukas.Accounts.{User, UserToken, UserNotifier, Invite}
 
   # Operators
+  def list_operators(opts \\ []) do
+    opts
+    |> User.query_operators()
+    |> Repo.all()
+  end
+
+  def register_operator_with(
+        %Invite{kind: :operator} = invite,
+        attrs,
+        get_image_path \\ fn -> "default-profile.png" end
+      ) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:user, User.operator_changeset(%User{kind: :operator}, attrs))
+    |> Ecto.Multi.delete(:invite, invite)
+    |> Ecto.Multi.run(:user_with_image, fn _, %{user: user} ->
+      updated =
+        user
+        |> User.profile_image_changeset(%{profile_image: get_image_path.()})
+        |> Repo.update!()
+
+      {:ok, updated}
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user_with_image: user, invite: invite}} ->
+        maybe_emit_operator_registered({:ok, user})
+        emit_invite_deleted(invite)
+        {:ok, user}
+
+      {:error, :user, changeset, _} ->
+        {:error, changeset}
+    end
+  end
+
   def register_operator(attrs \\ %{}) do
     %User{kind: :operator}
     |> User.operator_changeset(attrs)

@@ -9,9 +9,9 @@ defmodule LukasWeb.Shared.StaffRegistrationLiveTest do
     assert {:error, {:redirect, _}} = live(conn, ~p"/register/foo")
   end
 
-  describe "lecture registration" do
+  describe "operator registration" do
     setup do
-      %{invite: lecturer_invite_fixture()}
+      %{invite: operator_invite_fixture()}
     end
 
     test "form should render error on change.", %{conn: conn, invite: invite} do
@@ -20,7 +20,7 @@ defmodule LukasWeb.Shared.StaffRegistrationLiveTest do
       render_result =
         lv
         |> form("form", %{
-          "user" => valid_user_attributes() |> Map.delete(:kind) |> Map.delete(:phone_number)
+          "user" => valid_user_attributes() |> Map.delete(:phone_number)
         })
         |> render_change()
 
@@ -33,7 +33,64 @@ defmodule LukasWeb.Shared.StaffRegistrationLiveTest do
       render_result =
         lv
         |> form("form", %{
-          "user" => valid_user_attributes() |> Map.delete(:kind) |> Map.delete(:phone_number)
+          "user" => valid_user_attributes() |> Map.delete(:phone_number)
+        })
+        |> render_submit()
+
+      assert render_result =~ "can&#39;t be blank"
+    end
+
+    test "form should create a new user on submit and redirect to login page.", %{
+      conn: conn,
+      invite: invite
+    } do
+      {:ok, lv, _} = live(conn, ~p"/register/#{invite.code}")
+
+      attrs = valid_user_attributes()
+
+      lv
+      |> form("form", %{
+        "user" => attrs
+      })
+      |> render_submit()
+
+      assert_redirected(lv, ~p"/users/log_in")
+
+      [operator] = Lukas.Accounts.list_operators()
+
+      assert Lukas.Accounts.list_invites() == []
+      assert Lukas.Accounts.list_lecturers() == []
+      assert Lukas.Accounts.list_students() == []
+
+      assert operator.name == attrs.name
+    end
+  end
+
+  describe "lecture registration" do
+    setup do
+      %{invite: lecturer_invite_fixture()}
+    end
+
+    test "form should render error on change.", %{conn: conn, invite: invite} do
+      {:ok, lv, _} = live(conn, ~p"/register/#{invite.code}")
+
+      render_result =
+        lv
+        |> form("form", %{
+          "user" => valid_user_attributes() |> Map.delete(:phone_number)
+        })
+        |> render_change()
+
+      assert render_result =~ "can&#39;t be blank"
+    end
+
+    test "form should render error on submit.", %{conn: conn, invite: invite} do
+      {:ok, lv, _} = live(conn, ~p"/register/#{invite.code}")
+
+      render_result =
+        lv
+        |> form("form", %{
+          "user" => valid_user_attributes() |> Map.delete(:phone_number)
         })
         |> render_submit()
 
@@ -48,7 +105,7 @@ defmodule LukasWeb.Shared.StaffRegistrationLiveTest do
 
       lv
       |> form("form", %{
-        "user" => valid_user_attributes() |> Map.delete(:kind)
+        "user" => valid_user_attributes()
       })
       |> render_submit()
 
