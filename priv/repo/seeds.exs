@@ -10,8 +10,10 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
+inv = Lukas.Accounts.generate_operator_invite!()
+
 {:ok, clerk} =
-  Lukas.Accounts.register_operator(%{
+  Lukas.Accounts.register_operator(inv, %{
     "kind" => "operator",
     "phone_number" => "091",
     "password" => "123123123123",
