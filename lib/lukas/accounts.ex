@@ -160,22 +160,22 @@ defmodule Lukas.Accounts do
   defp maybe_emit_user_updated(res), do: res
 
   def get_user_by_phone_number(phone_number) when is_binary(phone_number) do
-    Repo.get_by(User, phone_number: phone_number)
+    Repo.get_by(User, phone_number: phone_number, enabled: true)
   end
 
   def get_user_by_email(email) when is_binary(email) do
-    Repo.get_by(User, email: email)
+    Repo.get_by(User, email: email, enabled: true)
   end
 
   def get_user_by_phone_number_and_password(phone_number, password)
       when is_binary(phone_number) and is_binary(password) do
-    user = Repo.get_by(User, phone_number: phone_number)
+    user = Repo.get_by(User, phone_number: phone_number, enabled: true)
     if User.valid_password?(user, password), do: user
   end
 
   def get_user_by_email_and_password(email, password)
       when is_binary(email) and is_binary(password) do
-    user = Repo.get_by(User, email: email)
+    user = Repo.get_by(User, email: email, enabled: true)
     if User.valid_password?(user, password), do: user
   end
 
