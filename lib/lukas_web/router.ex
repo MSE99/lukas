@@ -112,7 +112,7 @@ defmodule LukasWeb.Router do
 
     live_session :redirect_if_user_is_authenticated,
       on_mount: [{LukasWeb.UserAuth, :redirect_if_user_is_authenticated}] do
-      live("/register/:code", Shared.LecturerRegistrationLive)
+      live("/register/:code", Shared.StaffRegistrationLive)
 
       live("/users/register", Shared.StudentRegistrationLive, :new)
       live("/users/log_in", UserLoginLive, :new)

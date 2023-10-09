@@ -1,4 +1,4 @@
-defmodule LukasWeb.Shared.LecturerRegistrationLiveTest do
+defmodule LukasWeb.Shared.StaffRegistrationLiveTest do
   use LukasWeb.ConnCase
 
   import Phoenix.LiveViewTest
