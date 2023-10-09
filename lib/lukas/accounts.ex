@@ -11,6 +11,10 @@ defmodule Lukas.Accounts do
     |> Repo.all()
   end
 
+  def watch_operators() do
+    Phoenix.PubSub.subscribe(Lukas.PubSub, "operators")
+  end
+
   def register_operator(
         %Invite{kind: :operator} = invite,
         attrs,
@@ -30,7 +34,7 @@ defmodule Lukas.Accounts do
     |> Repo.transaction()
     |> case do
       {:ok, %{user_with_image: user, invite: invite}} ->
-        maybe_emit_operator_registered({:ok, user})
+        emit_operator_registered(user)
         emit_invite_deleted(invite)
         {:ok, user}
 
@@ -39,12 +43,15 @@ defmodule Lukas.Accounts do
     end
   end
 
-  defp maybe_emit_operator_registered({:ok, opr} = res) do
-    Phoenix.PubSub.broadcast(Lukas.PubSub, "operators", {:operators, :operator_registered, opr})
-    res
-  end
+  defp emit_operator_registered(operator) do
+    Phoenix.PubSub.broadcast(
+      Lukas.PubSub,
+      "operators",
+      {:operators, :operator_registered, operator}
+    )
 
-  defp maybe_emit_operator_registered(res), do: res
+    operator
+  end
 
   # Students
   def register_student(attrs) do
