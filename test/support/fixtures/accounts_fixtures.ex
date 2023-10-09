@@ -27,7 +27,7 @@ defmodule Lukas.AccountsFixtures do
 
   def lecturer_fixture(attrs \\ %{}) do
     full_attrs = attrs |> valid_user_attributes()
-    inv = invite_fixture()
+    inv = lecturer_invite_fixture()
     {:ok, lect} = Lukas.Accounts.register_lecturer(inv, full_attrs)
     lect
   end
@@ -47,7 +47,7 @@ defmodule Lukas.AccountsFixtures do
     token
   end
 
-  def invite_fixture() do
+  def lecturer_invite_fixture() do
     Accounts.generate_lecturer_invite!()
   end
 end

@@ -14,9 +14,9 @@ defmodule LukasWeb.Operator.InvitesLiveTest do
     setup [:register_and_log_in_user]
 
     test "should render all invites", %{conn: conn} do
-      inv1 = invite_fixture()
-      inv2 = invite_fixture()
-      inv3 = invite_fixture()
+      inv1 = lecturer_invite_fixture()
+      inv2 = lecturer_invite_fixture()
+      inv3 = lecturer_invite_fixture()
 
       {:ok, _, html} = live(conn, ~p"/controls/invites")
 
@@ -28,9 +28,9 @@ defmodule LukasWeb.Operator.InvitesLiveTest do
     test "should react to invites being added", %{conn: conn} do
       {:ok, lv, _} = live(conn, ~p"/controls/invites")
 
-      inv1 = invite_fixture()
-      inv2 = invite_fixture()
-      inv3 = invite_fixture()
+      inv1 = lecturer_invite_fixture()
+      inv2 = lecturer_invite_fixture()
+      inv3 = lecturer_invite_fixture()
 
       html = render(lv)
 
@@ -42,9 +42,9 @@ defmodule LukasWeb.Operator.InvitesLiveTest do
     test "clicking delete should delete the invite", %{conn: conn} do
       {:ok, lv, _} = live(conn, ~p"/controls/invites")
 
-      inv1 = invite_fixture()
-      inv2 = invite_fixture()
-      inv3 = invite_fixture()
+      inv1 = lecturer_invite_fixture()
+      inv2 = lecturer_invite_fixture()
+      inv3 = lecturer_invite_fixture()
 
       lv |> element(".delete-invite-button[phx-value-id=\"#{inv1.id}\"]") |> render_click()
 

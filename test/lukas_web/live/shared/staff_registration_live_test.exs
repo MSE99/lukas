@@ -5,7 +5,7 @@ defmodule LukasWeb.Shared.StaffRegistrationLiveTest do
   import Lukas.AccountsFixtures
 
   setup do
-    %{invite: invite_fixture()}
+    %{invite: lecturer_invite_fixture()}
   end
 
   test "should redirect if the user is authenticated.", ctx do
