@@ -44,7 +44,7 @@ defmodule Lukas.Accounts do
 
   # Lecturers
   def register_lecturer(
-        %Invite{} = invite,
+        %Invite{kind: :lecturer} = invite,
         attrs,
         get_image_path \\ fn -> "default-profile.png" end
       ) do
