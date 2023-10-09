@@ -39,11 +39,17 @@ defmodule LukasWeb.Operator.InvitesLive do
       <:loading>Loading...</:loading>
       <:failed>Failed to load invites...</:failed>
 
-      <.button id="generate-invite-button" phx-click="generate-invite">Generate invite</.button>
+      <.button id="generate-lecturer-invite-button" phx-click="generate-lecturer-invite">
+        Generate lecturer invite
+      </.button>
+
+      <.button id="generate-operator-invite-button" phx-click="generate-operator-invite">
+        Generate operator invite
+      </.button>
 
       <ul id="invites" phx-update="stream">
         <li :for={{id, inv} <- @streams.invites} id={id}>
-          <%= inv.code %>
+          <%= inv.code %> | <%= inv.kind %>
           <.button class="delete-invite-button" phx-value-id={inv.id} phx-click="delete-invite">
             Delete invite
           </.button>
@@ -59,8 +65,13 @@ defmodule LukasWeb.Operator.InvitesLive do
     {:noreply, socket}
   end
 
-  def handle_event("generate-invite", _, socket) do
+  def handle_event("generate-lecturer-invite", _, socket) do
     Accounts.generate_lecturer_invite!()
+    {:noreply, socket}
+  end
+
+  def handle_event("generate-operator-invite", _, socket) do
+    Accounts.generate_operator_invite!()
     {:noreply, socket}
   end
 

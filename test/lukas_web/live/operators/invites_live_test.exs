@@ -57,16 +57,34 @@ defmodule LukasWeb.Operator.InvitesLiveTest do
       assert render(lv) =~ inv3.code
     end
 
-    test "clicking on generate button should generate a new invite.", %{conn: conn} do
+    test "clicking on generate lecturer invite button should generate a new lecturer invite.", %{
+      conn: conn
+    } do
       {:ok, lv, _} = live(conn, ~p"/controls/invites")
 
       render_async(lv)
 
-      lv |> element("#generate-invite-button") |> render_click()
+      lv |> element("#generate-lecturer-invite-button") |> render_click()
 
       [invite] = Accounts.list_invites()
 
       assert render(lv) =~ invite.code
+      assert invite.kind == :lecturer
+    end
+
+    test "clicking on generate operator invite button should generate a new operator invite.", %{
+      conn: conn
+    } do
+      {:ok, lv, _} = live(conn, ~p"/controls/invites")
+
+      render_async(lv)
+
+      lv |> element("#generate-operator-invite-button") |> render_click()
+
+      [invite] = Accounts.list_invites()
+
+      assert render(lv) =~ invite.code
+      assert invite.kind == :operator
     end
   end
 end
