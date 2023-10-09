@@ -30,7 +30,7 @@
 
 Lukas.Money.directly_deposit_to_student!(clerk, student, 5000)
 
-invite = Lukas.Accounts.generate_invite!()
+invite = Lukas.Accounts.generate_lecturer_invite!()
 
 {:ok, _} =
   Lukas.Accounts.register_lecturer(invite, %{

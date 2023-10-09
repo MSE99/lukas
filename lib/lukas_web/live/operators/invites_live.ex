@@ -34,7 +34,7 @@ defmodule LukasWeb.Operator.InvitesLive do
   end
 
   def handle_event("generate-invite", _, socket) do
-    Accounts.generate_invite!()
+    Accounts.generate_lecturer_invite!()
     {:noreply, socket}
   end
 
