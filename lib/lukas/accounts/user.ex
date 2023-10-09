@@ -24,6 +24,16 @@ defmodule Lukas.Accounts.User do
     timestamps()
   end
 
+  def enable(user) do
+    user
+    |> cast(%{enabled: true}, [:enabled])
+  end
+
+  def disable(user) do
+    user
+    |> cast(%{enabled: false}, [:enabled])
+  end
+
   def lecturer_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:email, :password, :phone_number, :kind, :name])
@@ -222,5 +232,9 @@ defmodule Lukas.Accounts.User do
 
   def query_student_by_id(id) do
     from(u in __MODULE__, where: u.kind == :student and u.id == ^id)
+  end
+
+  def query_operator_by_id(id) do
+    from(opr in __MODULE__, where: opr.kind == :operator and opr.id == ^id)
   end
 end

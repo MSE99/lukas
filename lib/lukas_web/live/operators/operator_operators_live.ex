@@ -40,15 +40,56 @@ defmodule LukasWeb.Operator.OperatorsLive do
       <:failed>Failed...</:failed>
 
       <ul id="operators" phx-update="stream">
-        <li :for={{id, operator} <- @streams.operators} id={id}>
-          <%= operator.name %>
+        <li :for={{id, operator} <- @streams.operators} class={[!operator.enabled && "opacity-50", "transition-all"]} id={id}>
+          <%= operator.name %> |
+          <.button
+            :if={operator.enabled}
+            id={"disable-operator-#{operator.id}"}
+            phx-click="disable-operator"
+            phx-value-id={operator.id}
+            phx-throttle
+          >
+            Disable operator
+          </.button>
+
+          <.button
+            :if={!operator.enabled}
+            id={"enable-operator-#{operator.id}"}
+            phx-click="enable-operator"
+            phx-value-id={operator.id}
+            phx-throttle
+          >
+            Enable operator
+          </.button>
         </li>
       </ul>
     </.async_result>
     """
   end
 
+  def handle_event("disable-operator", %{"id" => raw_operator_id}, socket) do
+    raw_operator_id
+    |> String.to_integer()
+    |> Accounts.get_operator()
+    |> Accounts.disable_user()
+
+    {:noreply, socket}
+  end
+
+  def handle_event("enable-operator", %{"id" => raw_operator_id}, socket) do
+    raw_operator_id
+    |> String.to_integer()
+    |> Accounts.get_operator()
+    |> Accounts.enable_user()
+
+    {:noreply, socket}
+  end
+
   def handle_info({:operators, :operator_registered, opr}, socket) do
+    {:noreply, stream_insert(socket, :operators, opr)}
+  end
+
+  def handle_info({:operators, :operator_updated, opr}, socket) do
     {:noreply, stream_insert(socket, :operators, opr)}
   end
 end

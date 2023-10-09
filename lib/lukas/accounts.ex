@@ -5,6 +5,12 @@ defmodule Lukas.Accounts do
   alias Lukas.Accounts.{User, UserToken, UserNotifier, Invite}
 
   # Operators
+  def get_operator(id) when is_integer(id) do
+    id
+    |> User.query_operator_by_id()
+    |> Repo.one()
+  end
+
   def list_operators(opts \\ []) do
     opts
     |> User.query_operators()
@@ -122,6 +128,37 @@ defmodule Lukas.Accounts do
   end
 
   # Generic
+  def enable_user(%User{} = u) do
+    u
+    |> User.enable()
+    |> Repo.update()
+    |> maybe_emit_user_updated()
+  end
+
+  def disable_user(%User{} = u) do
+    u
+    |> User.disable()
+    |> Repo.update()
+    |> maybe_emit_user_updated()
+  end
+
+  defp maybe_emit_user_updated({:ok, user} = res) do
+    case user.kind do
+      :operator ->
+        Phoenix.PubSub.broadcast(Lukas.PubSub, "operators", {:operators, :operator_updated, user})
+
+      :lecturer ->
+        Phoenix.PubSub.broadcast(Lukas.PubSub, "lecturers", {:lecturers, :lecturer_updated, user})
+
+      :student ->
+        Phoenix.PubSub.broadcast(Lukas.PubSub, "students", {:students, :student_updated, user})
+    end
+
+    res
+  end
+
+  defp maybe_emit_user_updated(res), do: res
+
   def get_user_by_phone_number(phone_number) when is_binary(phone_number) do
     Repo.get_by(User, phone_number: phone_number)
   end

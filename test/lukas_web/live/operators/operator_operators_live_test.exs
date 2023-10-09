@@ -32,4 +32,25 @@ defmodule LukasWeb.Operator.OperatorsLiveTest do
     html = render_async(lv)
     Enum.each(users, fn user -> assert html =~ user.name end)
   end
+
+  test "should render a button for disabling an operator.", %{conn: conn} do
+    {:ok, lv, _html} = live(conn, ~p"/controls/operators")
+
+    opr = user_fixture()
+
+    render_async(lv)
+
+    lv |> element("button#disable-operator-#{opr.id}") |> render_click()
+  end
+
+  test "should render a button for enabling an operator.", %{conn: conn} do
+    {:ok, lv, _html} = live(conn, ~p"/controls/operators")
+
+    opr = user_fixture()
+
+    render_async(lv)
+
+    lv |> element("button#disable-operator-#{opr.id}") |> render_click()
+    lv |> element("button#enable-operator-#{opr.id}") |> render_click()
+  end
 end
