@@ -130,7 +130,7 @@ defmodule Lukas.Accounts do
   end
 
   def generate_invite!() do
-    Invite.changeset(%Invite{}, %{"code" => gen_code()})
+    Invite.changeset(%Invite{kind: :lecturer}, %{"code" => gen_code()})
     |> Repo.insert!()
     |> emit_invite_created()
   end

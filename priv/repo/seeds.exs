@@ -11,7 +11,7 @@
 # and so on) as they will fail if something goes wrong.
 
 {:ok, clerk} =
-  Lukas.Accounts.register_user(%{
+  Lukas.Accounts.register_operator(%{
     "kind" => "operator",
     "phone_number" => "091",
     "password" => "123123123123",
@@ -20,7 +20,7 @@
   })
 
 {:ok, student} =
-  Lukas.Accounts.register_user(%{
+  Lukas.Accounts.register_student(%{
     "kind" => "student",
     "phone_number" => "092",
     "password" => "123123123123",
@@ -30,29 +30,10 @@
 
 Lukas.Money.directly_deposit_to_student!(clerk, student, 5000)
 
-1..300
-|> Enum.each(fn _ ->
-  {:ok, student} =
-    Lukas.Accounts.register_user(%{
-      "kind" => "student",
-      "phone_number" => "092 #{System.unique_integer([:positive])}",
-      "password" => "123123123123",
-      "email" => "mail_#{System.unique_integer([:positive])}@gmail.com",
-      "name" => "Student #{System.unique_integer([:positive])}"
-    })
-
-  {:ok, student} =
-    Lukas.Accounts.register_user(%{
-      "kind" => "student",
-      "phone_number" => "092 #{System.unique_integer([:positive])}",
-      "password" => "123123123123",
-      "email" => "mail_#{System.unique_integer([:positive])}@gmail.com",
-      "name" => "Student #{System.unique_integer([:positive])}"
-    })
-end)
+invite = Lukas.Accounts.generate_invite!()
 
 {:ok, _} =
-  Lukas.Accounts.register_user(%{
+  Lukas.Accounts.register_lecturer(invite, %{
     "kind" => "lecturer",
     "phone_number" => "094",
     "password" => "123123123123",

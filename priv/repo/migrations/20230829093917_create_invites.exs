@@ -3,6 +3,7 @@ defmodule Lukas.Repo.Migrations.CreateInvites do
 
   def change do
     create table(:invites) do
+      add :kind, :string
       add :code, :string
 
       timestamps()
