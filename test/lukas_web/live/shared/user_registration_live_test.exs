@@ -1,4 +1,4 @@
-defmodule LukasWeb.UserRegistrationLiveTest do
+defmodule LukasWeb.Shared.StudentRegistrationLiveTest do
   use LukasWeb.ConnCase
 
   import Phoenix.LiveViewTest
@@ -33,8 +33,8 @@ defmodule LukasWeb.UserRegistrationLiveTest do
     end
   end
 
-  describe "register user" do
-    test "creates account and logs the user in", %{conn: conn} do
+  describe "register student" do
+    test "creates account and logs the student in", %{conn: conn} do
       {:ok, lv, _html} = live(conn, ~p"/users/register")
 
       email = unique_user_email()
