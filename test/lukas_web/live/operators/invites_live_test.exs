@@ -18,7 +18,9 @@ defmodule LukasWeb.Operator.InvitesLiveTest do
       inv2 = lecturer_invite_fixture()
       inv3 = lecturer_invite_fixture()
 
-      {:ok, _, html} = live(conn, ~p"/controls/invites")
+      {:ok, lv, _html} = live(conn, ~p"/controls/invites")
+
+      html = render_async(lv)
 
       assert html =~ inv1.code
       assert html =~ inv2.code
@@ -32,7 +34,7 @@ defmodule LukasWeb.Operator.InvitesLiveTest do
       inv2 = lecturer_invite_fixture()
       inv3 = lecturer_invite_fixture()
 
-      html = render(lv)
+      html = render_async(lv)
 
       assert html =~ inv1.code
       assert html =~ inv2.code
@@ -46,6 +48,8 @@ defmodule LukasWeb.Operator.InvitesLiveTest do
       inv2 = lecturer_invite_fixture()
       inv3 = lecturer_invite_fixture()
 
+      render_async(lv)
+
       lv |> element(".delete-invite-button[phx-value-id=\"#{inv1.id}\"]") |> render_click()
 
       refute render(lv) =~ inv1.code
@@ -55,6 +59,9 @@ defmodule LukasWeb.Operator.InvitesLiveTest do
 
     test "clicking on generate button should generate a new invite.", %{conn: conn} do
       {:ok, lv, _} = live(conn, ~p"/controls/invites")
+
+      render_async(lv)
+
       lv |> element("#generate-invite-button") |> render_click()
 
       [invite] = Accounts.list_invites()

@@ -2,28 +2,54 @@ defmodule LukasWeb.Operator.InvitesLive do
   use LukasWeb, :live_view
 
   alias Lukas.Accounts
+  alias Phoenix.LiveView.AsyncResult
 
   def mount(_, _, socket) do
     Accounts.watch_invites()
 
-    invites = Accounts.list_invites()
-    {:ok, stream(socket, :invites, invites)}
+    next_socket =
+      socket
+      |> assign(:loading_result, AsyncResult.loading())
+      |> start_async(:loading, fn -> Accounts.list_invites() end)
+
+    {:ok, next_socket}
+  end
+
+  def handle_async(:loading, {:ok, invites}, socket) do
+    Accounts.watch_invites()
+
+    next_socket =
+      socket
+      |> stream(:invites, invites)
+      |> assign(:loading_result, AsyncResult.ok(socket.assigns.loading_result, nil))
+
+    {:noreply, next_socket}
+  end
+
+  def handle_async(:loading, {:exit, reason}, socket) do
+    {:noreply,
+     assign(socket, loading_result: AsyncResult.failed(socket.assigns.loading_result, reason))}
   end
 
   def render(assigns) do
     ~H"""
     <h1>Invites</h1>
 
-    <.button id="generate-invite-button" phx-click="generate-invite">Generate invite</.button>
+    <.async_result assign={@loading_result}>
+      <:loading>Loading...</:loading>
+      <:failed>Failed to load invites...</:failed>
 
-    <ul id="invites" phx-update="stream">
-      <li :for={{id, inv} <- @streams.invites} id={id}>
-        <%= inv.code %>
-        <.button class="delete-invite-button" phx-value-id={inv.id} phx-click="delete-invite">
-          Delete invite
-        </.button>
-      </li>
-    </ul>
+      <.button id="generate-invite-button" phx-click="generate-invite">Generate invite</.button>
+
+      <ul id="invites" phx-update="stream">
+        <li :for={{id, inv} <- @streams.invites} id={id}>
+          <%= inv.code %>
+          <.button class="delete-invite-button" phx-value-id={inv.id} phx-click="delete-invite">
+            Delete invite
+          </.button>
+        </li>
+      </ul>
+    </.async_result>
     """
   end
 
