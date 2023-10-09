@@ -135,6 +135,12 @@ defmodule Lukas.Accounts do
     |> emit_invite_created()
   end
 
+  def generate_operator_invite!() do
+    Invite.changeset(%Invite{kind: :operator}, %{"code" => gen_code()})
+    |> Repo.insert!()
+    |> emit_invite_created()
+  end
+
   def gen_code() do
     :crypto.strong_rand_bytes(5)
     |> Base.encode16()

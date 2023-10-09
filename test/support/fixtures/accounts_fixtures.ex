@@ -50,4 +50,8 @@ defmodule Lukas.AccountsFixtures do
   def lecturer_invite_fixture() do
     Accounts.generate_lecturer_invite!()
   end
+
+  def operator_invite_fixture() do
+    Accounts.generate_operator_invite!()
+  end
 end
