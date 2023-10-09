@@ -48,12 +48,33 @@ defmodule LukasWeb.Operator.LecturersLive do
         phx-viewport-top={@page > 1 && "reached-top"}
         phx-viewport-bottom={@end_of_timeline? == false && "reached-bottom"}
         class={[
-          @end_of_timeline? == false && "pb-[200vh]",
-          @page > 1 && "pt-[200vh]"
+          @end_of_timeline? == false && "pb-[calc(200vh)]",
+          @page > 1 && "pt-[calc(200vh)]"
         ]}
       >
-        <li :for={{id, lect} <- @streams.lecturers} id={id}>
-          <%= lect.name %>
+        <li
+          :for={{id, lect} <- @streams.lecturers}
+          id={id}
+          class={[!lect.enabled && "opacity-25", "transition-all"]}
+        >
+          <%= lect.name %> |
+          <.button
+            :if={lect.enabled}
+            id={"lecturer-#{lect.id}-disable"}
+            phx-click="disable-lecturer"
+            phx-value-id={lect.id}
+          >
+            Disable
+          </.button>
+
+          <.button
+            :if={!lect.enabled}
+            id={"lecturer-#{lect.id}-enable"}
+            phx-click="enable-lecturer"
+            phx-value-id={lect.id}
+          >
+            Enable
+          </.button>
         </li>
       </ul>
     </.async_result>
@@ -67,9 +88,9 @@ defmodule LukasWeb.Operator.LecturersLive do
 
     {items, limit, at} =
       if page >= current_page do
-        {lecturers, per_page * 3 * -1, -1}
+        {lecturers, per_page * 4 * -1, -1}
       else
-        {Enum.reverse(lecturers), per_page * 3, 0}
+        {Enum.reverse(lecturers), per_page * 4, 0}
       end
 
     case items do
@@ -101,11 +122,35 @@ defmodule LukasWeb.Operator.LecturersLive do
     {:noreply, paginate(socket, next_page)}
   end
 
+  def handle_event("disable-lecturer", %{"id" => raw_id}, socket) do
+    {:ok, next_lect} =
+      raw_id
+      |> String.to_integer()
+      |> Accounts.get_lecturer!()
+      |> Accounts.disable_user()
+
+    {:noreply, socket |> stream_insert(:lecturers, next_lect)}
+  end
+
+  def handle_event("enable-lecturer", %{"id" => raw_id}, socket) do
+    {:ok, next_lect} =
+      raw_id
+      |> String.to_integer()
+      |> Accounts.get_lecturer!()
+      |> Accounts.enable_user()
+
+    {:noreply, socket |> stream_insert(:lecturers, next_lect)}
+  end
+
   def handle_info({:lecturers, :lecturer_registered, lecturer}, socket) do
     if socket.assigns.page == 1 do
-      {:noreply, stream_insert(socket, :lecturers, lecturer)}
+      {:noreply, socket |> stream_insert(:lecturers, lecturer) |> assign(:upper, lecturer.id)}
     else
       {:noreply, socket}
     end
+  end
+
+  def handle_info({:lecturers, :lecturer_updated, _}, socket) do
+    {:noreply, socket}
   end
 end
