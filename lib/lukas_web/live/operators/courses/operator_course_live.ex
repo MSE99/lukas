@@ -106,6 +106,10 @@ defmodule LukasWeb.Operator.CourseLive do
       <.button>Add lecturer</.button>
     </.link>
 
+    <.link navigate={~p"/controls/courses/#{@course.id}/assign-lecturer"}>
+      <.button>Assign lecturer</.button>
+    </.link>
+
     <ul id="lecturers" phx-update="stream">
       <li :for={{id, lect} <- @streams.lecturers} id={id}>
         <%= lect.name %> |
