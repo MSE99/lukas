@@ -1,7 +1,7 @@
 defmodule Lukas.Accounts do
   import Ecto.Query, warn: false
-  alias Lukas.Repo
 
+  alias Lukas.Repo
   alias Lukas.Accounts.{User, UserToken, UserNotifier, Invite}
 
   # Operators
@@ -119,8 +119,16 @@ defmodule Lukas.Accounts do
     Phoenix.PubSub.subscribe(Lukas.PubSub, "lecturers")
   end
 
+  def watch_lecturer(%User{kind: :lecturer} = lect) do
+    Phoenix.PubSub.subscribe(Lukas.PubSub, "lecturers/#{lect.id}")
+  end
+
   def list_lecturers(opts \\ []) do
     User.query_lecturers(opts) |> Repo.all()
+  end
+
+  def get_lecturer(lecturer_id) when is_integer(lecturer_id) do
+    Repo.get_by(User, kind: :lecturer, id: lecturer_id)
   end
 
   def get_lecturer!(lecturer_id) when is_integer(lecturer_id) do
@@ -149,6 +157,12 @@ defmodule Lukas.Accounts do
 
       :lecturer ->
         Phoenix.PubSub.broadcast(Lukas.PubSub, "lecturers", {:lecturers, :lecturer_updated, user})
+
+        Phoenix.PubSub.broadcast(
+          Lukas.PubSub,
+          "lecturers/#{user.id}",
+          {:lecturer, user.id, :lecturer_updated, user}
+        )
 
       :student ->
         Phoenix.PubSub.broadcast(Lukas.PubSub, "students", {:students, :student_updated, user})

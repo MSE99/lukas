@@ -35,6 +35,7 @@ defmodule LukasWeb.Router do
       live("/operators", Operator.OperatorsLive)
 
       live("/lecturers", Operator.LecturersLive)
+      live("/lecturers/:id", Operator.LecturerLive)
 
       live("/invites", Operator.InvitesLive)
 

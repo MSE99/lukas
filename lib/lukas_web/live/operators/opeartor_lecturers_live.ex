@@ -57,7 +57,8 @@ defmodule LukasWeb.Operator.LecturersLive do
           id={id}
           class={[!lect.enabled && "opacity-25", "transition-all"]}
         >
-          <%= lect.name %> |
+          <.link navigate={~p"/controls/lecturers/#{lect.id}"}><%= lect.name %></.link>
+          |
           <.button
             :if={lect.enabled}
             id={"lecturer-#{lect.id}-disable"}
