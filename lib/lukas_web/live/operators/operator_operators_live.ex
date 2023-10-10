@@ -40,7 +40,11 @@ defmodule LukasWeb.Operator.OperatorsLive do
       <:failed>Failed...</:failed>
 
       <ul id="operators" phx-update="stream">
-        <li :for={{id, operator} <- @streams.operators} class={[!operator.enabled && "opacity-50", "transition-all"]} id={id}>
+        <li
+          :for={{id, operator} <- @streams.operators}
+          class={[!operator.enabled && "opacity-50", "transition-all"]}
+          id={id}
+        >
           <%= operator.name %> |
           <.button
             :if={operator.enabled}
