@@ -13,7 +13,7 @@ defmodule LukasWeb.Operator.AssignLecturerLive do
         socket
         |> assign(:course, course)
         |> assign(:loading, AsyncResult.loading())
-        |> start_async(:loading, fn -> Staff.possible_lecturers_for(course) end)
+        |> start_async(:loading, fn -> load_lecturers(course) end)
         |> stream_configure(:lecturers, [])
 
       {:ok, next_socket}
@@ -22,13 +22,22 @@ defmodule LukasWeb.Operator.AssignLecturerLive do
     end
   end
 
-  def handle_async(:loading, {:ok, lecturers}, socket) do
+  defp load_lecturers(course) do
+    course_lect = Staff.list_course_lecturers(course)
+    possible_lecturers = Staff.possible_lecturers_for(course, limit: 50, offset: 0)
+    {course_lect, possible_lecturers}
+  end
+
+  def handle_async(:loading, {:ok, result}, socket) do
     Accounts.watch_lecturers()
     Learning.watch_course(socket.assigns.course.id)
 
+    {lecturers, possible_lecturers} = result
+
     next_socket =
       socket
-      |> stream(:lecturers, lecturers)
+      |> stream(:assigned, lecturers)
+      |> stream(:available, possible_lecturers)
       |> assign(:loading, AsyncResult.ok(socket.assigns.loading, nil))
 
     {:noreply, next_socket}
@@ -48,8 +57,24 @@ defmodule LukasWeb.Operator.AssignLecturerLive do
       <:loading>Loading lecturers</:loading>
       <:failed>Failed to load lecturers</:failed>
 
-      <ul id="lecturers" phx-update="stream">
-        <li :for={{id, lect} <- @streams.lecturers} id={id}>
+      <h3>Assigned</h3>
+      <ul id="assigned-lecturers" phx-update="stream">
+        <li :for={{id, lect} <- @streams.assigned} id={id}>
+          <%= lect.name %> |
+          <.button
+            id={"unassign-lecturer-#{lect.id}"}
+            phx-click="unassign-lecturer"
+            phx-value-id={lect.id}
+            phx-throttle
+          >
+            Unassign
+          </.button>
+        </li>
+      </ul>
+
+      <h3>Available</h3>
+      <ul id="available-lecturers" phx-update="stream">
+        <li :for={{id, lect} <- @streams.available} id={id}>
           <%= lect.name %> |
           <.button
             id={"assign-lecturer-#{lect.id}"}
@@ -65,6 +90,17 @@ defmodule LukasWeb.Operator.AssignLecturerLive do
     """
   end
 
+  def handle_event("unassign-lecturer", %{"id" => raw_id}, socket) do
+    lect =
+      raw_id
+      |> String.to_integer()
+      |> Accounts.get_lecturer!()
+
+    Staff.remove_lecturer_from_course(socket.assigns.course, lect)
+
+    {:noreply, socket}
+  end
+
   def handle_event("assign-lecturer", %{"id" => raw_id}, socket) do
     lect =
       raw_id
@@ -77,19 +113,28 @@ defmodule LukasWeb.Operator.AssignLecturerLive do
   end
 
   def handle_info({:lecturers, :lecturer_registered, lect}, socket),
-    do: {:noreply, stream_insert(socket, :lecturers, lect, at: 0)}
+    do: {:noreply, stream_insert(socket, :available, lect, at: 0)}
 
   def handle_info({:lecturers, :lecturer_updated, lect}, socket) when lect.enabled == false,
-    do: {:noreply, stream_delete(socket, :lecturers, lect)}
+    do: {:noreply, socket |> stream_delete(:available, lect) |> stream_delete(:assigned, lect)}
 
-  def handle_info({:lecturers, :lecturer_updated, lect}, socket),
-    do: {:noreply, stream_insert(socket, :lecturers, lect)}
+  def handle_info({:lecturers, :lecturer_updated, _}, socket) do
+    {:noreply, socket}
+  end
 
-  def handle_info({:course, _, :lecturer_added, lect}, socket),
-    do: {:noreply, stream_delete(socket, :lecturers, lect)}
+  def handle_info({:course, _, :lecturer_added, lect}, socket) do
+    next_socket =
+      socket
+      |> stream_delete(:available, lect)
+      |> stream_insert(:assigned, lect)
+
+    {:noreply, next_socket}
+  end
 
   def handle_info({:course, _, :lecturer_removed, lect}, socket),
-    do: {:noreply, stream_insert(socket, :lecturers, lect, at: 0)}
+    do:
+      {:noreply,
+       socket |> stream_delete(:assigned, lect) |> stream_insert(:available, lect, at: 0)}
 
   def handle_info({:course, _, :course_updated, course}, socket),
     do: {:noreply, assign(socket, course: course)}

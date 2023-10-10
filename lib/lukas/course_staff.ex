@@ -35,12 +35,14 @@ defmodule Lukas.Learning.Course.Staff do
     end
   end
 
-  def possible_lecturers_for(%Course{} = course) do
+  def possible_lecturers_for(%Course{} = course, opts \\ []) do
+    opts_with_kind = Keyword.put(opts, :kind, :lecturer)
+
     {:ok, lecturers} =
       Repo.transaction(fn ->
         course
         |> list_course_lecturers_ids()
-        |> Accounts.User.query_whose_id_not_in(kind: :lecturer)
+        |> Accounts.User.query_whose_id_not_in(opts_with_kind)
         |> Repo.all()
       end)
 

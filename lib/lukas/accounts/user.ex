@@ -227,7 +227,16 @@ defmodule Lukas.Accounts.User do
 
   def query_whose_id_not_in(exclusion_list, opts \\ []) do
     kind = Keyword.get(opts, :kind, :student)
-    from(u in __MODULE__, where: u.kind == ^kind and u.id not in ^exclusion_list)
+    limit = Keyword.get(opts, :limit, 50)
+    offset = Keyword.get(opts, :offset, 0)
+
+    from(
+      u in __MODULE__,
+      where: u.kind == ^kind and u.id not in ^exclusion_list,
+      limit: ^limit,
+      offset: ^offset,
+      order_by: [desc: :inserted_at]
+    )
   end
 
   def query_student_by_id(id) do
