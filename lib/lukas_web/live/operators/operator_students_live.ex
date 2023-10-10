@@ -75,11 +75,50 @@ defmodule LukasWeb.Operator.StudentsLive do
         ]}
       >
         <li :for={{id, student} <- @streams.students} id={id}>
-          <%= student.name %>
+          <%= student.name %> |
+          <.button
+            :if={student.enabled}
+            id={"student-disable-#{student.id}"}
+            phx-click="disable-student"
+            phx-value-id={student.id}
+            phx-throttle
+          >
+            Disable
+          </.button>
+
+          <.button
+            :if={!student.enabled}
+            id={"student-enable-#{student.id}"}
+            phx-click="enable-student"
+            phx-value-id={student.id}
+            phx-throttle
+          >
+            Enable
+          </.button>
         </li>
       </ul>
     </.async_result>
     """
+  end
+
+  def handle_event("disable-student", %{"id" => raw_id}, socket) do
+    {:ok, next_student} =
+      raw_id
+      |> String.to_integer()
+      |> Accounts.get_student!()
+      |> Accounts.disable_user()
+
+    {:noreply, socket |> stream_insert(:students, next_student)}
+  end
+
+  def handle_event("enable-student", %{"id" => raw_id}, socket) do
+    {:ok, next_student} =
+      raw_id
+      |> String.to_integer()
+      |> Accounts.get_student!()
+      |> Accounts.enable_user()
+
+    {:noreply, socket |> stream_insert(:students, next_student)}
   end
 
   def handle_event("reached-top", _, socket) do
@@ -104,5 +143,9 @@ defmodule LukasWeb.Operator.StudentsLive do
     else
       {:noreply, socket}
     end
+  end
+
+  def handle_info({:students, :student_updated, _}, socket) do
+    {:noreply, socket}
   end
 end

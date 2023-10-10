@@ -183,6 +183,10 @@ defmodule Lukas.Accounts do
     id |> User.query_student_by_id() |> Repo.one()
   end
 
+  def get_student!(id) when is_integer(id) do
+    id |> User.query_student_by_id() |> Repo.one!()
+  end
+
   def get_user!(id), do: Repo.get!(User, id)
 
   # Invites
