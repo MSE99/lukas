@@ -66,4 +66,14 @@ defmodule LukasWeb.Operator.LecturerLiveTest do
            |> element("button#enable-lecturer")
            |> has_element?()
   end
+
+  test "should react to lecturer being assigned to course.", %{conn: conn, lecturer: lect} do
+    {:ok, lv, _html} = live(conn, ~p"/controls/lecturers/#{lect.id}")
+    render_async(lv)
+
+    course = course_fixture()
+    Staff.add_lecturer_to_course(course, lect)
+  
+    assert render(lv) =~ course.name
+  end
 end

@@ -12,7 +12,8 @@ defmodule Lukas.Learning.Course.Staff do
   end
 
   def list_lecturer_courses(lecturer_id) when is_integer(lecturer_id) do
-    Course.query_by_lecturer_id(lecturer_id)
+    lecturer_id
+    |> Course.query_by_lecturer_id()
     |> Repo.all()
   end
 

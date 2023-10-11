@@ -23,6 +23,8 @@ defmodule LukasWeb.Operator.LecturerLive do
   end
 
   def handle_async(:loading, {:ok, courses}, socket) do
+    Staff.watch_staff_status(socket.assigns.lecturer.id)
+
     next_socket =
       socket
       |> stream(:courses, courses)
@@ -82,5 +84,9 @@ defmodule LukasWeb.Operator.LecturerLive do
 
   def handle_info({:lecturer, _, :lecturer_updated, lect}, socket) do
     {:noreply, assign(socket, :lecturer, lect)}
+  end
+
+  def handle_info({:staff_status, :added_to_course, course}, socket) do
+    {:noreply, stream_insert(socket, :courses, course)}
   end
 end
