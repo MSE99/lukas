@@ -37,8 +37,6 @@ defmodule LukasWeb.Operators.StudentLive do
   end
 
   test "should render a button for disabling/enabling students.", %{conn: conn, student: student} do
-    course = course_fixture()
-
     {:ok, lv, _html} = live(conn, ~p"/controls/students/#{student.id}")
     render_async(lv)
 
@@ -52,13 +50,23 @@ defmodule LukasWeb.Operators.StudentLive do
   end
 
   test "should react to student updates.", %{conn: conn, student: student} do
-    course = course_fixture()
-
     {:ok, lv, _html} = live(conn, ~p"/controls/students/#{student.id}")
     render_async(lv)
 
     {:ok, _} = Accounts.disable_user(student)
 
     assert lv |> element("button#enable-button") |> has_element?()
+  end
+
+  test "should react to student enrolling in course.", %{conn: conn, student: student} do
+    {:ok, lv, _html} = live(conn, ~p"/controls/students/#{student.id}")
+    render_async(lv)
+
+    course = course_fixture()
+
+    direct_deposit_fixture(user_fixture(), student, course.price)
+    Lukas.Learning.Course.Students.enroll_student(course, student)
+
+    assert render(lv) =~ course.name
   end
 end

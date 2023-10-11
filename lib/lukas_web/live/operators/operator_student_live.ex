@@ -3,6 +3,7 @@ defmodule LukasWeb.Operator.StudentLive do
 
   alias Lukas.Accounts
   alias Lukas.Learning.Course
+  alias Lukas.Learning.Course.Students
   alias Phoenix.LiveView.AsyncResult
 
   def mount(%{"id" => raw_student_id}, _, socket) do
@@ -22,6 +23,7 @@ defmodule LukasWeb.Operator.StudentLive do
   end
 
   def handle_async(:loading, {:ok, courses}, socket) do
+    Students.watch_student_enrollments(socket.assigns.student)
     Accounts.watch_student(socket.assigns.student)
 
     next_socket =
@@ -72,5 +74,9 @@ defmodule LukasWeb.Operator.StudentLive do
 
   def handle_info({:student, _, :student_updated, student}, socket) do
     {:noreply, assign(socket, student: student)}
+  end
+
+  def handle_info({:enrollments, :enrolled, course}, socket) do
+    {:noreply, stream_insert(socket, :courses, course)}
   end
 end

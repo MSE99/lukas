@@ -75,7 +75,7 @@ defmodule LukasWeb.Operator.StudentsLive do
         ]}
       >
         <li :for={{id, student} <- @streams.students} id={id}>
-          <%= student.name %> |
+          <.link navigate={~p"/controls/students/#{student.id}"}><%= student.name %></.link> |
           <.button
             :if={student.enabled}
             id={"student-disable-#{student.id}"}
