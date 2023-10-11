@@ -46,8 +46,12 @@ defmodule LukasWeb.Operator.StudentLive do
     ~H"""
     <h1><%= @student.name %></h1>
 
-    <.button :if={@student.enabled} id="disable-button" phx-click="disable-student" phx-throttle>Disabled</.button>
-    <.button :if={!@student.enabled} id="enable-button" phx-click="enable-student" phx-throttle>Enable</.button>
+    <.button :if={@student.enabled} id="disable-button" phx-click="disable-student" phx-throttle>
+      Disabled
+    </.button>
+    <.button :if={!@student.enabled} id="enable-button" phx-click="enable-student" phx-throttle>
+      Enable
+    </.button>
 
     <.async_result assign={@loading}>
       <:loading>Loading...</:loading>

@@ -73,7 +73,7 @@ defmodule LukasWeb.Operator.LecturerLiveTest do
 
     course = course_fixture()
     Staff.add_lecturer_to_course(course, lect)
-  
+
     assert render(lv) =~ course.name
   end
 end

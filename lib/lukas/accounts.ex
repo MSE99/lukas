@@ -159,7 +159,6 @@ defmodule Lukas.Accounts do
       :operator ->
         Phoenix.PubSub.broadcast(Lukas.PubSub, "operators", {:operators, :operator_updated, user})
 
-
       :lecturer ->
         Phoenix.PubSub.broadcast(Lukas.PubSub, "lecturers", {:lecturers, :lecturer_updated, user})
 
