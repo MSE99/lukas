@@ -22,6 +22,8 @@ defmodule LukasWeb.Operator.StudentLive do
   end
 
   def handle_async(:loading, {:ok, courses}, socket) do
+    Accounts.watch_student(socket.assigns.student)
+
     next_socket =
       socket
       |> assign(:loading, AsyncResult.ok(socket.assigns.loading, nil))
@@ -42,6 +44,9 @@ defmodule LukasWeb.Operator.StudentLive do
     ~H"""
     <h1><%= @student.name %></h1>
 
+    <.button :if={@student.enabled} id="disable-button" phx-click="disable-student" phx-throttle>Disabled</.button>
+    <.button :if={!@student.enabled} id="enable-button" phx-click="enable-student" phx-throttle>Enable</.button>
+
     <.async_result assign={@loading}>
       <:loading>Loading...</:loading>
       <:failed>Failed...</:failed>
@@ -53,5 +58,19 @@ defmodule LukasWeb.Operator.StudentLive do
       </ul>
     </.async_result>
     """
+  end
+
+  def handle_event("disable-student", _, socket) do
+    {:ok, student} = Accounts.disable_user(socket.assigns.student)
+    {:noreply, socket |> assign(student: student)}
+  end
+
+  def handle_event("enable-student", _, socket) do
+    {:ok, student} = Accounts.enable_user(socket.assigns.student)
+    {:noreply, socket |> assign(student: student)}
+  end
+
+  def handle_info({:student, _, :student_updated, student}, socket) do
+    {:noreply, assign(socket, student: student)}
   end
 end
