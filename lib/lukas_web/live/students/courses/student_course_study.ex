@@ -53,11 +53,16 @@ defmodule LukasWeb.Students.StudyLive do
     {:noreply, patch_to_next(socket)}
   end
 
-  def patch_to_next(socket, patch_home? \\ false) do
+  def patch_to_next(socket, opts \\ []) do
+    patch_home? = Keyword.get(opts, :patch_home?, false)
+
     case socket.assigns.next do
       :course_home ->
         if patch_home? do
-          socket |> push_patch(to: ~p"/home/courses/#{socket.assigns.course.id}/study")
+          socket
+          |> push_patch(to: ~p"/home/courses/#{socket.assigns.course.id}/study")
+          |> assign(topic: nil)
+          |> assign(lesson: nil)
         else
           socket
         end
@@ -124,7 +129,7 @@ defmodule LukasWeb.Students.StudyLive do
       |> assign(course: course)
       |> assign(next: next)
       |> stream(:lessons, lessons, reset: true)
-      |> patch_to_next(true)
+      |> patch_to_next(patch_home?: true)
 
     {:noreply, next_socket}
   end
