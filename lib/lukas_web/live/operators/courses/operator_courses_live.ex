@@ -8,7 +8,7 @@ defmodule LukasWeb.Operator.AllCoursesLive do
   alias Lukas.Categories
   alias Phoenix.LiveView.AsyncResult
 
-  def mount(params, _, socket) do
+  def mount(_, _, socket) do
     next_socket =
       socket
       |> stream_configure(:courses, [])
@@ -39,7 +39,6 @@ defmodule LukasWeb.Operator.AllCoursesLive do
      |> assign(loading: AsyncResult.failed(socket.assigns.loading, reason))}
   end
 
-
   defp paginate_courses(socket, page) when page >= 1 do
     %{page: current_page, per_page: per_page} = socket
 
@@ -65,7 +64,8 @@ defmodule LukasWeb.Operator.AllCoursesLive do
     end
   end
 
-  def handle_params(params, _, socket), do: {:noreply, apply_action(socket, params, socket.assigns.live_action)}
+  def handle_params(params, _, socket),
+    do: {:noreply, apply_action(socket, params, socket.assigns.live_action)}
 
   defp apply_action(socket, _, :new) do
     tags = Categories.list_tags()
@@ -118,9 +118,8 @@ defmodule LukasWeb.Operator.AllCoursesLive do
         ]}
       >
         <li :for={{id, course} <- @streams.courses} id={id}>
-          <.link navigate={~p"/controls/courses/#{course.id}"}><%= course.name %></.link> 
-          |
-          <.link patch={~p"/controls/courses/#{course.id}/edit"}>Edit</.link>
+          <.link navigate={~p"/controls/courses/#{course.id}"}><%= course.name %></.link>
+          | <.link patch={~p"/controls/courses/#{course.id}/edit"}>Edit</.link>
         </li>
       </ul>
     </.async_result>
@@ -131,7 +130,11 @@ defmodule LukasWeb.Operator.AllCoursesLive do
       on_cancel={JS.patch(~p"/controls/courses")}
       show
     >
-      <.form for={@form} phx-change="validate" phx-submit={if @live_action == :edit, do: "edit", else: "create"}>
+      <.form
+        for={@form}
+        phx-change="validate"
+        phx-submit={if @live_action == :edit, do: "edit", else: "create"}
+      >
         <.input field={@form[:name]} type="text" label="Name" phx-debounce="blur" />
         <.input field={@form[:price]} type="number" label="Price" phx-debounce="blur" />
 

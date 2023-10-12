@@ -156,5 +156,4 @@ defmodule LukasWeb.Operator.AllCoursesLiveTest do
       assert Enum.find(course.tags, fn t -> t.tag_id == tag3.id end)
     end
   end
-
 end
