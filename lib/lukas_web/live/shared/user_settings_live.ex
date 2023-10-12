@@ -30,6 +30,7 @@ defmodule LukasWeb.UserSettingsLive do
       |> assign(:email_form, to_form(email_changeset))
       |> assign(:password_form, to_form(password_changeset))
       |> assign(:trigger_submit, false)
+      |> allow_upload(:profile_image, accept: ~w(.jpg .png .jpeg))
 
     {:ok, socket}
   end
@@ -41,7 +42,30 @@ defmodule LukasWeb.UserSettingsLive do
       <:subtitle>Manage your account email address and password settings</:subtitle>
     </.header>
 
+    <img src={~p"/images/#{@current_user.profile_image}"} />
+
     <div class="space-y-12 divide-y">
+      <div>
+        <form
+          id="profile-image-form"
+          phx-change="validate-profile-image"
+          phx-submit="update-profile-image"
+        >
+          <.live_file_input upload={@uploads.profile_image} />
+          <.button>Upload</.button>
+
+          <%= for entry <- @uploads.profile_image.entries do %>
+            <progress value={entry.progress} max="100">
+              <%= entry.progress %>%
+            </progress>
+
+            <%= for err <- upload_errors(@uploads.profile_image, entry) do %>
+              <p class="alert alert-danger"><%= error_to_string(err) %></p>
+            <% end %>
+          <% end %>
+        </form>
+      </div>
+
       <div>
         <.simple_form
           for={@email_form}
@@ -111,6 +135,38 @@ defmodule LukasWeb.UserSettingsLive do
     """
   end
 
+  def error_to_string(:too_large), do: "Too large"
+  def error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
+
+  defp ext(upload_entry) do
+    [ext | _] = MIME.extensions(upload_entry.client_type)
+    ext
+  end
+
+  def handle_event("validate-profile-image", _, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("update-profile-image", _, socket) do
+    consume_uploaded_entries(socket, :profile_image, fn %{path: path}, entry ->
+      filename = "#{entry.uuid}.#{ext(entry)}"
+      dist = Path.join([:code.priv_dir(:lukas), "static", "images", filename])
+
+      {:ok, next_user} =
+        Accounts.update_user_profile_image(
+          socket.assigns.current_user,
+          %{profile_image: filename},
+          fn -> File.cp!(path, dist) end
+        )
+
+      send(self(), {:user_updated, next_user})
+
+      {:ok, dist}
+    end)
+
+    {:noreply, socket}
+  end
+
   def handle_event("validate_email", params, socket) do
     %{"current_password" => password, "user" => user_params} = params
 
@@ -171,5 +227,9 @@ defmodule LukasWeb.UserSettingsLive do
       {:error, changeset} ->
         {:noreply, assign(socket, password_form: to_form(changeset))}
     end
+  end
+
+  def handle_info({:user_updated, next_user}, socket) do
+    {:noreply, assign(socket, current_user: next_user)}
   end
 end

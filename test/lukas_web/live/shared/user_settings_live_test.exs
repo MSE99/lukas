@@ -208,4 +208,28 @@ defmodule LukasWeb.UserSettingsLiveTest do
       assert message == "You must log in to access this page."
     end
   end
+
+  describe "profile image form" do
+    setup :register_and_log_in_user
+
+    test "should only support .jpg .jpeg .png .gif files", %{conn: conn} do
+      {:ok, lv, _} = live(conn, ~p"/users/settings/update-profile-image")
+
+      image_bytes = File.read!("priv/static/images/default-profile.png")
+
+      upload =
+        lv
+        |> file_input("form#profile-image-form", :profile_image, [
+          %{
+            last_modified: 1_594_171_879_000,
+            name: "image.mp4",
+            content: image_bytes,
+            size: 1_396_009,
+            type: "video/mp4"
+          }
+        ])
+
+      assert {:error, [[_, :not_accepted]]} = render_upload(upload, "image.mp4")
+    end
+  end
 end

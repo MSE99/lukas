@@ -3,6 +3,7 @@ defmodule Lukas.Accounts do
 
   alias Lukas.Repo
   alias Lukas.Accounts.{User, UserToken, UserNotifier, Invite}
+  alias Ecto.Multi
 
   # Operators
   def get_operator(id) when is_integer(id) do
@@ -266,6 +267,24 @@ defmodule Lukas.Accounts do
   end
 
   ## Settings
+
+  def update_user_profile_image(user, attrs, side_effect \\ fn -> nil end) do
+    Multi.new()
+    |> Multi.update(:user, User.profile_image_changeset(user, attrs))
+    |> Multi.run(:side_effect, fn _, _ ->
+      side_effect.()
+      {:ok, nil}
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user}} -> {:ok, user}
+      {:error, _, err, _} -> {:error, err}
+    end
+  end
+
+  def change_user_profile_image(user, attrs \\ %{}) do
+    User.profile_image_changeset(user, attrs)
+  end
 
   def change_user_email(user, attrs \\ %{}) do
     User.email_changeset(user, attrs, validate_email: false)
