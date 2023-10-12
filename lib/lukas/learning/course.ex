@@ -7,6 +7,7 @@ defmodule Lukas.Learning.Course do
   schema "courses" do
     field(:name, :string)
     field(:price, :float)
+    field(:banner_image, :string, default: "default-profile.png")
 
     has_many(:tags, Lukas.Learning.Tagging)
     has_many(:teachings, Lukas.Learning.Teaching)
@@ -17,7 +18,7 @@ defmodule Lukas.Learning.Course do
 
   def changeset(course, attrs) do
     course
-    |> cast(attrs, [:name, :price])
+    |> cast(attrs, [:name, :price, :banner_image])
     |> validate_required([:name, :price])
     |> validate_number(:price, greater_than_or_equal_to: 0)
   end
