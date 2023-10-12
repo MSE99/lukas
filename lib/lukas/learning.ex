@@ -109,9 +109,11 @@ defmodule Lukas.Learning do
   def get_lessons(%Course{id: course_id}),
     do: from(l in Lesson, where: l.course_id == ^course_id) |> Repo.all()
 
-  def create_course(attrs, tag_ids, opts \\ []) do
+  def create_course(attrs, opts \\ []) do
     get_banner_image_path =
       Keyword.get(opts, :get_banner_image_path, &Course.default_banner_image/0)
+
+    tag_ids = Keyword.get(opts, :tag_ids, [])
 
     Ecto.Multi.new()
     |> create_course_multi(attrs, tag_ids, get_banner_image_path)

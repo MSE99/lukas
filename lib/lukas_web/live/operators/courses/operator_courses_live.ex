@@ -182,9 +182,12 @@ defmodule LukasWeb.Operator.AllCoursesLive do
   end
 
   def handle_event("create", %{"course" => attrs}, socket) do
-    case Learning.create_course(attrs, socket.assigns.tag_ids,
-           get_banner_image_path: fn -> consume_banner_image_upload(socket) end
-         ) do
+    opts = [
+      get_banner_image_path: fn -> consume_banner_image_upload(socket) end,
+      tag_ids: socket.assigns.tag_ids
+    ]
+
+    case Learning.create_course(attrs, opts) do
       {:ok, _} ->
         {:noreply, push_patch(socket, to: ~p"/controls/courses")}
 
