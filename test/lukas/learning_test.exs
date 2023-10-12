@@ -27,7 +27,7 @@ defmodule Lukas.LearningTest do
 
     test "tag_course/2 should add the tag to the course with the given id and update the course.",
          %{tag: tag} do
-      {:ok, course} = Learning.create_course(%{"name" => "Japanese basic", "price" => 500})
+      {:ok, course} = Learning.create_course(%{"name" => "Japanese basic", "price" => 500}, [])
       Learning.tag_course(course.id, tag.id)
 
       assert Learning.get_course_and_tags(course.id) == {course, [tag]}

@@ -17,7 +17,7 @@ defmodule Lukas.LearningFixtures do
       attrs
       |> Map.put_new(:name, "Course ##{System.unique_integer([:positive])}")
       |> Map.put_new(:price, 200.0)
-      |> Learning.create_course()
+      |> Learning.create_course([])
 
     course
   end
