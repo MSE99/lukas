@@ -185,11 +185,40 @@ defmodule Lukas.Learning do
     |> maybe_emit_course_tagged()
   end
 
-  def update_course(course, attrs) do
-    course
-    |> Course.changeset(attrs)
-    |> Repo.update()
+  def update_course(course, attrs, opts \\ []) do
+    tag_ids = Keyword.get(opts, :tag_ids, [])
+    get_banner_image_path = Keyword.get(opts, :get_banner_image_path, fn -> course.banner_image end)
+    after_effect = Keyword.get(opts, :after_effect, fn _ -> nil end)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:course, Course.changeset(course, attrs))
+    |> Ecto.Multi.delete_all(:old_tags, Tagging.query_by_course_id(course.id))
+    |> Ecto.Multi.run(:tags, fn _, %{course: course} -> 
+      course_id = course.id
+
+      taggings =
+        tag_ids
+        |> Enum.map(fn tag_id -> Repo.insert(Tagging.new(tag_id, course_id)) end)
+
+      {:ok, taggings}
+
+    end)
+    |> Ecto.Multi.run(:course_with_image, fn _, %{course: course} -> 
+      Course.changeset(course, %{banner_image: get_banner_image_path.()}) |> Repo.update()
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{course_with_image: course}} -> 
+        after_effect.(course)
+        {:ok, course}
+      {:error, :course, cs, _} -> 
+        {:error, cs}
+    end
     |> maybe_emit_course_updated()
+  end
+
+  def update_course_changeset(course, attrs) do
+    Course.changeset(course, attrs)
   end
 
   def create_course_changeset(attrs \\ %{}) do

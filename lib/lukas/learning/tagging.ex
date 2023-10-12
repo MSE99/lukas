@@ -2,6 +2,7 @@ defmodule Lukas.Learning.Tagging do
   use Ecto.Schema
 
   import Ecto.Changeset
+  import Ecto.Query
 
   schema "taggings" do
     belongs_to(:tag, Lukas.Categories.Tag)
@@ -19,5 +20,9 @@ defmodule Lukas.Learning.Tagging do
     |> cast(attrs, [:tag_id, :course_id])
     |> validate_required([:tag_id, :course_id])
     |> unique_constraint([:tag_id, :course_id])
+  end
+
+  def query_by_course_id(course_id) do
+    from(t in __MODULE__, where: t.course_id == ^course_id)
   end
 end
