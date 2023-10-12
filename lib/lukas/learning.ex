@@ -118,7 +118,7 @@ defmodule Lukas.Learning do
 
   def create_course(attrs, tag_ids) do
     Ecto.Multi.new()
-    |> create_course_multi(attrs, tag_ids)
+    |> create_course_multi(attrs, tag_ids, &Course.default_banner_image/0)
     |> Repo.transaction()
     |> case do
       {:ok, %{course: course}} ->
@@ -131,9 +131,12 @@ defmodule Lukas.Learning do
     end
   end
 
-  def create_course_by_lecturer(attrs, tag_ids, lecturer, side_effect \\ fn _ -> nil end) do
+  def create_course_by_lecturer(attrs, tag_ids, lecturer, opts \\ []) do
+    side_effect = Keyword.get(opts, :side_effect, fn -> nil end)
+    get_banner_image_path = Keyword.get(opts, :banner_image, &Course.default_banner_image/0)
+
     Ecto.Multi.new()
-    |> create_course_multi(attrs, tag_ids)
+    |> create_course_multi(attrs, tag_ids, get_banner_image_path)
     |> Ecto.Multi.run(:teachings, fn _, %{course: course} ->
       Teaching.changeset(%Teaching{}, %{course_id: course.id, lecturer_id: lecturer.id})
       |> Repo.insert!()
@@ -153,9 +156,17 @@ defmodule Lukas.Learning do
     end
   end
 
-  def create_course_multi(m, attrs, tag_ids) do
+  def create_course_multi(
+        m,
+        attrs,
+        tag_ids,
+        get_banner_image_path
+      ) do
     m
-    |> Ecto.Multi.insert(:course, Course.changeset(%Course{}, attrs))
+    |> Ecto.Multi.insert(
+      :course,
+      Course.changeset(%Course{banner_image: get_banner_image_path.()}, attrs)
+    )
     |> Ecto.Multi.run(
       :tags,
       fn _, %{course: course} ->

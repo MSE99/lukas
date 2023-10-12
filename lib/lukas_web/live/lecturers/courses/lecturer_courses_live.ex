@@ -91,19 +91,21 @@ defmodule LukasWeb.Lecturer.CoursesLive do
   end
 
   def handle_event("create", %{"course" => params}, socket) do
+    send_course_created_alert = fn course ->
+      Learning.Course.Staff.emit_course_created_by_lecturer(
+        course,
+        socket.assigns.current_user
+      )
+
+      nil
+    end
+
     result =
       Learning.create_course_by_lecturer(
         params,
         socket.assigns.chosen_tag_ids,
         socket.assigns.current_user,
-        fn course ->
-          Learning.Course.Staff.emit_course_created_by_lecturer(
-            course,
-            socket.assigns.current_user
-          )
-
-          nil
-        end
+        side_effect: send_course_created_alert
       )
 
     case result do

@@ -4,10 +4,12 @@ defmodule Lukas.Learning.Course do
   import Ecto.Changeset
   import Ecto.Query
 
+  @default_banner_image "default-profile.png"
+
   schema "courses" do
     field(:name, :string)
     field(:price, :float)
-    field(:banner_image, :string, default: "default-profile.png")
+    field(:banner_image, :string, default: @default_banner_image)
 
     has_many(:tags, Lukas.Learning.Tagging)
     has_many(:teachings, Lukas.Learning.Teaching)
@@ -22,6 +24,8 @@ defmodule Lukas.Learning.Course do
     |> validate_required([:name, :price])
     |> validate_number(:price, greater_than_or_equal_to: 0)
   end
+
+  def default_banner_image(), do: @default_banner_image
 
   def query_by_id(id) do
     from(
