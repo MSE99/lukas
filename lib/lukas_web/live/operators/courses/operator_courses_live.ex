@@ -2,6 +2,7 @@ defmodule LukasWeb.Operator.AllCoursesLive do
   use LukasWeb, :live_view
 
   alias Lukas.Learning
+  alias Lukas.Learning.Course
   alias Lukas.Categories
   alias Phoenix.LiveView.AsyncResult
 
@@ -13,6 +14,7 @@ defmodule LukasWeb.Operator.AllCoursesLive do
       |> assign(:loading, AsyncResult.loading())
       |> start_async(:loading, &load_courses_and_tags/0)
       |> apply_action(params, socket.assigns.live_action)
+      |> allow_upload(:banner_image, accept: ~w(.jpg .jpeg .png .webp))
 
     {:ok, next_socket}
   end
@@ -137,11 +139,26 @@ defmodule LukasWeb.Operator.AllCoursesLive do
           </div>
         </.async_result>
 
+        <.live_file_input upload={@uploads.banner_image} />
+
+        <%= for entry <- @uploads.banner_image.entries do %>
+          <progress value={entry.progress} max="100">
+            <%= entry.progress %>%
+          </progress>
+
+          <%= for err <- upload_errors(@uploads.banner_image, entry) do %>
+            <p class="alert alert-danger"><%= error_to_string(err) %></p>
+          <% end %>
+        <% end %>
+
         <.button>Create</.button>
       </.form>
     </.modal>
     """
   end
+
+  def error_to_string(:too_large), do: "Too large"
+  def error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
 
   def handle_event("reached-top", _, socket) do
     next_page =
@@ -165,7 +182,9 @@ defmodule LukasWeb.Operator.AllCoursesLive do
   end
 
   def handle_event("create", %{"course" => attrs}, socket) do
-    case Learning.create_course(attrs, socket.assigns.tag_ids) do
+    case Learning.create_course(attrs, socket.assigns.tag_ids,
+           get_banner_image_path: fn -> consume_banner_image_upload(socket) end
+         ) do
       {:ok, _} ->
         {:noreply, push_patch(socket, to: ~p"/controls/courses")}
 
@@ -197,5 +216,27 @@ defmodule LukasWeb.Operator.AllCoursesLive do
 
   def handle_info({:courses, :course_updated, course}, socket) do
     {:noreply, stream_insert(socket, :courses, course)}
+  end
+
+  defp consume_banner_image_upload(socket) do
+    uploaded_images =
+      consume_uploaded_entries(socket, :banner_image, fn %{path: path}, entry ->
+        filename = "#{entry.uuid}.#{ext(entry)}"
+        dist = Path.join([:code.priv_dir(:lukas), "static", "images", filename])
+
+        File.cp!(path, dist)
+
+        {:ok, dist}
+      end)
+
+    case uploaded_images do
+      [entry] -> entry
+      [] -> Course.default_banner_image()
+    end
+  end
+
+  defp ext(upload_entry) do
+    [ext | _] = MIME.extensions(upload_entry.client_type)
+    ext
   end
 end

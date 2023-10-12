@@ -116,9 +116,12 @@ defmodule Lukas.Learning do
     |> maybe_emit_course_created()
   end
 
-  def create_course(attrs, tag_ids) do
+  def create_course(attrs, tag_ids, opts \\ []) do
+    get_banner_image_path =
+      Keyword.get(opts, :get_banner_image_path, &Course.default_banner_image/0)
+
     Ecto.Multi.new()
-    |> create_course_multi(attrs, tag_ids, &Course.default_banner_image/0)
+    |> create_course_multi(attrs, tag_ids, get_banner_image_path)
     |> Repo.transaction()
     |> case do
       {:ok, %{course: course}} ->
