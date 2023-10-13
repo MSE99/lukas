@@ -9,34 +9,28 @@ defmodule LukasWeb.UserLoginLive do
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
-      <.header class="text-center">
-        Sign in to account
-        <:subtitle>
-          Don't have an account?
-          <.link navigate={~p"/users/register"} class="font-semibold text-brand hover:underline">
-            Sign up
-          </.link>
-          for an account now.
-        </:subtitle>
-      </.header>
+    <div class="mx-auto max-w-sm px-5 lg:flex lg:flex-col justify-center">
+      <h1 class="text-primary font-bold text-2xl mt-8 mb-16">Lukas</h1>
 
-      <.simple_form for={@form} id="login_form" action={~p"/users/log_in"} phx-update="ignore">
-        <.input field={@form[:phone_number]} type="tel" label="Phone number" required />
-        <.input field={@form[:password]} type="password" label="Password" required />
+      <.form for={@form} id="login_form" action={~p"/users/log_in"} phx-update="ignore">
+        <div class="mb-5">
+          <.input field={@form[:phone_number]} type="tel" label="Phone number" required />
+        </div>
 
-        <:actions>
-          <.input field={@form[:remember_me]} type="checkbox" label="Keep me logged in" />
-          <.link href={~p"/users/reset_password"} class="text-sm font-semibold">
-            Forgot your password?
-          </.link>
-        </:actions>
-        <:actions>
-          <.button phx-disable-with="Signing in..." class="w-full">
-            Sign in <span aria-hidden="true">→</span>
-          </.button>
-        </:actions>
-      </.simple_form>
+        <div class="mb-5">
+          <.input field={@form[:password]} type="password" label="Password" required />
+        </div>
+
+        <.button phx-disable-with="Signing in..." class="w-full">
+          Sign in <span aria-hidden="true">→</span>
+        </.button>
+      </.form>
+
+      <div class="mt-5 font-bold underline">
+        <.link href={~p"/users/register"}>
+          Register a new account
+        </.link>
+      </div>
     </div>
     """
   end
