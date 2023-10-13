@@ -35,16 +35,33 @@ defmodule LukasWeb.Students.WalletLive do
 
   def render(assigns) do
     ~H"""
-    <h1>Wallet</h1>
+    <ul class="flex gap-1 text-lg text-secondary my-8">
+      <li>
+        <.link navigate={~p"/home"}>home</.link>
+      </li>
+      <li>
+        /
+      </li>
+      <li>
+        <.link navigate={~p"/home/wallet"}>wallet</.link>
+      </li>
+    </ul>
 
     <.async_result assign={@loading}>
       <:loading>Loading...</:loading>
       <:failed>Failed to load wallet</:failed>
 
-      <p><%= @wallet_amount |> format_amount() %> LYD</p>
+      <div class="text-secondary flex flex-col justify-center items-center mb-10">
+        <.icon name="hero-wallet-solid" class="w-[140px] h-[140px]" />
+        <p><%= @wallet_amount |> format_amount() %> LYD</p>
+      </div>
 
       <ul id="txs" phx-update="stream">
-        <li :for={{id, tx} <- @streams.transactions} id={id}>
+        <li :for={{id, tx} <- @streams.transactions} id={id} class="m-3 flex items-center gap-2">
+          <.icon
+            name="hero-currency-dollar-solid"
+            class={["w-8 h-8", if(Money.is_deposit(tx), do: "text-primary", else: "text-red-500")]}
+          />
           <%= Money.describe_tx(tx) %>
         </li>
       </ul>

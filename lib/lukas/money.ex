@@ -19,6 +19,9 @@ defmodule Lukas.Money do
     "Operator with id #{dtx.id} deposited #{dtx.amount |> :erlang.float_to_binary(decimals: 1)} in your account"
   end
 
+  def is_deposit(%DirectDepositTx{}), do: true
+  def is_deposit(_), do: false
+
   def list_transactions!(%User{} = student) when must_be_student(student) do
     Multi.new()
     |> Multi.all(:deposits, DirectDepositTx.query_by_student_id(student.id))

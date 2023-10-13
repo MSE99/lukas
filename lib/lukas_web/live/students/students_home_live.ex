@@ -5,7 +5,7 @@ defmodule LukasWeb.Students.HomeLive do
 
   def render(assigns) do
     ~H"""
-    <h1 class="text-lg mb-5">
+    <h1 class="text-lg mb-5 mt-16">
       Hello <%= @current_user.name %>
     </h1>
 
