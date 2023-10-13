@@ -9,7 +9,7 @@ defmodule LukasWeb.UserLoginLive do
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm px-5 lg:flex lg:flex-col justify-center">
+    <div class="mx-auto max-w-sm">
       <.header>
         Login
         <:subtitle>

@@ -9,5 +9,9 @@
 }
 
 .text-primary {
-  color: #FDBA74;
+  color: rgb(253, 186, 116);
+}
+
+.border-primary-opaque {
+  border-color: rgba(253, 186, 116, .27);
 }

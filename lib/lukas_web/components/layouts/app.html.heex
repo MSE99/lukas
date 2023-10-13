@@ -1,8 +1,30 @@
-<main class="px-4 sm:px-6 lg:px-8">
+<main class="px-5 sm:px-6 lg:px-8">
   <div class="mx-auto max-w-2xl">
     <.flash_group flash={@flash} />
 
-    <h1 class="text-primary font-bold text-2xl mt-8 mb-16">Lukas</h1>
+    <h1 :if={assigns[:current_user] == nil} class="text-primary font-bold text-2xl mt-8 mb-16">
+      Lukas
+    </h1>
+
+    <ul :if={assigns[:current_user]} class="mb-16 flex items-center">
+      <li class="mr-auto">
+        <h1 class="text-primary font-bold text-2xl mt-8">
+          Lukas
+        </h1>
+      </li>
+
+      <li class="mt-2 -mr-3">
+        <.link href={~p"/users/settings"}>
+          <img
+            width="100"
+            height="100"
+            class="rounded-full border-8 border-primary-opaque"
+            src={~p"/images/#{@current_user.profile_image}"}
+          />
+        </.link>
+      </li>
+    </ul>
+
     <%= @inner_content %>
   </div>
 </main>
