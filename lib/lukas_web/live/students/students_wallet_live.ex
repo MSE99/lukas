@@ -60,7 +60,10 @@ defmodule LukasWeb.Students.WalletLive do
         <li :for={{id, tx} <- @streams.transactions} id={id} class="m-3 flex items-center gap-2">
           <.icon
             name="hero-currency-dollar-solid"
-            class={["w-8 h-8", if(Money.is_deposit(tx), do: "text-primary", else: "text-red-500")]}
+            class={
+              ["w-8 h-8", if(Money.is_deposit(tx), do: "text-primary", else: "text-red-500")]
+              |> Enum.join(" ")
+            }
           />
           <%= Money.describe_tx(tx) %>
         </li>
