@@ -37,22 +37,27 @@ defmodule LukasWeb.UserSettingsLive do
 
   def render(assigns) do
     ~H"""
-    <.header class="text-center">
+    <.header class="text-center mb-10 mt-12">
       Account Settings
-      <:subtitle>Manage your account email address and password settings</:subtitle>
     </.header>
 
-    <img src={~p"/images/#{@current_user.profile_image}"} />
-
     <div class="space-y-12 divide-y">
-      <div>
+      <div class="flex flex-col justify-center items-center">
+        <img
+          src={~p"/images/#{@current_user.profile_image}"}
+          width={250}
+          height={250}
+          class="rounded-full border-8 border-primary-opaque mb-7 w-[250px] h-[250px]"
+        />
+
         <form
           id="profile-image-form"
           phx-change="validate-profile-image"
           phx-submit="update-profile-image"
+          class="flex flex-col gap-3"
         >
           <.live_file_input upload={@uploads.profile_image} />
-          <.button>Upload</.button>
+          <.button class="bg-primary shadow">Update</.button>
 
           <%= for entry <- @uploads.profile_image.entries do %>
             <progress value={entry.progress} max="100">
@@ -67,11 +72,12 @@ defmodule LukasWeb.UserSettingsLive do
       </div>
 
       <div>
-        <.simple_form
+        <.form
           for={@email_form}
           id="email_form"
           phx-submit="update_email"
           phx-change="validate_email"
+          class="flex flex-col gap-3 mt-5"
         >
           <.input field={@email_form[:email]} type="email" label="Email" required />
           <.input
@@ -83,13 +89,11 @@ defmodule LukasWeb.UserSettingsLive do
             value={@email_form_current_password}
             required
           />
-          <:actions>
-            <.button phx-disable-with="Changing...">Change Email</.button>
-          </:actions>
-        </.simple_form>
+          <.button phx-disable-with="Changing..." class="bg-primary self-end">Change Email</.button>
+        </.form>
       </div>
       <div>
-        <.simple_form
+        <.form
           for={@password_form}
           id="password_form"
           action={~p"/users/log_in?_action=password_updated"}
@@ -97,6 +101,7 @@ defmodule LukasWeb.UserSettingsLive do
           phx-change="validate_password"
           phx-submit="update_password"
           phx-trigger-action={@trigger_submit}
+          class="flex flex-col gap-3 mb-3"
         >
           <.input
             field={@password_form[:phone_number]}
@@ -126,10 +131,10 @@ defmodule LukasWeb.UserSettingsLive do
             value={@current_password}
             required
           />
-          <:actions>
-            <.button phx-disable-with="Changing...">Change Password</.button>
-          </:actions>
-        </.simple_form>
+          <.button phx-disable-with="Changing..." class="bg-primary self-end">
+            Change Password
+          </.button>
+        </.form>
       </div>
     </div>
     """
