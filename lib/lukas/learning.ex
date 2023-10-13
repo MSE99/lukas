@@ -32,6 +32,31 @@ defmodule Lukas.Learning do
     end
   end
 
+  def get_course_and_tags_for_lecturer(course_id, lecturer_id)
+      when is_integer(course_id) and is_integer(lecturer_id) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.one(:course, from(c in Course, where: c.id == ^course_id))
+    |> Ecto.Multi.one(
+      :teaching,
+      from(t in Teaching, where: t.lecturer_id == ^lecturer_id and t.course_id == ^course_id)
+    )
+    |> Ecto.Multi.all(
+      :tags,
+      from(
+        tagging in Tagging,
+        join: tag in Tag,
+        on: tag.id == tagging.tag_id,
+        where: tagging.course_id == ^course_id,
+        select: tag
+      )
+    )
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{course: course, tags: tags, teaching: t}} when t != nil ->
+        {course, tags}
+    end
+  end
+
   def untag_course(course_id, tag_id) when is_integer(course_id) and is_integer(tag_id) do
     from(
       tagging in Tagging,

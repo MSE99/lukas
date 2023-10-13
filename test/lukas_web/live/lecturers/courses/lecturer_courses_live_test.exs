@@ -120,4 +120,71 @@ defmodule LukasWeb.Lecturers.CoursesLiveTest do
       assert Learning.Course.Staff.list_course_lecturers(course) == [user]
     end
   end
+
+  describe "edit" do
+    setup :register_and_log_in_lecturer
+
+    setup %{user: user} do
+      course = course_fixture()
+      {:ok, _} = Learning.Course.Staff.add_lecturer_to_course(course, user)
+      %{course: course}
+    end
+
+    test "should render errors on change.", %{conn: conn, course: course} do
+      {:ok, lv, _html} = live(conn, ~p"/tutor/my-courses/#{course.id}/edit")
+
+      lv |> form("form", %{"course" => %{"name" => "", "price" => -0.5}}) |> render_change()
+
+      assert render(lv) =~ "can&#39;t be blank"
+    end
+
+    test "should render errors on submit.", %{conn: conn, course: course} do
+      {:ok, lv, _html} = live(conn, ~p"/tutor/my-courses/#{course.id}/edit")
+
+      lv |> form("form", %{"course" => %{"name" => "", "price" => -0.5}}) |> render_submit()
+
+      assert render(lv) =~ "can&#39;t be blank"
+      assert render(lv) =~ "must be greater than or equal to 0"
+    end
+
+    test "should create new course and patch back to courses page.", %{
+      conn: conn,
+      user: user,
+      course: course
+    } do
+      wanted_tag1 = tag_fixture()
+      wanted_tag2 = tag_fixture()
+      unwanted_tag = tag_fixture()
+
+      {:ok, lv, _html} = live(conn, ~p"/tutor/my-courses/#{course.id}/edit")
+
+      html = render(lv)
+      assert html =~ wanted_tag1.name
+      assert html =~ wanted_tag2.name
+      assert html =~ unwanted_tag.name
+
+      lv |> element("#tags-#{wanted_tag1.id}") |> render_click()
+      lv |> element("#tags-#{wanted_tag2.id}") |> render_click()
+
+      lv |> element("#tags-#{unwanted_tag.id}") |> render_click()
+      lv |> element("#tags-#{unwanted_tag.id}") |> render_click()
+
+      lv
+      |> form("form", %{"course" => %{"name" => "FOO IS GREAT BAR IS NONE!", "price" => 500.0}})
+      |> render_submit()
+
+      assert_patched(lv, ~p"/tutor/my-courses")
+
+      assert render(lv) =~ "FOO IS GREAT BAR IS NONE!"
+
+      [course] = Learning.list_courses()
+
+      assert Enum.find(course.tags, fn t -> t.tag_id == wanted_tag1.id end) != nil
+      assert Enum.find(course.tags, fn t -> t.tag_id == wanted_tag2.id end) != nil
+      assert Enum.find(course.tags, fn t -> t.tag_id == unwanted_tag.id end) == nil
+      assert course.price == 500.0
+
+      assert Learning.Course.Staff.list_course_lecturers(course) == [user]
+    end
+  end
 end
