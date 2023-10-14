@@ -3,6 +3,7 @@ defmodule LukasWeb.Students.AvailableCoursesLive do
 
   alias Lukas.Learning
   alias Lukas.Learning.Course.Students
+  alias LukasWeb.CommonComponents
 
   def mount(_, _, socket) do
     Learning.watch_courses()
@@ -28,24 +29,8 @@ defmodule LukasWeb.Students.AvailableCoursesLive do
 
     <ul id="available-courses" phx-update="stream">
       <li :for={{id, course} <- @streams.available_courses} id={id} class="mb-3 max-w-lg mx-auto">
-        <.link
-          navigate={~p"/home/courses/#{course.id}"}
-          class=" flex h-[104px] bg-white shadow rounded text-secondary"
-        >
-          <img
-            src={~p"/images/#{course.banner_image}"}
-            width={110}
-            height={104}
-            class="w-[110px] h-[104px] rounded-tl-lg rounded-bl-lg"
-          />
-
-          <div class="p-3">
-            <strong><%= course.name %></strong>
-
-            <p>
-              The description of the course lays here
-            </p>
-          </div>
+        <.link navigate={~p"/home/courses/#{course.id}"}>
+          <CommonComponents.course_card course={course} />
         </.link>
       </li>
     </ul>

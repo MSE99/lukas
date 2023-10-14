@@ -151,7 +151,7 @@ defmodule LukasWeb.CommonComponents do
         class="w-[110px] h-[104px] rounded-tl-lg rounded-bl-lg"
       />
 
-      <div class="p-3">
+      <div class="p-3 text-ellipsis overflow-y-auto">
         <strong><%= @course.name %></strong>
 
         <p class="mt-1">
