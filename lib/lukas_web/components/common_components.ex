@@ -138,4 +138,27 @@ defmodule LukasWeb.CommonComponents do
     </div>
     """
   end
+
+  attr :course, Lukas.Learning.Course, required: true
+
+  def course_card(assigns) do
+    ~H"""
+    <div class="flex h-[104px] bg-white shadow rounded text-secondary">
+      <img
+        src={~p"/images/#{@course.banner_image}"}
+        width={110}
+        height={104}
+        class="w-[110px] h-[104px] rounded-tl-lg rounded-bl-lg"
+      />
+
+      <div class="p-3">
+        <strong><%= @course.name %></strong>
+
+        <p class="mt-1">
+          The description of the course lays here
+        </p>
+      </div>
+    </div>
+    """
+  end
 end
