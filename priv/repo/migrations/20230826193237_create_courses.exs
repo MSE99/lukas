@@ -4,6 +4,7 @@ defmodule Lukas.Repo.Migrations.CreateCourses do
   def change do
     create table(:courses) do
       add(:name, :string)
+      add(:description, :string)
       add(:price, :float)
       add(:banner_image, :string)
 
