@@ -19,7 +19,9 @@ defmodule LukasWeb.Students.AvailableCoursesLiveTest do
       course2 = course_fixture()
       course3 = course_fixture()
 
-      {:ok, _, html} = live(conn, ~p"/home/courses/available")
+      {:ok, lv, _} = live(conn, ~p"/home/courses/available")
+
+      html = render_async(lv)
 
       assert html =~ course1.name
       assert html =~ course2.name
@@ -33,7 +35,7 @@ defmodule LukasWeb.Students.AvailableCoursesLiveTest do
       course2 = course_fixture()
       course3 = course_fixture()
 
-      html = render(lv)
+      html = render_async(lv)
 
       assert html =~ course1.name
       assert html =~ course2.name
@@ -52,7 +54,7 @@ defmodule LukasWeb.Students.AvailableCoursesLiveTest do
       {:ok, _} = Students.enroll_student(course1, user)
       {:ok, _} = Students.enroll_student(course2, user)
 
-      html = render(lv)
+      html = render_async(lv)
 
       refute html =~ course1.name
       refute html =~ course2.name

@@ -34,7 +34,11 @@ defmodule LukasWeb.Students.CourseLive do
     ~H"""
     <CommonComponents.navigate_breadcrumbs links={[
       {~p"/home", "home"},
-      {~p"/home/courses", "courses"},
+      if(
+        @is_enrolled,
+        do: {~p"/home/courses", "courses"},
+        else: {~p"/home/courses/available", "available courses"}
+      ),
       {~p"/home/courses/#{@course.id}", @course.name}
     ]} />
 
