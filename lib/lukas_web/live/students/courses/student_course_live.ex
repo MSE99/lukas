@@ -55,13 +55,13 @@ defmodule LukasWeb.Students.CourseLive do
         Open lessons  »
       </.link>
 
-      <.button
-        :if={!@is_enrolled && @wallet_amount >= @course.price}
-        id="enroll-button"
-        phx-click="enroll"
-      >
-        Enroll
-      </.button>
+      <div :if={!@is_enrolled && @wallet_amount >= @course.price} class="flex justify-end mt-8 mb-10">
+        <CommonComponents.buy_button
+          id="enroll-button"
+          on_click="enroll"
+          price={format_price(@course.price)}
+        />
+      </div>
 
       <CommonComponents.streamed_users_mini_list
         id="users-list"
@@ -109,4 +109,6 @@ defmodule LukasWeb.Students.CourseLive do
   def handle_info({:wallet, _, :amount_updated, next_amount}, socket) do
     {:noreply, assign(socket, wallet_amount: next_amount)}
   end
+
+  defp format_price(p), do: :erlang.float_to_binary(p, decimals: 1)
 end

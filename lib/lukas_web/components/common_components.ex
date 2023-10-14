@@ -116,4 +116,26 @@ defmodule LukasWeb.CommonComponents do
     </ul>
     """
   end
+
+  attr :on_click, :string, required: true
+  attr :price, :float, required: true
+  attr :rest, :global
+
+  def buy_button(assigns) do
+    ~H"""
+    <div class="flex">
+      <button
+        phx-click={@on_click}
+        phx-throttle
+        {@rest}
+        class="shadow px-4 py-2 bg-primary font-bold text-white rounded-tl-lg rounded-bl-lg hover:bg-green-500 transition-all"
+      >
+        Buy now
+      </button>
+      <label class="shadow p-2 bg-white rounded-tr-lg rounded-br-lg font-bold">
+        <%= @price %> LYD
+      </label>
+    </div>
+    """
+  end
 end
