@@ -5,6 +5,8 @@ defmodule LukasWeb.Students.CourseLive do
   alias Lukas.Learning
   alias Lukas.Learning.Course.Students
 
+  alias LukasWeb.CommonComponents
+
   def mount(%{"id" => raw_course_id}, _session, socket) do
     with {id, _} <- Integer.parse(raw_course_id),
          {course, lect, tags, is_enrolled} when course != nil <-
@@ -30,33 +32,45 @@ defmodule LukasWeb.Students.CourseLive do
 
   def render(assigns) do
     ~H"""
-    <h1>Course <%= @course.name %></h1>
+    <CommonComponents.navigate_breadcrumbs links={[
+      {~p"/home", "home"},
+      {~p"/home/courses", "courses"},
+      {~p"/home/courses/#{@course.id}", @course.name}
+    ]} />
 
-    <.button
-      :if={!@is_enrolled && @wallet_amount >= @course.price}
-      id="enroll-button"
-      phx-click="enroll"
-    >
-      Enroll
-    </.button>
+    <CommonComponents.course_banner image_src={~p"/images/#{@course.banner_image}"} />
 
-    <.link :if={@is_enrolled} navigate={~p"/home/courses/#{@course.id}/study"}>
-      <.button>
-        Lessons
+    <div class="mt-10 text-secondary px-2 pb-5">
+      <h3 class="font-bold mb-3"><%= @course.name %></h3>
+
+      <p class="mb-3">
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cumque recusandae odio, veritatis asperiores eum eveniet et dolorum, temporibus debitis sed ex culpa, amet saepe maxime ratione ullam eaque doloribus reiciendis?
+      </p>
+
+      <.link
+        :if={@is_enrolled}
+        class="font-bold underline"
+        navigate={~p"/home/courses/#{@course.id}/study"}
+      >
+        Open lessons  »
+      </.link>
+
+      <.button
+        :if={!@is_enrolled && @wallet_amount >= @course.price}
+        id="enroll-button"
+        phx-click="enroll"
+      >
+        Enroll
       </.button>
-    </.link>
 
-    <ul id="lecturers" phx-update="stream">
-      <li :for={{id, lecturer} <- @streams.lecturers} id={id}>
-        <%= lecturer.name %>
-      </li>
-    </ul>
+      <CommonComponents.streamed_users_mini_list
+        id="users-list"
+        title="Lecturers"
+        users={@streams.lecturers}
+      />
 
-    <ul id="tags" phx-update="stream">
-      <li :for={{id, tag} <- @streams.tags} id={id}>
-        <%= tag.name %>
-      </li>
-    </ul>
+      <CommonComponents.streamed_tag_list id="tags-list" title="Tags" tags={@streams.tags} />
+    </div>
     """
   end
 
