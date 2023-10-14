@@ -32,9 +32,11 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
     lecturers: lecturers,
     tags: tags
   } do
-    {:ok, _, html} = live(conn, ~p"/home/courses/#{course.id}")
+    {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}")
 
+    html = render_async(lv)
     assert html =~ course.name
+
     Enum.each(lecturers, fn lect -> assert html =~ lect.name end)
     Enum.each(tags, fn tag -> assert html =~ tag.name end)
   end
@@ -44,6 +46,7 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
     course: course
   } do
     {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}")
+    render_async(lv)
 
     {:ok, updated_course} =
       Learning.update_course(course, %{
@@ -60,6 +63,7 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
     lecturers: lecturers
   } do
     {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}")
+    render_async(lv)
 
     Enum.each(lecturers, fn lect ->
       Learning.Course.Staff.remove_lecturer_from_course(course, lect)
@@ -86,6 +90,7 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
     tags: tags
   } do
     {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}")
+    render_async(lv)
 
     Enum.each(tags, fn tag -> Learning.untag_course(course.id, tag.id) end)
 
@@ -106,6 +111,8 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
 
   test "should ignore other messages", %{conn: conn, course: course} do
     {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}")
+    render_async(lv)
+
     lesson_fixture(course)
     assert render(lv) =~ course.name
   end
@@ -115,6 +122,8 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
     course: course
   } do
     {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}")
+    render_async(lv)
+
     assert lv |> element("button#enroll-button") |> has_element?()
   end
 
@@ -125,6 +134,8 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
   } do
     {:ok, _} = Students.enroll_student(course, user)
     {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}")
+    render_async(lv)
+
     refute lv |> element("button#enroll-button") |> has_element?()
   end
 
@@ -134,6 +145,8 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
     user: user
   } do
     {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}")
+    render_async(lv)
+
     assert lv |> element("button#enroll-button") |> has_element?()
     {:ok, _} = Students.enroll_student(course, user)
     refute lv |> element("button#enroll-button") |> has_element?()
@@ -150,6 +163,8 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
     )
 
     {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}")
+    render_async(lv)
+
     refute lv |> element("button#enroll-button") |> has_element?()
   end
 
@@ -164,6 +179,7 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
     )
 
     {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}")
+    render_async(lv)
 
     direct_deposit_fixture(user_fixture(), user, course.price)
 
@@ -182,6 +198,7 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
     )
 
     {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}")
+    render_async(lv)
 
     direct_deposit_fixture(user_fixture(), user, course.price)
 
@@ -201,6 +218,7 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
     user: student
   } do
     {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}")
+    render_async(lv)
 
     lv
     |> element("button#enroll-button")
