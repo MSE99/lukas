@@ -1,12 +1,32 @@
 defmodule LukasWeb.Students.CoursesLive do
   use LukasWeb, :live_view
 
+  alias Phoenix.LiveView.AsyncResult
   alias Lukas.Learning.Course.Students
 
   def mount(_, _, socket) do
+    next_socket =
+      socket
+      |> stream_configure(:courses, [])
+      |> assign(:loading, AsyncResult.loading())
+      |> start_async(:loading, fn ->
+        Students.list_student_courses(socket.assigns.current_user)
+      end)
+
+    {:ok, next_socket}
+  end
+
+  def handle_async(:loading, {:ok, courses}, socket) do
     Students.watch_student_enrollments(socket.assigns.current_user)
-    courses = Students.list_student_courses(socket.assigns.current_user)
-    {:ok, socket |> stream(:courses, courses)}
+
+    {:noreply,
+     socket
+     |> assign(:loading, AsyncResult.ok(socket.assigns.loading, nil))
+     |> stream(:courses, courses)}
+  end
+
+  def handle_async(:loading, {:exit, reason}, socket) do
+    {:noreply, assign(socket, :loading, AsyncResult.failed(socket.assigns.loading, reason))}
   end
 
   def render(assigns) do
@@ -23,29 +43,34 @@ defmodule LukasWeb.Students.CoursesLive do
       </li>
     </ul>
 
-    <ul id="courses" phx-update="stream">
-      <li :for={{id, course} <- @streams.courses} id={id} class="mb-3 max-w-lg mx-auto">
-        <.link
-          navigate={~p"/home/courses/#{course.id}"}
-          class=" flex h-[104px] bg-white shadow rounded text-secondary"
-        >
-          <img
-            src={~p"/images/#{course.banner_image}"}
-            width={110}
-            height={104}
-            class="w-[110px] h-[104px] rounded-tl-lg rounded-bl-lg"
-          />
+    <.async_result assign={@loading}>
+      <:loading>Loading courses...</:loading>
+      <:failed>Failed to load courses courses.</:failed>
 
-          <div class="p-3">
-            <strong><%= course.name %></strong>
+      <ul id="courses" phx-update="stream">
+        <li :for={{id, course} <- @streams.courses} id={id} class="mb-3 max-w-lg mx-auto">
+          <.link
+            navigate={~p"/home/courses/#{course.id}"}
+            class=" flex h-[104px] bg-white shadow rounded text-secondary"
+          >
+            <img
+              src={~p"/images/#{course.banner_image}"}
+              width={110}
+              height={104}
+              class="w-[110px] h-[104px] rounded-tl-lg rounded-bl-lg"
+            />
 
-            <p>
-              The description of the course lays here
-            </p>
-          </div>
-        </.link>
-      </li>
-    </ul>
+            <div class="p-3">
+              <strong><%= course.name %></strong>
+
+              <p>
+                The description of the course lays here
+              </p>
+            </div>
+          </.link>
+        </li>
+      </ul>
+    </.async_result>
     """
   end
 

@@ -26,8 +26,9 @@ defmodule LukasWeb.Students.CoursesLiveTest do
       {:ok, _} = Students.enroll_student(course2, user)
       {:ok, _} = Students.enroll_student(course3, user)
 
-      {:ok, _, html} = live(conn, ~p"/home/courses")
+      {:ok, lv, _} = live(conn, ~p"/home/courses")
 
+      html = render_async(lv)
       assert html =~ course1.name
       assert html =~ course2.name
       assert html =~ course3.name
@@ -46,7 +47,7 @@ defmodule LukasWeb.Students.CoursesLiveTest do
       {:ok, _} = Students.enroll_student(course2, user)
       {:ok, _} = Students.enroll_student(course3, user)
 
-      html = render(lv)
+      html = render_async(lv)
 
       assert html =~ course1.name
       assert html =~ course2.name
