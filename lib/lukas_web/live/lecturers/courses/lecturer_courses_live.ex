@@ -74,6 +74,7 @@ defmodule LukasWeb.Lecturer.CoursesLive do
       >
         <.input field={@form[:name]} type="text" label="Name" phx-debounce="blur" />
         <.input field={@form[:price]} type="number" label="Name" phx-debounce="blur" />
+        <.input field={@form[:description]} type="textarea" label="Description" phx-debounce="blur" />
 
         <div id="tags" phx-update="stream">
           <span
