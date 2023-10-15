@@ -40,7 +40,7 @@ defmodule LukasWeb.Operator.OperatorsLiveTest do
 
     render_async(lv)
 
-    lv |> element("button#disable-operator-#{opr.id}") |> render_click()
+    lv |> element("button#operator-#{opr.id}-disable") |> render_click()
   end
 
   test "should render a button for enabling an operator.", %{conn: conn} do
@@ -50,7 +50,7 @@ defmodule LukasWeb.Operator.OperatorsLiveTest do
 
     render_async(lv)
 
-    lv |> element("button#disable-operator-#{opr.id}") |> render_click()
-    lv |> element("button#enable-operator-#{opr.id}") |> render_click()
+    lv |> element("button#operator-#{opr.id}-disable") |> render_click()
+    lv |> element("button#operator-#{opr.id}-enable") |> render_click()
   end
 end

@@ -2,6 +2,38 @@ defmodule LukasWeb.CommonComponents do
   use Phoenix.Component
   use LukasWeb, :html
 
+  attr :user, Lukas.Accounts.User, required: true
+
+  slot :action, default: []
+  slot :links
+
+  def user_record(assigns) do
+    ~H"""
+    <div class={[!@user.enabled && "opacity-50", "transition-all flex items-center border-b-2 pb-3"]}>
+      <img
+        src={~p"/images/#{@user.profile_image}"}
+        width="50"
+        height="50"
+        class="w-[50px] h-[50px] rounded-full mr-3 lg:mr-5 border-4 border-primary-opaque"
+      />
+
+      <%= render_slot(@links, @user) || rendered_username(assigns) %>
+
+      <%= for action <- @action do %>
+        <%= render_slot(action, @user) %>
+      <% end %>
+    </div>
+    """
+  end
+
+  defp rendered_username(assigns) do
+    ~H"""
+    <span class="mr-auto text-secondary">
+      <%= @user.name %>
+    </span>
+    """
+  end
+
   def basic_navbar(assigns) do
     ~H"""
     <h1 class="text-2xl text-center font-bold text-orange-300">

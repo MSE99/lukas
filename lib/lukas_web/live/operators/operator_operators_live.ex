@@ -47,43 +47,28 @@ defmodule LukasWeb.Operator.OperatorsLive do
       ]} />
 
       <ul id="operators" phx-update="stream">
-        <li
-          :for={{id, operator} <- @streams.operators}
-          class={[!operator.enabled && "opacity-50", "transition-all"]}
-          id={id}
-        >
-          <div class="flex items-center">
-            <img
-              src={~p"/images/#{operator.profile_image}"}
-              width="50"
-              height="50"
-              class="w-[50px] h-[50px] rounded-full mr-3 lg:mr-5 border-4 border-primary-opaque"
-            />
+        <li :for={{id, operator} <- @streams.operators} id={id}>
+          <CommonComponents.user_record user={operator}>
+            <:action :let={operator}>
+              <.button
+                :if={operator.enabled}
+                id={"operator-#{operator.id}-disable"}
+                phx-click="disable-operator"
+                phx-value-id={operator.id}
+              >
+                Disable
+              </.button>
 
-            <span
-              navigate={~p"/controls/operators/#{operator.id}"}
-              class="mr-auto text-secondary hover:underline hover:cursor-pointer"
-            >
-              <%= operator.name %>
-            </span>
-            <.button
-              :if={operator.enabled}
-              id={"operator-#{operator.id}-disable"}
-              phx-click="disable-operator"
-              phx-value-id={operator.id}
-            >
-              Disable
-            </.button>
-
-            <.button
-              :if={!operator.enabled}
-              id={"operator-#{operator.id}-enable"}
-              phx-click="enable-operator"
-              phx-value-id={operator.id}
-            >
-              Enable
-            </.button>
-          </div>
+              <.button
+                :if={!operator.enabled}
+                id={"operator-#{operator.id}-enable"}
+                phx-click="enable-operator"
+                phx-value-id={operator.id}
+              >
+                Enable
+              </.button>
+            </:action>
+          </CommonComponents.user_record>
         </li>
       </ul>
     </.async_result>
