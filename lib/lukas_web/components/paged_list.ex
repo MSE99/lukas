@@ -59,16 +59,15 @@ defmodule LukasWeb.PagedList do
     <div>
       <.async_result assign={@loading}>
         <:loading>Loading...</:loading>
-        <:failed>Failed...</:failed>
-
+        <:failed>failed...</:failed>
         <ul
-          phx-update="stream"
           id={@id}
+          phx-update="stream"
           phx-viewport-top={@page > 1 && "reached-top"}
           phx-viewport-bottom={@end_of_timeline? == false && "reached-bottom"}
           class={[
-            @end_of_timeline? == false && "pb-[calc(200vh)]",
-            @page > 1 && "pt-[calc(200vh)]",
+            @end_of_timeline? == false && "pb-[200vh]",
+            @page > 1 && "pt-[200vh]",
             "mt-5"
           ]}
           phx-target={@myself}
@@ -103,7 +102,7 @@ defmodule LukasWeb.PagedList do
         socket
         |> assign(:end_of_timeline?, false)
         |> assign(:page, page)
-        |> stream(:courses, items, limit: limit, at: at)
+        |> stream(:items, items, limit: limit, at: at)
     end
   end
 

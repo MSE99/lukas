@@ -30,16 +30,3 @@ invite = Lukas.Accounts.generate_lecturer_invite!()
     "email" => "cool3@gmail.com",
     "name" => "Ali ageel"
   })
-
-1..300
-|> Enum.each(fn _ ->
-  invite = Lukas.Accounts.generate_lecturer_invite!()
-
-  {:ok, _} =
-    Lukas.Accounts.register_lecturer(invite, %{
-      "phone_number" => "094 #{System.unique_integer()}",
-      "password" => "123123123123",
-      "email" => "#{System.unique_integer()}@mail.gun",
-      "name" => "Lecturer ##{System.unique_integer()}"
-    })
-end)
