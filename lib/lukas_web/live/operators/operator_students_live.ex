@@ -1,8 +1,10 @@
 defmodule LukasWeb.Operator.StudentsLive do
   use LukasWeb, :live_view
 
-  alias Phoenix.LiveView.AsyncResult
   alias Lukas.Accounts
+
+  alias Phoenix.LiveView.AsyncResult
+  alias LukasWeb.CommonComponents
 
   def mount(_, _, socket) do
     next_socket =
@@ -58,11 +60,14 @@ defmodule LukasWeb.Operator.StudentsLive do
 
   def render(assigns) do
     ~H"""
-    <h1>Students</h1>
-
     <.async_result assign={@loading}>
       <:loading>Loading students...</:loading>
       <:failed>Failed to load students</:failed>
+
+      <CommonComponents.navigate_breadcrumbs links={[
+        {~p"/controls", "home"},
+        {~p"/controls/students", "students"}
+      ]} />
 
       <ul
         id="students"
@@ -74,28 +79,43 @@ defmodule LukasWeb.Operator.StudentsLive do
           @page > 1 && "pt-[200vh]"
         ]}
       >
-        <li :for={{id, student} <- @streams.students} id={id}>
-          <.link navigate={~p"/controls/students/#{student.id}"}><%= student.name %></.link>
-          |
-          <.button
-            :if={student.enabled}
-            id={"student-disable-#{student.id}"}
-            phx-click="disable-student"
-            phx-value-id={student.id}
-            phx-throttle
-          >
-            Disable
-          </.button>
+        <li
+          :for={{id, student} <- @streams.students}
+          id={id}
+          class={[!student.enabled && "opacity-25", "transition-all"]}
+        >
+          <div class="flex items-center">
+            <img
+              src={~p"/images/#{student.profile_image}"}
+              width="50"
+              height="50"
+              class="w-[50px] h-[50px] rounded-full mr-3 lg:mr-5 border-4 border-primary-opaque"
+            />
 
-          <.button
-            :if={!student.enabled}
-            id={"student-enable-#{student.id}"}
-            phx-click="enable-student"
-            phx-value-id={student.id}
-            phx-throttle
-          >
-            Enable
-          </.button>
+            <.link
+              navigate={~p"/controls/students/#{student.id}"}
+              class="mr-auto text-secondary hover:underline"
+            >
+              <%= student.name %>
+            </.link>
+            <.button
+              :if={student.enabled}
+              id={"student-#{student.id}-disable"}
+              phx-click="disable-student"
+              phx-value-id={student.id}
+            >
+              Disable
+            </.button>
+
+            <.button
+              :if={!student.enabled}
+              id={"student-#{student.id}-enable"}
+              phx-click="enable-student"
+              phx-value-id={student.id}
+            >
+              Enable
+            </.button>
+          </div>
         </li>
       </ul>
     </.async_result>

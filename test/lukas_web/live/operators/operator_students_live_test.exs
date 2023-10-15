@@ -32,7 +32,7 @@ defmodule LukasWeb.Operator.StudentsLiveTest do
     {:ok, lv, _html} = live(conn, ~p"/controls/students")
     render_async(lv)
 
-    lv |> element("button#student-disable-#{student.id}") |> render_click()
+    lv |> element("button#student-#{student.id}-disable") |> render_click()
   end
 
   test "should render an enable button for enabling the student.", %{conn: conn} do
@@ -41,7 +41,7 @@ defmodule LukasWeb.Operator.StudentsLiveTest do
     {:ok, lv, _html} = live(conn, ~p"/controls/students")
     render_async(lv)
 
-    lv |> element("button#student-disable-#{student.id}") |> render_click()
-    lv |> element("button#student-enable-#{student.id}") |> render_click()
+    lv |> element("button#student-#{student.id}-disable") |> render_click()
+    lv |> element("button#student-#{student.id}-enable") |> render_click()
   end
 end
