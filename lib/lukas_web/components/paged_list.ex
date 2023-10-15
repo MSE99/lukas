@@ -32,6 +32,7 @@ defmodule LukasWeb.PagedList do
           |> assign(:loading, AsyncResult.loading())
           |> assign(:inner_block, assigns.inner_block)
           |> assign(:item, assigns.item)
+          |> assign(:load, assigns.load)
           |> start_async(:loading, fn ->
             assigns.load.(page: assigns.page, limit: assigns.limit)
           end)
@@ -63,7 +64,7 @@ defmodule LukasWeb.PagedList do
         <ul
           phx-update="stream"
           id={@id}
-          phx-viewport-top={@page > "reached-top"}
+          phx-viewport-top={@page > 1 && "reached-top"}
           phx-viewport-bottom={@end_of_timeline? == false && "reached-bottom"}
           class={[
             @end_of_timeline? == false && "pb-[calc(200vh)]",
@@ -82,15 +83,15 @@ defmodule LukasWeb.PagedList do
   end
 
   defp paginate(socket, page) when page >= 1 do
-    %{page: current_page, per_page: per_page} = socket
+    %{page: current_page, limit: per_page} = socket.assigns
 
-    courses = socket.assigns.load.(limit: per_page, offset: (page - 1) * per_page)
+    loaded = socket.assigns.load.(limit: per_page, offset: (page - 1) * per_page)
 
     {items, limit, at} =
       if page >= current_page do
-        {courses, per_page * 3 * -1, -1}
+        {loaded, per_page * 3 * -1, -1}
       else
-        {Enum.reverse(courses), per_page * 3, 0}
+        {Enum.reverse(loaded), per_page * 3, 0}
       end
 
     case items do

@@ -1,15 +1,3 @@
-# Script for populating the database. You can run it as:
-#
-#     mix run priv/repo/seeds.exs
-#
-# Inside the script, you can read and write to any of your
-# repositories directly:
-#
-#     Lukas.Repo.insert!(%Lukas.SomeSchema{})
-#
-# We recommend using the bang functions (`insert!`, `update!`
-# and so on) as they will fail if something goes wrong.
-
 inv = Lukas.Accounts.generate_operator_invite!()
 
 {:ok, clerk} =
@@ -43,12 +31,15 @@ invite = Lukas.Accounts.generate_lecturer_invite!()
     "name" => "Ali ageel"
   })
 
-invite = Lukas.Accounts.generate_lecturer_invite!()
+1..300
+|> Enum.each(fn _ ->
+  invite = Lukas.Accounts.generate_lecturer_invite!()
 
-{:ok, _} =
-  Lukas.Accounts.register_lecturer(invite, %{
-    "phone_number" => "094 #{System.unique_integer()}",
-    "password" => "123123123123",
-    "email" => "#{System.unique_integer()}@mail.gun",
-    "name" => "Lecturer ##{System.unique_integer()}"
-  })
+  {:ok, _} =
+    Lukas.Accounts.register_lecturer(invite, %{
+      "phone_number" => "094 #{System.unique_integer()}",
+      "password" => "123123123123",
+      "email" => "#{System.unique_integer()}@mail.gun",
+      "name" => "Lecturer ##{System.unique_integer()}"
+    })
+end)
