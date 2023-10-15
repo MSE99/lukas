@@ -4,6 +4,8 @@ defmodule LukasWeb.Students.StudyLive do
   alias Lukas.Learning
   alias Lukas.Learning.Course.Students
 
+  alias LukasWeb.CommonComponents
+
   def mount(%{"id" => raw_course_id}, _, socket) do
     student = socket.assigns.current_user
     course_id = String.to_integer(raw_course_id)
@@ -84,7 +86,11 @@ defmodule LukasWeb.Students.StudyLive do
 
   def render(assigns) do
     ~H"""
-    <h1 class="text-3xl mb-10"><%= @course.name %></h1>
+    <CommonComponents.navigate_breadcrumbs links={[
+      {~p"/home", "home"},
+      {~p"/home/courses", "courses"},
+      {~p"/home/courses/#{@course.id}", @course.name}
+    ]} />
 
     <ul id="lessons" phx-update="stream" class="list-disc mb-10">
       <li :for={{id, lesson} <- @streams.lessons} id={id} class="mb-5">
@@ -104,19 +110,32 @@ defmodule LukasWeb.Students.StudyLive do
       </li>
     </ul>
 
-    <hr class="my-5" />
+    <div :if={@lesson} class="mt-10">
+      <.main_title>
+        <%= @lesson.title %>
+      </.main_title>
 
-    <div :if={@lesson}>
-      <h1 class="text-xl font-bold mb-5"><%= @lesson.title %></h1>
-      <p class="mb-10"><%= @lesson.description %></p>
+      <.paragraph class="mb-10"><%= @lesson.description %></.paragraph>
 
-      <.button :if={@lesson.progressed == false} phx-click="progress-lesson">next</.button>
+      <div class="flex justify-end mt-10">
+        <.button :if={@lesson.progressed == false} phx-click="progress-lesson" class="px-8 py-2">
+          next
+        </.button>
+      </div>
     </div>
 
-    <div :if={@topic}>
-      <h1 class="text-xl font-bold mb-5"><%= @topic.title %></h1>
-      <p class="mb-10"><%= @topic.content %></p>
-      <.button :if={@topic.progressed == false} phx-click="progress-topic">next</.button>
+    <div :if={@topic} class="mt-10">
+      <.main_title>
+        <%= @topic.title %>
+      </.main_title>
+
+      <.paragraph class="mb-10"><%= @topic.content %></.paragraph>
+
+      <div class="flex justify-end mt-10">
+        <.button :if={@topic.progressed == false} phx-click="progress-topic" class="px-8 py-2">
+          next
+        </.button>
+      </div>
     </div>
     """
   end
@@ -150,5 +169,21 @@ defmodule LukasWeb.Students.StudyLive do
     Students.progress_through_topic(student, topic)
 
     {:noreply, socket}
+  end
+
+  defp main_title(assigns) do
+    ~H"""
+    <h1 class="text-secondary text-3xl lg:text-center font-bold mb-5">
+      <%= render_slot(@inner_block) %>
+    </h1>
+    """
+  end
+
+  defp paragraph(assigns) do
+    ~H"""
+    <p class="text-secondary text-xl">
+      <%= render_slot(@inner_block) %>
+    </p>
+    """
   end
 end
