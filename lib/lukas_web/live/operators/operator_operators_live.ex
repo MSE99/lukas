@@ -2,7 +2,9 @@ defmodule LukasWeb.Operator.OperatorsLive do
   use LukasWeb, :live_view
 
   alias Lukas.Accounts
+
   alias Phoenix.LiveView.AsyncResult
+  alias LukasWeb.CommonComponents
 
   def mount(_, _, socket) do
     next_socket =
@@ -39,32 +41,49 @@ defmodule LukasWeb.Operator.OperatorsLive do
       <:loading>Loading operators...</:loading>
       <:failed>Failed...</:failed>
 
+      <CommonComponents.navigate_breadcrumbs links={[
+        {~p"/controls", "home"},
+        {~p"/controls/operators", "operators"}
+      ]} />
+
       <ul id="operators" phx-update="stream">
         <li
           :for={{id, operator} <- @streams.operators}
           class={[!operator.enabled && "opacity-50", "transition-all"]}
           id={id}
         >
-          <%= operator.name %> |
-          <.button
-            :if={operator.enabled}
-            id={"disable-operator-#{operator.id}"}
-            phx-click="disable-operator"
-            phx-value-id={operator.id}
-            phx-throttle
-          >
-            Disable operator
-          </.button>
+          <div class="flex items-center">
+            <img
+              src={~p"/images/#{operator.profile_image}"}
+              width="50"
+              height="50"
+              class="w-[50px] h-[50px] rounded-full mr-3 lg:mr-5 border-4 border-primary-opaque"
+            />
 
-          <.button
-            :if={!operator.enabled}
-            id={"enable-operator-#{operator.id}"}
-            phx-click="enable-operator"
-            phx-value-id={operator.id}
-            phx-throttle
-          >
-            Enable operator
-          </.button>
+            <span
+              navigate={~p"/controls/operators/#{operator.id}"}
+              class="mr-auto text-secondary hover:underline hover:cursor-pointer"
+            >
+              <%= operator.name %>
+            </span>
+            <.button
+              :if={operator.enabled}
+              id={"operator-#{operator.id}-disable"}
+              phx-click="disable-operator"
+              phx-value-id={operator.id}
+            >
+              Disable
+            </.button>
+
+            <.button
+              :if={!operator.enabled}
+              id={"operator-#{operator.id}-enable"}
+              phx-click="enable-operator"
+              phx-value-id={operator.id}
+            >
+              Enable
+            </.button>
+          </div>
         </li>
       </ul>
     </.async_result>

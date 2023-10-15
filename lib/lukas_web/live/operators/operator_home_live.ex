@@ -29,6 +29,12 @@ defmodule LukasWeb.Operators.HomeLive do
       </li>
 
       <li>
+        <.link navigate={~p"/controls/operators"}>
+          <.icon name="hero-academic-cap-solid mr-5" /> Operators
+        </.link>
+      </li>
+
+      <li>
         <.link navigate={~p"/controls/invites"}>
           <.icon name="hero-envelope-solid mr-5" /> Invites & staff
         </.link>
