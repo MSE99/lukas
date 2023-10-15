@@ -12,28 +12,32 @@ defmodule LukasWeb.CommonComponents do
 
   def navbar(assigns) do
     ~H"""
-    <h1 :if={assigns[:current_user] == nil} class="text-primary font-bold text-2xl mt-8 mb-16">
-      Lukas
-    </h1>
-
-    <ul :if={assigns[:current_user]} class="flex items-center">
-      <li class="mr-auto">
-        <h1 class="text-primary font-bold text-2xl mt-8">
-          <.link href={~p"/"}>Lukas</.link>
+    <header class="px-6 sm:px-8 lg:px-10">
+      <nav class="mx-auto max-w-2xl">
+        <h1 :if={assigns[:current_user] == nil} class="text-primary font-bold text-2xl mt-8 mb-16">
+          Lukas
         </h1>
-      </li>
 
-      <li class="mt-2 -mr-3">
-        <.link href={~p"/users/settings"}>
-          <img
-            width="100"
-            height="100"
-            class="rounded-full border-8 border-primary-opaque w-[100px] h-[100px]"
-            src={~p"/images/#{@current_user.profile_image}"}
-          />
-        </.link>
-      </li>
-    </ul>
+        <ul :if={assigns[:current_user]} class="flex items-center">
+          <li class="mr-auto self-end">
+            <h1 class="text-primary font-bold text-2xl mt-8">
+              <.link href={~p"/"}>Lukas</.link>
+            </h1>
+          </li>
+
+          <li class="mt-2 -mr-3">
+            <.link href={~p"/users/settings"}>
+              <img
+                width="100"
+                height="100"
+                class="rounded-full border-8 border-primary-opaque w-[100px] h-[100px]"
+                src={~p"/images/#{@current_user.profile_image}"}
+              />
+            </.link>
+          </li>
+        </ul>
+      </nav>
+    </header>
     """
   end
 

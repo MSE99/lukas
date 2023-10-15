@@ -1,8 +1,8 @@
+<CommonComponents.navbar current_user={assigns[:current_user]} />
+
 <main class="px-6 sm:px-8 lg:px-10">
   <div class="mx-auto max-w-2xl">
     <.flash_group flash={@flash} />
-
-    <CommonComponents.navbar current_user={assigns[:current_user]} />
 
     <%= @inner_content %>
   </div>
