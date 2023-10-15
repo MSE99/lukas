@@ -58,43 +58,37 @@ defmodule LukasWeb.Operator.LecturersLive do
           "mt-5"
         ]}
       >
-        <li
-          :for={{id, lect} <- @streams.lecturers}
-          id={id}
-          class={[!lect.enabled && "opacity-25", "transition-all mb-3"]}
-        >
-          <div class="flex items-center">
-            <img
-              src={~p"/images/#{lect.profile_image}"}
-              width="50"
-              height="50"
-              class="w-[50px] h-[50px] rounded-full mr-3 lg:mr-5 border-4 border-primary-opaque"
-            />
+        <li :for={{id, lect} <- @streams.lecturers} id={id} class="mb-3">
+          <CommonComponents.user_record user={lect}>
+            <:links :let={lect}>
+              <.link
+                navigate={~p"/controls/lecturers/#{lect.id}"}
+                class="mr-auto text-secondary hover:underline"
+              >
+                <%= lect.name %>
+              </.link>
+            </:links>
 
-            <.link
-              navigate={~p"/controls/lecturers/#{lect.id}"}
-              class="mr-auto text-secondary hover:underline"
-            >
-              <%= lect.name %>
-            </.link>
-            <.button
-              :if={lect.enabled}
-              id={"lecturer-#{lect.id}-disable"}
-              phx-click="disable-lecturer"
-              phx-value-id={lect.id}
-            >
-              Disable
-            </.button>
+            <:action :let={lect}>
+              <.button
+                :if={lect.enabled}
+                id={"lecturer-#{lect.id}-disable"}
+                phx-click="disable-lecturer"
+                phx-value-id={lect.id}
+              >
+                Disable
+              </.button>
 
-            <.button
-              :if={!lect.enabled}
-              id={"lecturer-#{lect.id}-enable"}
-              phx-click="enable-lecturer"
-              phx-value-id={lect.id}
-            >
-              Enable
-            </.button>
-          </div>
+              <.button
+                :if={!lect.enabled}
+                id={"lecturer-#{lect.id}-enable"}
+                phx-click="enable-lecturer"
+                phx-value-id={lect.id}
+              >
+                Enable
+              </.button>
+            </:action>
+          </CommonComponents.user_record>
         </li>
       </ul>
     </.async_result>

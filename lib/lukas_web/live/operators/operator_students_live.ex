@@ -79,43 +79,37 @@ defmodule LukasWeb.Operator.StudentsLive do
           @page > 1 && "pt-[200vh]"
         ]}
       >
-        <li
-          :for={{id, student} <- @streams.students}
-          id={id}
-          class={[!student.enabled && "opacity-25", "transition-all"]}
-        >
-          <div class="flex items-center">
-            <img
-              src={~p"/images/#{student.profile_image}"}
-              width="50"
-              height="50"
-              class="w-[50px] h-[50px] rounded-full mr-3 lg:mr-5 border-4 border-primary-opaque"
-            />
+        <li :for={{id, student} <- @streams.students} id={id}>
+          <CommonComponents.user_record user={student}>
+            <:links>
+              <.link
+                navigate={~p"/controls/students/#{student.id}"}
+                class="mr-auto text-secondary hover:underline"
+              >
+                <%= student.name %>
+              </.link>
+            </:links>
 
-            <.link
-              navigate={~p"/controls/students/#{student.id}"}
-              class="mr-auto text-secondary hover:underline"
-            >
-              <%= student.name %>
-            </.link>
-            <.button
-              :if={student.enabled}
-              id={"student-#{student.id}-disable"}
-              phx-click="disable-student"
-              phx-value-id={student.id}
-            >
-              Disable
-            </.button>
+            <:action :let={student}>
+              <.button
+                :if={student.enabled}
+                id={"student-#{student.id}-disable"}
+                phx-click="disable-student"
+                phx-value-id={student.id}
+              >
+                Disable
+              </.button>
 
-            <.button
-              :if={!student.enabled}
-              id={"student-#{student.id}-enable"}
-              phx-click="enable-student"
-              phx-value-id={student.id}
-            >
-              Enable
-            </.button>
-          </div>
+              <.button
+                :if={!student.enabled}
+                id={"student-#{student.id}-enable"}
+                phx-click="enable-student"
+                phx-value-id={student.id}
+              >
+                Enable
+              </.button>
+            </:action>
+          </CommonComponents.user_record>
         </li>
       </ul>
     </.async_result>

@@ -9,7 +9,10 @@ defmodule LukasWeb.CommonComponents do
 
   def user_record(assigns) do
     ~H"""
-    <div class={[!@user.enabled && "opacity-50", "transition-all flex items-center border-b-2 pb-3"]}>
+    <div class={[
+      !@user.enabled && "opacity-50",
+      "text-xs font-bold lg:font-regular md:text-base transition-all flex items-center"
+    ]}>
       <img
         src={~p"/images/#{@user.profile_image}"}
         width="50"
