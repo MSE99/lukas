@@ -9,49 +9,49 @@ defmodule LukasWeb.Operators.HomeLive do
 
   def render(assigns) do
     ~H"""
-    <ul>
+    <.greeting>
+      Hello <%= @current_user.name %>
+    </.greeting>
+
+    <ul class="flex flex-col gap-2 mt-5">
       <li>
-        <.link navigate={~p"/controls/courses"}>
-          <.icon name="hero-academic-cap-solid mr-5" /> Courses & students
+        <.link navigate={~p"/controls/courses"} class="bg-white shadow p-5 block max-w-xs">
+          <.icon name="hero-academic-cap-solid mr-5" /> Courses
         </.link>
       </li>
 
       <li>
-        <.link navigate={~p"/controls/lecturers"}>
+        <.link navigate={~p"/controls/lecturers"} class="bg-white shadow p-5 block max-w-xs">
           <.icon name="hero-academic-cap-solid mr-5" /> Lecturers
         </.link>
       </li>
 
       <li>
-        <.link navigate={~p"/controls/students"}>
+        <.link navigate={~p"/controls/students"} class="bg-white shadow p-5 block max-w-xs">
           <.icon name="hero-academic-cap-solid mr-5" /> Students
         </.link>
       </li>
 
       <li>
-        <.link navigate={~p"/controls/operators"}>
+        <.link navigate={~p"/controls/operators"} class="bg-white shadow p-5 block max-w-xs">
           <.icon name="hero-academic-cap-solid mr-5" /> Operators
         </.link>
       </li>
 
       <li>
-        <.link navigate={~p"/controls/invites"}>
+        <.link navigate={~p"/controls/invites"} class="bg-white shadow p-5 block max-w-xs">
           <.icon name="hero-envelope-solid mr-5" /> Invites & staff
         </.link>
       </li>
 
       <li>
-        <.link href={~p"/users/settings"}>
+        <.link href={~p"/users/settings"} class="bg-white shadow p-5 block max-w-xs">
           <.icon name="hero-cog-6-tooth-solid mr-5" /> Settings
         </.link>
       </li>
     </ul>
 
-    <.link
-      href={~p"/users/log_out"}
-      method="DELETE"
-      class="flex justify-center max-w-fit mx-auto mt-5"
-    >
+    <.link href={~p"/users/log_out"} method="DELETE" class="flex justify-end mt-5">
       <.danger_button>
         Logout
       </.danger_button>
