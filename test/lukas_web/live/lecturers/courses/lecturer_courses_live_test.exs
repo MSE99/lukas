@@ -18,7 +18,9 @@ defmodule LukasWeb.Lecturers.CoursesLiveTest do
 
       not_given = course_fixture()
 
-      {:ok, _, html} = live(conn, ~p"/tutor/my-courses")
+      {:ok, lv, _} = live(conn, ~p"/tutor/my-courses")
+
+      html = render_async(lv)
 
       assert html =~ c1.name
       assert html =~ c2.name

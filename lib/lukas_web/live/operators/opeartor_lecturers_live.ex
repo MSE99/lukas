@@ -88,11 +88,12 @@ defmodule LukasWeb.Operator.LecturersLive do
   end
 
   def handle_info({:lecturers, :lecturer_registered, lecturer}, socket) do
-    send_update(self(), LukasWeb.PagedList, id: "lecturers-list", first_page_insert: lecturer)
+    send_update(self(), LukasWeb.PagedList, id: "lecturers-list", reload: true)
     {:noreply, socket}
   end
 
   def handle_info({:lecturers, :lecturer_updated, _}, socket) do
+    send_update(self(), LukasWeb.PagedList, id: "lecturers-list", reload: true)
     {:noreply, socket}
   end
 end

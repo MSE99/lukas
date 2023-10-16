@@ -28,21 +28,23 @@ defmodule LukasWeb.Operator.LecturersLiveTest do
   end
 
   test "should render a button for disabling the lecturers.", %{conn: conn} do
-    {:ok, lv, _} = live(conn, ~p"/controls/lecturers")
-
     lect = lecturer_fixture()
+
+    {:ok, lv, _} = live(conn, ~p"/controls/lecturers")
 
     render_async(lv)
 
-    lv |> element("button#lecturer-#{lect.id}-disable") |> render_click()
+    lv
+    |> element("button#lecturer-#{lect.id}-disable")
+    |> render_click()
 
     assert Accounts.get_lecturer!(lect.id).enabled == false
   end
 
   test "should render a button for enabling the lecturers.", %{conn: conn} do
-    {:ok, lv, _} = live(conn, ~p"/controls/lecturers")
-
     lect = lecturer_fixture()
+
+    {:ok, lv, _} = live(conn, ~p"/controls/lecturers")
 
     render_async(lv)
 

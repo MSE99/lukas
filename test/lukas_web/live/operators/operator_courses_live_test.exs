@@ -74,7 +74,7 @@ defmodule LukasWeb.Operator.AllCoursesLiveTest do
 
       assert_patched(lv, ~p"/controls/courses")
 
-      assert render(lv) =~ "foo bar baz"
+      assert render_async(lv) =~ "foo bar baz"
 
       [course] = Learning.list_courses()
 

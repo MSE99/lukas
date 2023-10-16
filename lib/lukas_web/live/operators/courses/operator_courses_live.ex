@@ -10,6 +10,10 @@ defmodule LukasWeb.Operator.AllCoursesLive do
   alias LukasWeb.CommonComponents
 
   def mount(_, _, socket) do
+    if connected?(socket) do
+      Learning.watch_courses()
+    end
+
     {:ok, allow_upload(socket, :banner_image, accept: ~w(.jpg .jpeg .png .webp))}
   end
 
@@ -181,12 +185,14 @@ defmodule LukasWeb.Operator.AllCoursesLive do
     end
   end
 
-  def handle_info({:courses, :course_created, course}, socket) do
-    {:noreply, stream_insert(socket, :courses, course)}
+  def handle_info({:courses, :course_created, _}, socket) do
+    send_update(self(), LukasWeb.PagedList, id: "courses-list", reload: true)
+    {:noreply, socket}
   end
 
-  def handle_info({:courses, :course_updated, course}, socket) do
-    {:noreply, stream_insert(socket, :courses, course)}
+  def handle_info({:courses, :course_updated, _}, socket) do
+    send_update(self(), LukasWeb.PagedList, id: "courses-list", reload: true)
+    {:noreply, socket}
   end
 
   defp consume_banner_image_upload(socket) do

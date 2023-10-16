@@ -11,8 +11,11 @@ defmodule LukasWeb.PagedList do
 
   def update(assigns, socket) do
     case assigns do
-      %{entry_to_update: entry} when entry != nil ->
-        {:ok, socket |> stream_insert(:items, entry)}
+      %{reload: true} ->
+        {:ok, reload(socket)}
+
+      %{entry_to_update: entry} ->
+        {:ok, stream_insert(socket, :items, entry)}
 
       %{first_page_insert: entry} when entry != nil ->
         if socket.assigns.page == 1 do
@@ -113,6 +116,12 @@ defmodule LukasWeb.PagedList do
         |> assign(:page, page)
         |> stream(:items, items, limit: limit, at: at)
     end
+  end
+
+  defp reload(socket) do
+    %{page: current_page, limit: per_page} = socket.assigns
+    loaded = socket.assigns.load.(limit: per_page, offset: (current_page - 1) * per_page)
+    stream(socket, :items, loaded)
   end
 
   def handle_event("reached-top", _, socket) do
