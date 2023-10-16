@@ -23,7 +23,7 @@ defmodule LukasWeb.Students.StudyLive do
       |> assign(topic: nil)
       |> stream(:lessons, lessons)
 
-    {:ok, next_socket}
+    {:ok, next_socket, layout: {LukasWeb.Layouts, :frameless}}
   end
 
   def handle_params(%{"lesson_id" => raw_lesson_id, "topic_id" => raw_topic_id}, _, socket) do
@@ -86,56 +86,63 @@ defmodule LukasWeb.Students.StudyLive do
 
   def render(assigns) do
     ~H"""
-    <CommonComponents.navigate_breadcrumbs links={[
-      {~p"/home", "home"},
-      {~p"/home/courses", "courses"},
-      {~p"/home/courses/#{@course.id}", @course.name}
-    ]} />
+    <div class="w-full min-h-screen flex">
+      <div class="w-full pt-10">
+        <div :if={@lesson} class="max-w-3xl mx-auto">
+          <.main_title>
+            <%= @lesson.title %>
+          </.main_title>
 
-    <ul id="lessons" phx-update="stream" class="list-disc mb-10">
-      <li :for={{id, lesson} <- @streams.lessons} id={id} class="mb-5">
-        <.link patch={~p"/home/courses/#{@course.id}/study?lesson_id=#{lesson.id}"}>
-          <%= lesson.title %> <%= if lesson.progressed, do: "(done)", else: "" %>
-        </.link>
+          <.paragraph class="mb-10"><%= @lesson.description %></.paragraph>
 
-        <ul id={"lesson-#{lesson.id}-topics"} class="pl-3">
-          <li :for={topic <- lesson.topics} class="my-1">
-            <.link patch={
-              ~p"/home/courses/#{@course.id}/study?lesson_id=#{topic.lesson_id}&topic_id=#{topic.id}"
-            }>
-              <%= topic.title %> <%= if topic.progressed, do: "(done)", else: "" %>
-            </.link>
-          </li>
-        </ul>
-      </li>
-    </ul>
+          <div class="flex justify-end mt-10">
+            <.button :if={@lesson.progressed == false} phx-click="progress-lesson" class="px-8 py-2">
+              next
+            </.button>
+          </div>
+        </div>
 
-    <div :if={@lesson} class="mt-10">
-      <.main_title>
-        <%= @lesson.title %>
-      </.main_title>
+        <div :if={@topic} class="max-w-3xl mx-auto">
+          <.main_title>
+            <%= @topic.title %>
+          </.main_title>
 
-      <.paragraph class="mb-10"><%= @lesson.description %></.paragraph>
+          <.paragraph class="mb-10"><%= @topic.content %></.paragraph>
 
-      <div class="flex justify-end mt-10">
-        <.button :if={@lesson.progressed == false} phx-click="progress-lesson" class="px-8 py-2">
-          next
-        </.button>
+          <div class="flex justify-end mt-10">
+            <.button :if={@topic.progressed == false} phx-click="progress-topic" class="px-8 py-2">
+              next
+            </.button>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div :if={@topic} class="mt-10">
-      <.main_title>
-        <%= @topic.title %>
-      </.main_title>
+      <ul
+        id="lessons"
+        phx-update="stream"
+        class="bg-[rgba(0,0,0,0.08)] p-5 w-full min-h-full max-w-sm text-secondary"
+      >
+        <li :for={{id, lesson} <- @streams.lessons} id={id} class="mb-5">
+          <.link
+            patch={~p"/home/courses/#{@course.id}/study?lesson_id=#{lesson.id}"}
+            class="font-bold text-xl"
+          >
+            <%= lesson.title %> <%= if Enum.all?(lesson.topics, fn topic -> topic.progressed end),
+              do: "✓",
+              else: "" %>
+          </.link>
 
-      <.paragraph class="mb-10"><%= @topic.content %></.paragraph>
-
-      <div class="flex justify-end mt-10">
-        <.button :if={@topic.progressed == false} phx-click="progress-topic" class="px-8 py-2">
-          next
-        </.button>
-      </div>
+          <ul id={"lesson-#{lesson.id}-topics"} class="pl-3">
+            <li :for={topic <- lesson.topics} class="my-1 text-lg">
+              <.link patch={
+                ~p"/home/courses/#{@course.id}/study?lesson_id=#{topic.lesson_id}&topic_id=#{topic.id}"
+              }>
+                <%= topic.title %> <%= if topic.progressed, do: "✓", else: "" %>
+              </.link>
+            </li>
+          </ul>
+        </li>
+      </ul>
     </div>
     """
   end
