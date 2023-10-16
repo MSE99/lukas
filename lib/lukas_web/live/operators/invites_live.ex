@@ -2,6 +2,7 @@ defmodule LukasWeb.Operator.InvitesLive do
   use LukasWeb, :live_view
 
   alias Lukas.Accounts
+  alias LukasWeb.CommonComponents
   alias Phoenix.LiveView.AsyncResult
 
   def mount(_, _, socket) do
@@ -33,26 +34,46 @@ defmodule LukasWeb.Operator.InvitesLive do
 
   def render(assigns) do
     ~H"""
-    <h1>Invites</h1>
+    <CommonComponents.navigate_breadcrumbs links={[
+      {~p"/controls", "home"},
+      {~p"/controls/invites", "invites"}
+    ]} />
 
     <.async_result assign={@loading_result}>
       <:loading>Loading...</:loading>
       <:failed>Failed to load invites...</:failed>
 
-      <.button id="generate-lecturer-invite-button" phx-click="generate-lecturer-invite">
-        Generate lecturer invite
-      </.button>
+      <div class="flex justify-center md:justify-end gap-2 mb-10">
+        <.button id="generate-lecturer-invite-button" phx-click="generate-lecturer-invite">
+          Create lecturer invite
+        </.button>
 
-      <.button id="generate-operator-invite-button" phx-click="generate-operator-invite">
-        Generate operator invite
-      </.button>
+        <.button id="generate-operator-invite-button" phx-click="generate-operator-invite">
+          Create operator invite
+        </.button>
+      </div>
+
+      <div class="text-secondary font-bold gap-2 mb-5">
+        <span class="mr-4">Code</span>
+        <span>Kind</span>
+      </div>
 
       <ul id="invites" phx-update="stream">
-        <li :for={{id, inv} <- @streams.invites} id={id}>
-          <%= inv.code %> | <%= inv.kind %>
-          <.button class="delete-invite-button" phx-value-id={inv.id} phx-click="delete-invite">
-            Delete invite
-          </.button>
+        <li
+          :for={{id, inv} <- @streams.invites}
+          id={id}
+          class="flex items-center gap-2 mb-5 border-b pb-2"
+        >
+          <span><%= inv.code %></span>
+          <span><%= inv.kind %></span>
+
+          <div
+            class="delete-invite-button ml-auto hover:cursor-pointer"
+            phx-value-id={inv.id}
+            phx-click="delete-invite"
+          >
+            <.icon name="hero-x-mark" />
+          </div>
         </li>
       </ul>
     </.async_result>
