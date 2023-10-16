@@ -4,8 +4,6 @@ defmodule LukasWeb.Students.StudyLive do
   alias Lukas.Learning
   alias Lukas.Learning.Course.Students
 
-  alias LukasWeb.CommonComponents
-
   def mount(%{"id" => raw_course_id}, _, socket) do
     student = socket.assigns.current_user
     course_id = String.to_integer(raw_course_id)

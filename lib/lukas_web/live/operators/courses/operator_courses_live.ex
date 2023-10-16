@@ -5,7 +5,6 @@ defmodule LukasWeb.Operator.AllCoursesLive do
   alias Lukas.Learning.Course
   alias Lukas.Categories
 
-  alias Phoenix.LiveView.AsyncResult
   alias LukasWeb.PagedList
   alias LukasWeb.CommonComponents
 
