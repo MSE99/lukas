@@ -66,8 +66,8 @@ defmodule LukasWeb.PagedList do
           phx-viewport-top={@page > 1 && "reached-top"}
           phx-viewport-bottom={@end_of_timeline? == false && "reached-bottom"}
           class={[
-            @end_of_timeline? == false && "pb-[200vh]",
-            @page > 1 && "pt-[200vh]",
+            @end_of_timeline? == false && "pb-[calc(200vh)]",
+            @page > 1 && "pt-[calc(200vh)]",
             "mt-5"
           ]}
           phx-target={@myself}
