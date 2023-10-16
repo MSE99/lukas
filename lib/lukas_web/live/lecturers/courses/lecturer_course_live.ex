@@ -5,6 +5,8 @@ defmodule LukasWeb.Lecturer.CourseLive do
   alias Lukas.Learning.Course
   alias Lukas.Learning.Course.Content
 
+  alias LukasWeb.CommonComponents
+
   def mount(%{"id" => raw_id}, _session, socket) do
     with {id, _} <- Integer.parse(raw_id),
          {course, lecturers} when course != nil <-
@@ -14,7 +16,11 @@ defmodule LukasWeb.Lecturer.CourseLive do
       Learning.watch_course(course)
 
       {:ok,
-       socket |> assign(course: course) |> load_lessons(course) |> stream(:lecturers, lecturers)}
+       socket
+       |> assign(course: course)
+       |> load_lessons(course)
+       |> stream(:lecturers, lecturers)
+       |> stream(:tags, course.tags)}
     else
       _ -> {:ok, redirect(socket, to: ~p"/")}
     end
@@ -45,6 +51,42 @@ defmodule LukasWeb.Lecturer.CourseLive do
 
   def render(assigns) do
     ~H"""
+    <CommonComponents.navigate_breadcrumbs links={[
+      {~p"/tutor", "home"},
+      {~p"/tutor/my-courses", "my courses"},
+      {~p"/tutor/my-courses/#{@course.id}", @course.name}
+    ]} />
+
+    <CommonComponents.course_banner image_src={~p"/images/#{@course.banner_image}"} />
+
+    <.link patch={~p"/tutor/my-courses/#{@course.id}/new-lesson"} class="flex justify-end mt-10">
+      <.button>New lesson</.button>
+    </.link>
+
+    <ul id="lessons" phx-update="stream">
+      <li :for={{id, lesson} <- @streams.lessons} id={id}>
+        <.link navigate={~p"/tutor/my-courses/#{@course.id}/lessons/#{lesson.id}"}>
+          <%= lesson.title %>
+        </.link>
+        |
+        <.link patch={~p"/tutor/my-courses/#{@course.id}/lessons/#{lesson.id}/edit-lesson"}>
+          Edit
+        </.link>
+        |
+        <.button id={"lesson-delete-#{lesson.id}"} phx-click="delete-lesson" phx-value-id={lesson.id}>
+          Delete lesson
+        </.button>
+      </li>
+    </ul>
+
+    <CommonComponents.streamed_users_mini_list
+      id="users-list"
+      title="Lecturers"
+      users={@streams.lecturers}
+    />
+
+    <CommonComponents.streamed_tag_list id="tags-list" title="Tags" tags={@streams.tags} />
+
     <.modal
       :if={@live_action == :add_lecturer}
       id="new-lecturer-modal"
@@ -74,36 +116,6 @@ defmodule LukasWeb.Lecturer.CourseLive do
         <.button>Create</.button>
       </.form>
     </.modal>
-
-    <h1>Course <%= @course.name %></h1>
-
-    <.link patch={~p"/tutor/my-courses/#{@course.id}/new-lesson"}>
-      <.button>New lesson</.button>
-    </.link>
-
-    <ul id="lessons" phx-update="stream">
-      <li :for={{id, lesson} <- @streams.lessons} id={id}>
-        <.link navigate={~p"/tutor/my-courses/#{@course.id}/lessons/#{lesson.id}"}>
-          <%= lesson.title %>
-        </.link>
-        |
-        <.link patch={~p"/tutor/my-courses/#{@course.id}/lessons/#{lesson.id}/edit-lesson"}>
-          Edit
-        </.link>
-        |
-        <.button id={"lesson-delete-#{lesson.id}"} phx-click="delete-lesson" phx-value-id={lesson.id}>
-          Delete lesson
-        </.button>
-      </li>
-    </ul>
-
-    <h3>Lecturers</h3>
-
-    <ul id="lecturers" phx-update="stream">
-      <li :for={{id, lect} <- @streams.lecturers} id={id}>
-        <%= lect.name %>
-      </li>
-    </ul>
     """
   end
 
