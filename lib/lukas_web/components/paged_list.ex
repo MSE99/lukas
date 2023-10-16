@@ -72,13 +72,22 @@ defmodule LukasWeb.PagedList do
           ]}
           phx-target={@myself}
         >
-          <li :for={{id, entry} <- @streams.items} id={id}>
+          <li :for={{id, entry} <- @streams.items} id={id} class={get_css_classes_if_defined(@item)}>
             <%= render_slot(@item, entry) %>
           </li>
         </ul>
       </.async_result>
     </div>
     """
+  end
+
+  defp get_css_classes_if_defined(item_slot) do
+    item_slot
+    |> List.first()
+    |> case do
+      nil -> ""
+      item -> Map.get(item, :class, "")
+    end
   end
 
   defp paginate(socket, page) when page >= 1 do

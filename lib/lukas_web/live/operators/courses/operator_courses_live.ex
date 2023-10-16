@@ -1,67 +1,16 @@
 defmodule LukasWeb.Operator.AllCoursesLive do
-  # TODO: refactor this module T - T
-
   use LukasWeb, :live_view
 
   alias Lukas.Learning
   alias Lukas.Learning.Course
   alias Lukas.Categories
+
   alias Phoenix.LiveView.AsyncResult
+  alias LukasWeb.PagedList
+  alias LukasWeb.CommonComponents
 
   def mount(_, _, socket) do
-    next_socket =
-      socket
-      |> stream_configure(:courses, [])
-      |> assign(:loading, AsyncResult.loading())
-      |> start_async(:loading, &Learning.list_courses/0)
-      |> allow_upload(:banner_image, accept: ~w(.jpg .jpeg .png .webp))
-
-    {:ok, next_socket}
-  end
-
-  def handle_async(:loading, {:ok, courses}, socket) do
-    Learning.watch_courses()
-
-    next_socket =
-      socket
-      |> assign(loading: AsyncResult.ok(socket.assigns.loading, nil))
-      |> assign(:per_page, 50)
-      |> assign(:page, 1)
-      |> assign(:end_of_timeline?, false)
-      |> stream(:courses, courses)
-
-    {:noreply, next_socket}
-  end
-
-  def handle_async(:loading, {:exit, reason}, socket) do
-    {:noreply,
-     socket
-     |> assign(loading: AsyncResult.failed(socket.assigns.loading, reason))}
-  end
-
-  defp paginate_courses(socket, page) when page >= 1 do
-    %{page: current_page, per_page: per_page} = socket
-
-    courses = Learning.list_courses(limit: per_page, offset: (page - 1) * per_page)
-
-    {items, limit, at} =
-      if page >= current_page do
-        {courses, per_page * 3 * -1, -1}
-      else
-        {Enum.reverse(courses), per_page * 3, 0}
-      end
-
-    case items do
-      [] ->
-        socket
-        |> assign(:end_of_timeline?, at == -1)
-
-      [_ | _] ->
-        socket
-        |> assign(:end_of_timeline?, false)
-        |> assign(:page, page)
-        |> stream(:courses, items, limit: limit, at: at)
-    end
+    {:ok, allow_upload(socket, :banner_image, accept: ~w(.jpg .jpeg .png .webp))}
   end
 
   def handle_params(params, _, socket),
@@ -99,30 +48,35 @@ defmodule LukasWeb.Operator.AllCoursesLive do
 
   def render(assigns) do
     ~H"""
-    <h1>All courses</h1>
+    <CommonComponents.navigate_breadcrumbs links={[
+      {~p"/controls", "home"},
+      {~p"/controls/courses", "courses"}
+    ]} />
 
-    <.link patch={~p"/controls/courses/new"}>New</.link>
+    <.link patch={~p"/controls/courses/new"} class="flex justify-end mt-10 mb-16">
+      <.button class="px-5">Create course</.button>
+    </.link>
 
-    <.async_result assign={@loading}>
-      <:loading>Loading courses</:loading>
-      <:failed>Failed to load courses</:failed>
+    <.live_component
+      module={PagedList}
+      id="courses-list"
+      page={1}
+      limit={50}
+      load={fn opts -> Learning.list_courses(opts) end}
+      entry_dom_id={fn course -> "courses-#{course.id}" end}
+    >
+      <:item :let={course} class="flex items-center text-secondary font-bold">
+        <img src={~p"/images/#{course.banner_image}"} width={80} height={80} class="rounded" />
 
-      <ul
-        phx-update="stream"
-        id="async-courses"
-        phx-viewport-top={@page > 1 && "reached-top"}
-        phx-viewport-bottom={@end_of_timeline? == false && "reached-bottom"}
-        class={[
-          @end_of_timeline? == false && "pb-[200vh]",
-          @page > 1 && "pt-[200vh]"
-        ]}
-      >
-        <li :for={{id, course} <- @streams.courses} id={id}>
-          <.link navigate={~p"/controls/courses/#{course.id}"}><%= course.name %></.link>
-          | <.link patch={~p"/controls/courses/#{course.id}/edit"}>Edit</.link>
-        </li>
-      </ul>
-    </.async_result>
+        <.link navigate={~p"/controls/courses/#{course.id}"} class="ml-5 hover:underline">
+          <%= course.name %>
+        </.link>
+
+        <.link class="ml-auto" patch={~p"/controls/courses/#{course.id}/edit"}>
+          <.icon name="hero-pencil-solid" />
+        </.link>
+      </:item>
+    </.live_component>
 
     <.modal
       :if={@live_action in [:new, :edit]}
@@ -173,21 +127,6 @@ defmodule LukasWeb.Operator.AllCoursesLive do
 
   def error_to_string(:too_large), do: "Too large"
   def error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
-
-  def handle_event("reached-top", _, socket) do
-    next_page =
-      if socket.assigns.page == 1 do
-        1
-      else
-        socket.assigns.page - 1
-      end
-
-    {:noreply, paginate_courses(socket, next_page)}
-  end
-
-  def handle_event("reached-bottom", _, socket) do
-    {:noreply, paginate_courses(socket, socket.assigns.page + 1)}
-  end
 
   def handle_event("validate", %{"course" => course_attrs}, socket) do
     cs = Learning.validate_course(course_attrs)
