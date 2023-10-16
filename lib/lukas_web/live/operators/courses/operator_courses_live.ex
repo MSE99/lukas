@@ -185,13 +185,13 @@ defmodule LukasWeb.Operator.AllCoursesLive do
     end
   end
 
-  def handle_info({:courses, :course_created, _}, socket) do
-    send_update(self(), LukasWeb.PagedList, id: "courses-list", reload: true)
+  def handle_info({:courses, :course_created, course}, socket) do
+    send_update(self(), LukasWeb.PagedList, id: "courses-list", first_page_insert: course)
     {:noreply, socket}
   end
 
-  def handle_info({:courses, :course_updated, _}, socket) do
-    send_update(self(), LukasWeb.PagedList, id: "courses-list", reload: true)
+  def handle_info({:courses, :course_updated, course}, socket) do
+    send_update(self(), LukasWeb.PagedList, id: "courses-list", replace: course)
     {:noreply, socket}
   end
 

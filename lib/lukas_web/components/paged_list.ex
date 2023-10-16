@@ -1,6 +1,7 @@
 defmodule LukasWeb.PagedList do
   use LukasWeb, :live_component
 
+  alias Lukas.IdList
   alias Phoenix.LiveView.AsyncResult
 
   slot :item, required: true
@@ -11,15 +12,20 @@ defmodule LukasWeb.PagedList do
 
   def update(assigns, socket) do
     case assigns do
-      %{reload: true} ->
-        {:ok, reload(socket)}
+      %{replace: entry} ->
+        %{ids_list: ids} = socket.assigns
 
-      %{entry_to_update: entry} ->
-        {:ok, stream_insert(socket, :items, entry)}
+        if IdList.has?(ids, entry.id) do
+          {:ok, stream_insert(socket, :items, entry)}
+        else
+          {:ok, socket}
+        end
 
       %{first_page_insert: entry} when entry != nil ->
         if socket.assigns.page == 1 do
-          {:ok, socket |> stream_insert(:items, entry)}
+          %{ids_list: ids, limit: limit} = socket.assigns
+          next_ids = IdList.concat(ids, [entry.id], limit: limit)
+          {:ok, socket |> stream_insert(:items, entry) |> assign(:ids_list, next_ids)}
         else
           {:ok, socket}
         end
@@ -45,8 +51,12 @@ defmodule LukasWeb.PagedList do
   end
 
   def handle_async(:loading, {:ok, items}, socket) do
+    ids = Enum.map(items, & &1.id)
+    ids_list = IdList.new(ids, socket.assigns.limit)
+
     {:noreply,
      socket
+     |> assign(:ids_list, ids_list)
      |> stream(:items, items)
      |> assign(:loading, AsyncResult.ok(socket.assigns.loading, nil))}
   end
@@ -111,17 +121,19 @@ defmodule LukasWeb.PagedList do
         |> assign(:end_of_timeline?, at == -1)
 
       [_ | _] ->
+        next_ids_list =
+          IdList.concat(
+            socket.assigns.ids_list,
+            Enum.map(items, & &1.id),
+            limit: limit
+          )
+
         socket
         |> assign(:end_of_timeline?, false)
         |> assign(:page, page)
+        |> assign(:ids_list, next_ids_list)
         |> stream(:items, items, limit: limit, at: at)
     end
-  end
-
-  defp reload(socket) do
-    %{page: current_page, limit: per_page} = socket.assigns
-    loaded = socket.assigns.load.(limit: per_page, offset: (current_page - 1) * per_page)
-    stream(socket, :items, loaded)
   end
 
   def handle_event("reached-top", _, socket) do

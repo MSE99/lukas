@@ -70,7 +70,7 @@ defmodule LukasWeb.Operator.LecturersLive do
       |> Accounts.get_lecturer!()
       |> Accounts.disable_user()
 
-    send_update(self(), LukasWeb.PagedList, id: "lecturers-list", entry_to_update: next_lect)
+    send_update(self(), LukasWeb.PagedList, id: "lecturers-list", replace: next_lect)
 
     {:noreply, socket}
   end
@@ -82,18 +82,18 @@ defmodule LukasWeb.Operator.LecturersLive do
       |> Accounts.get_lecturer!()
       |> Accounts.enable_user()
 
-    send_update(self(), LukasWeb.PagedList, id: "lecturers-list", entry_to_update: next_lect)
+    send_update(self(), LukasWeb.PagedList, id: "lecturers-list", replace: next_lect)
 
     {:noreply, socket}
   end
 
   def handle_info({:lecturers, :lecturer_registered, lecturer}, socket) do
-    send_update(self(), LukasWeb.PagedList, id: "lecturers-list", reload: true)
+    send_update(self(), LukasWeb.PagedList, id: "lecturers-list", first_page_insert: lecturer)
     {:noreply, socket}
   end
 
-  def handle_info({:lecturers, :lecturer_updated, _}, socket) do
-    send_update(self(), LukasWeb.PagedList, id: "lecturers-list", reload: true)
+  def handle_info({:lecturers, :lecturer_updated, lecturer}, socket) do
+    send_update(self(), LukasWeb.PagedList, id: "lecturers-list", replace: lecturer)
     {:noreply, socket}
   end
 end
