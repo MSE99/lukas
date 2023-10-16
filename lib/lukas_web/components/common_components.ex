@@ -2,6 +2,16 @@ defmodule LukasWeb.CommonComponents do
   use Phoenix.Component
   use LukasWeb, :html
 
+  slot :inner_block, required: true
+
+  def greeting(assigns) do
+    ~H"""
+    <h1 class="text-3xl text-secondary font-bold mt-10">
+      <%= render_slot(@inner_block) %>
+    </h1>
+    """
+  end
+
   attr :user, Lukas.Accounts.User, required: true
 
   slot :action, default: []
