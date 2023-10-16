@@ -156,7 +156,9 @@ defmodule Lukas.Learning do
 
   def create_course_by_lecturer(attrs, tag_ids, lecturer, opts \\ []) do
     side_effect = Keyword.get(opts, :side_effect, fn -> nil end)
-    get_banner_image_path = Keyword.get(opts, :banner_image, &Course.default_banner_image/0)
+
+    get_banner_image_path =
+      Keyword.get(opts, :get_banner_image_path, &Course.default_banner_image/0)
 
     Ecto.Multi.new()
     |> create_course_multi(attrs, tag_ids, get_banner_image_path)

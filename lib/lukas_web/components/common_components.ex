@@ -221,7 +221,7 @@ defmodule LukasWeb.CommonComponents do
         <strong><%= @course.name %></strong>
 
         <p class="mt-1">
-          The description of the course lays here
+          <%= @course.description %>
         </p>
       </div>
     </div>

@@ -4,17 +4,33 @@ defmodule LukasWeb.Lecturer.CoursesLive do
   alias Lukas.{Learning, Categories}
   alias Lukas.Learning.Course
 
+  alias Phoenix.LiveView.AsyncResult
+  alias LukasWeb.CommonComponents
+
   def mount(_, _, socket) do
     lecturer = socket.assigns.current_user
 
-    Learning.Course.Staff.watch_staff_status(lecturer.id)
+    next_socket =
+      socket
+      |> stream_configure(:courses, [])
+      |> assign(:loading, AsyncResult.loading())
+      |> start_async(:loading, fn -> Learning.Course.Staff.list_lecturer_courses(lecturer.id) end)
+      |> allow_upload(:banner_image, accept: ~w(.jpg .jpeg .png .webp))
 
-    courses = Learning.Course.Staff.list_lecturer_courses(lecturer.id)
+    {:ok, next_socket}
+  end
 
-    {:ok,
+  def handle_async(:loading, {:ok, courses}, socket) do
+    Learning.Course.Staff.watch_staff_status(socket.assigns.current_user.id)
+
+    {:noreply,
      socket
      |> stream(:courses, courses)
-     |> allow_upload(:banner_image, accept: ~w(.jpg .jpeg .png .webp))}
+     |> assign(:loading, AsyncResult.ok(socket.assigns.loading, nil))}
+  end
+
+  def handle_async(:loading, {:exit, reason}, socket) do
+    {:noreply, assign(socket, loading: AsyncResult.failed(socket.assigns.loading, reason))}
   end
 
   def handle_params(_, _, socket) when socket.assigns.live_action == :new do
@@ -49,17 +65,29 @@ defmodule LukasWeb.Lecturer.CoursesLive do
 
   def render(assigns) do
     ~H"""
-    <h1>My courses</h1>
+    <CommonComponents.navigate_breadcrumbs links={[
+      {~p"/tutor", "home"},
+      {~p"/tutor/my-courses", "my courses"}
+    ]} />
 
     <.link patch={~p"/tutor/my-courses/new"}>
-      <.button>New Course</.button>
+      <.button class="flex items-center px-4 ml-auto">
+        <.icon name="hero-plus-circle-solid" class="mr-3" /> New Course
+      </.button>
     </.link>
 
-    <ul id="courses" phx-update="stream">
-      <li :for={{id, course} <- @streams.courses} id={id}>
-        <.link navigate={~p"/tutor/my-courses/#{course.id}"}><%= course.name %></.link>
-      </li>
-    </ul>
+    <.async_result assign={@loading}>
+      <:loading>Loading...</:loading>
+      <:failed>failed...</:failed>
+
+      <ul id="courses" phx-update="stream" class="mt-5">
+        <li :for={{id, course} <- @streams.courses} id={id} class="mb-2">
+          <.link navigate={~p"/tutor/my-courses/#{course.id}"}>
+            <CommonComponents.course_card course={course} />
+          </.link>
+        </li>
+      </ul>
+    </.async_result>
 
     <.modal
       :if={@live_action in [:new, :edit]}
@@ -190,7 +218,7 @@ defmodule LukasWeb.Lecturer.CoursesLive do
 
         File.cp!(path, dist)
 
-        {:ok, dist}
+        {:ok, filename}
       end)
 
     case uploaded_images do
