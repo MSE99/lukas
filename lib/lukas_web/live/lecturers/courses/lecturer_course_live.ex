@@ -9,7 +9,7 @@ defmodule LukasWeb.Lecturer.CourseLive do
 
   def mount(%{"id" => raw_id}, _session, socket) do
     with {id, _} <- Integer.parse(raw_id),
-         {course, lecturers} when course != nil <-
+         {course, lecturers, tags} when course != nil <-
            Course.Staff.get_course_with_lecturers(id),
          current_lect when current_lect != nil <-
            Enum.find(lecturers, fn lect -> lect.id == socket.assigns.current_user.id end) do
@@ -20,7 +20,7 @@ defmodule LukasWeb.Lecturer.CourseLive do
        |> assign(course: course)
        |> load_lessons(course)
        |> stream(:lecturers, lecturers)
-       |> stream(:tags, course.tags)}
+       |> stream(:tags, tags)}
     else
       _ -> {:ok, redirect(socket, to: ~p"/")}
     end

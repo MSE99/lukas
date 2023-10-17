@@ -202,7 +202,7 @@ defmodule LukasWeb.Operator.AllCoursesLive do
 
         File.cp!(path, dist)
 
-        {:ok, dist}
+        {:ok, filename}
       end)
 
     case uploaded_images do

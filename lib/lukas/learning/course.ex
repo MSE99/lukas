@@ -32,8 +32,7 @@ defmodule Lukas.Learning.Course do
   def query_by_id(id) do
     from(
       c in __MODULE__,
-      where: c.id == ^id,
-      preload: [:tags]
+      where: c.id == ^id
     )
   end
 

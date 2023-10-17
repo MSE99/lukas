@@ -1,5 +1,5 @@
 defmodule Lukas.Learning.Course.Staff do
-  alias Lukas.Learning.{Course, Teaching}
+  alias Lukas.Learning.{Course, Teaching, Tagging}
   alias Lukas.Accounts
   alias Lukas.Repo
 
@@ -29,10 +29,11 @@ defmodule Lukas.Learning.Course.Staff do
     Ecto.Multi.new()
     |> Ecto.Multi.one(:course, Course.query_by_id(id))
     |> Ecto.Multi.all(:lecturers, Teaching.query_course_lecturers(id))
+    |> Ecto.Multi.all(:tags, Tagging.query_tag_by_course_id(id))
     |> Repo.transaction()
     |> case do
-      {:ok, %{course: course, lecturers: lecturers}} ->
-        {course, lecturers}
+      {:ok, %{course: course, lecturers: lecturers, tags: tags}} ->
+        {course, lecturers, tags}
     end
   end
 
