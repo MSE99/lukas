@@ -1,4 +1,4 @@
-defmodule LukasWeb.PagedList do
+defmodule LukasWeb.InfiniteListLive do
   use LukasWeb, :live_component
 
   alias Lukas.IdList

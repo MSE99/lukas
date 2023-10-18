@@ -5,7 +5,7 @@ defmodule LukasWeb.Operator.AllCoursesLive do
   alias Lukas.Learning.Course
   alias Lukas.Categories
 
-  alias LukasWeb.PagedList
+  alias LukasWeb.InfiniteListLive
   alias LukasWeb.CommonComponents
 
   def mount(_, _, socket) do
@@ -61,7 +61,7 @@ defmodule LukasWeb.Operator.AllCoursesLive do
     </.link>
 
     <.live_component
-      module={PagedList}
+      module={InfiniteListLive}
       id="courses-list"
       page={1}
       limit={50}
@@ -185,12 +185,12 @@ defmodule LukasWeb.Operator.AllCoursesLive do
   end
 
   def handle_info({:courses, :course_created, course}, socket) do
-    send_update(self(), LukasWeb.PagedList, id: "courses-list", first_page_insert: course)
+    send_update(self(), LukasWeb.InfiniteListLive, id: "courses-list", first_page_insert: course)
     {:noreply, socket}
   end
 
   def handle_info({:courses, :course_updated, course}, socket) do
-    send_update(self(), LukasWeb.PagedList, id: "courses-list", replace: course)
+    send_update(self(), LukasWeb.InfiniteListLive, id: "courses-list", replace: course)
     {:noreply, socket}
   end
 

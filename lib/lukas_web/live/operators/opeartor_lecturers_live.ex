@@ -20,7 +20,7 @@ defmodule LukasWeb.Operator.LecturersLive do
     ]} />
 
     <.live_component
-      module={LukasWeb.PagedList}
+      module={LukasWeb.InfiniteListLive}
       id="lecturers-list"
       page={1}
       limit={50}
@@ -70,7 +70,7 @@ defmodule LukasWeb.Operator.LecturersLive do
       |> Accounts.get_lecturer!()
       |> Accounts.disable_user()
 
-    send_update(self(), LukasWeb.PagedList, id: "lecturers-list", replace: next_lect)
+    send_update(self(), LukasWeb.InfiniteListLive, id: "lecturers-list", replace: next_lect)
 
     {:noreply, socket}
   end
@@ -82,18 +82,22 @@ defmodule LukasWeb.Operator.LecturersLive do
       |> Accounts.get_lecturer!()
       |> Accounts.enable_user()
 
-    send_update(self(), LukasWeb.PagedList, id: "lecturers-list", replace: next_lect)
+    send_update(self(), LukasWeb.InfiniteListLive, id: "lecturers-list", replace: next_lect)
 
     {:noreply, socket}
   end
 
   def handle_info({:lecturers, :lecturer_registered, lecturer}, socket) do
-    send_update(self(), LukasWeb.PagedList, id: "lecturers-list", first_page_insert: lecturer)
+    send_update(self(), LukasWeb.InfiniteListLive,
+      id: "lecturers-list",
+      first_page_insert: lecturer
+    )
+
     {:noreply, socket}
   end
 
   def handle_info({:lecturers, :lecturer_updated, lecturer}, socket) do
-    send_update(self(), LukasWeb.PagedList, id: "lecturers-list", replace: lecturer)
+    send_update(self(), LukasWeb.InfiniteListLive, id: "lecturers-list", replace: lecturer)
     {:noreply, socket}
   end
 end
