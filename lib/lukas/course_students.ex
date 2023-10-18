@@ -27,8 +27,8 @@ defmodule Lukas.Learning.Course.Students do
     end
   end
 
-  def list_enrolled(course_id) do
-    Enrollment.query_enrolled_students(course_id) |> Repo.all()
+  def list_enrolled(course_id, opts \\ []) do
+    Enrollment.query_enrolled_students(course_id, opts) |> Repo.all()
   end
 
   def enroll_student(%Course{} = course, student) when must_be_student(student) do

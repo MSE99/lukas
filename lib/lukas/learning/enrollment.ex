@@ -30,13 +30,18 @@ defmodule Lukas.Learning.Enrollment do
     )
   end
 
-  def query_enrolled_students(course_id) do
+  def query_enrolled_students(course_id, opts \\ []) do
+    limit = Keyword.get(opts, :limit, 50)
+    offset = Keyword.get(opts, :offset, 0)
+
     from(
       enr in __MODULE__,
       join: u in Lukas.Accounts.User,
       on: enr.student_id == u.id,
       where: enr.course_id == ^course_id,
-      select: u
+      select: u,
+      limit: ^limit,
+      offset: ^offset
     )
   end
 

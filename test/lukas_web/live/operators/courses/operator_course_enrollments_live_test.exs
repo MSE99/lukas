@@ -27,7 +27,8 @@ defmodule LukasWeb.Operator.CourseEnrollmentsLiveTest do
     end
 
     test "should redirect if the course id is valid but matches no course.", %{conn: conn} do
-      assert {:error, {:redirect, _}} = live(conn, ~p"/controls/courses/10/enrollments")
+      {:ok, lv, _html} = live(conn, ~p"/controls/courses/10/enrollments")
+      assert_redirected(lv, ~p"/controls/courses")
     end
 
     test "should render all enrolled students.", %{conn: conn, course: course} do
@@ -44,7 +45,9 @@ defmodule LukasWeb.Operator.CourseEnrollmentsLiveTest do
       {:ok, _} = Students.enroll_student(course, student2)
       {:ok, _} = Students.enroll_student(course, student3)
 
-      {:ok, _lv, html} = live(conn, ~p"/controls/courses/#{course.id}/enrollments")
+      {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}/enrollments")
+
+      html = render_async(lv)
 
       assert html =~ "#{student1.name}"
       assert html =~ "#{student2.name}"
@@ -67,7 +70,8 @@ defmodule LukasWeb.Operator.CourseEnrollmentsLiveTest do
       {:ok, _} = Students.enroll_student(course, student2)
       {:ok, _} = Students.enroll_student(course, student3)
 
-      html = render(lv)
+      html = render_async(lv)
+
       assert html =~ "#{student1.name}"
       assert html =~ "#{student2.name}"
       assert html =~ "#{student3.name}"
@@ -91,7 +95,7 @@ defmodule LukasWeb.Operator.CourseEnrollmentsLiveTest do
 
       {:ok, _} = Learning.update_course(course, %{"name" => "cool course"})
 
-      html = render(lv)
+      html = render_async(lv)
       assert html =~ "#{student1.name}"
       assert html =~ "#{student2.name}"
       assert html =~ "#{student3.name}"
