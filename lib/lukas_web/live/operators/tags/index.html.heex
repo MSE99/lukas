@@ -19,14 +19,6 @@
     </div>
     <.link patch={~p"/controls/tags/#{tag}/edit"}>Edit</.link>
   </:action>
-  <:action :let={{id, tag}}>
-    <.link
-      phx-click={JS.push("delete", value: %{id: tag.id}) |> hide("##{id}")}
-      data-confirm="Are you sure?"
-    >
-      Delete
-    </.link>
-  </:action>
 </.table>
 
 <.modal

@@ -68,13 +68,6 @@ defmodule LukasWeb.TagLiveTest do
       assert html =~ "Tag updated successfully"
       assert html =~ "some updated name"
     end
-
-    test "deletes tag in listing", %{conn: conn, tag: tag} do
-      {:ok, index_live, _html} = live(conn, ~p"/controls/tags")
-
-      assert index_live |> element("#tags-#{tag.id} a", "Delete") |> render_click()
-      refute has_element?(index_live, "#tags-#{tag.id}")
-    end
   end
 
   describe "Show" do
