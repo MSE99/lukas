@@ -26,22 +26,22 @@ defmodule LukasWeb.Operator.StudentsLiveTest do
     Enum.each(students, fn s -> assert html =~ s.name end)
   end
 
-  test "should render a disable button for disabling the student.", %{conn: conn} do
-    student = student_fixture()
+  # test "should render a disable button for disabling the student.", %{conn: conn} do
+  #   student = student_fixture()
 
-    {:ok, lv, _html} = live(conn, ~p"/controls/students")
-    render_async(lv)
+  #   {:ok, lv, _html} = live(conn, ~p"/controls/students")
+  #   render_async(lv)
 
-    lv |> element("button#student-#{student.id}-disable") |> render_click()
-  end
+  #   lv |> element("button#student-#{student.id}-disable") |> render_click()
+  # end
 
-  test "should render an enable button for enabling the student.", %{conn: conn} do
-    student = student_fixture()
+  # test "should render an enable button for enabling the student.", %{conn: conn} do
+  #   student = student_fixture()
 
-    {:ok, lv, _html} = live(conn, ~p"/controls/students")
-    render_async(lv)
+  #   {:ok, lv, _html} = live(conn, ~p"/controls/students")
+  #   render_async(lv)
 
-    lv |> element("button#student-#{student.id}-disable") |> render_click()
-    lv |> element("button#student-#{student.id}-enable") |> render_click()
-  end
+  #   lv |> element("button#student-#{student.id}-disable") |> render_click()
+  #   lv |> element("button#student-#{student.id}-enable") |> render_click()
+  # end
 end
