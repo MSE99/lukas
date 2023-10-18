@@ -47,12 +47,4 @@ defmodule LukasWeb.TagLive.Index do
   def handle_info({:tag_updated, tag}, socket) do
     {:noreply, stream_insert(socket, :tags, tag)}
   end
-
-  @impl true
-  def handle_event("delete", %{"id" => id}, socket) do
-    tag = Categories.get_tag!(id)
-    {:ok, _} = Categories.delete_tag(tag)
-
-    {:noreply, stream_delete(socket, :tags, tag)}
-  end
 end

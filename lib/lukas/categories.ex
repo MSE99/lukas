@@ -22,10 +22,6 @@ defmodule Lukas.Categories do
     |> maybe_emit_tag_updated()
   end
 
-  def delete_tag(%Tag{} = tag) do
-    Repo.delete(tag)
-  end
-
   def change_tag(%Tag{} = tag, attrs \\ %{}) do
     Tag.changeset(tag, attrs)
   end

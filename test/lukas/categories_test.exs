@@ -44,12 +44,6 @@ defmodule Lukas.CategoriesTest do
       assert tag == Categories.get_tag!(tag.id)
     end
 
-    test "delete_tag/1 deletes the tag" do
-      tag = tag_fixture()
-      assert {:ok, %Tag{}} = Categories.delete_tag(tag)
-      assert_raise Ecto.NoResultsError, fn -> Categories.get_tag!(tag.id) end
-    end
-
     test "change_tag/1 returns a tag changeset" do
       tag = tag_fixture()
       assert %Ecto.Changeset{} = Categories.change_tag(tag)
