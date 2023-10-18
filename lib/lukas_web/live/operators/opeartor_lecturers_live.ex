@@ -26,6 +26,7 @@ defmodule LukasWeb.Operator.LecturersLive do
       limit={50}
       load={fn opts -> Accounts.list_lecturers(opts) end}
       entry_dom_id={fn lect -> "lecturers-#{lect.id}" end}
+      enable_replace={true}
     >
       <:item :let={lect}>
         <CommonComponents.user_record user={lect}>

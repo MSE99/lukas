@@ -13,7 +13,7 @@ defmodule LukasWeb.InfiniteListLive do
   def update(assigns, socket) do
     case assigns do
       %{replace: entry} ->
-        %{ids_list: ids} = socket.assigns
+        %{ids_list: ids, enable_replace: true} = socket.assigns
 
         if IdList.has?(ids, entry.id) do
           {:ok, stream_insert(socket, :items, entry)}
@@ -42,6 +42,7 @@ defmodule LukasWeb.InfiniteListLive do
           |> assign(:inner_block, assigns.inner_block)
           |> assign(:item, assigns.item)
           |> assign(:load, assigns.load)
+          |> assign(:enable_replace, Map.get(assigns, :enable_replace, false))
           |> start_async(:loading, fn ->
             assigns.load.(page: assigns.page, limit: assigns.limit)
           end)
@@ -51,14 +52,13 @@ defmodule LukasWeb.InfiniteListLive do
   end
 
   def handle_async(:loading, {:ok, items}, socket) do
-    ids = Enum.map(items, & &1.id)
-    ids_list = IdList.new(ids, socket.assigns.limit)
+    loaded_socket =
+      socket
+      |> assign_ids_list_if_replace_enabled(items)
+      |> stream(:items, items)
+      |> assign(:loading, AsyncResult.ok(socket.assigns.loading, nil))
 
-    {:noreply,
-     socket
-     |> assign(:ids_list, ids_list)
-     |> stream(:items, items)
-     |> assign(:loading, AsyncResult.ok(socket.assigns.loading, nil))}
+    {:noreply, loaded_socket}
   end
 
   def handle_async(:loading, {:exit, reason}, socket) do
@@ -66,6 +66,18 @@ defmodule LukasWeb.InfiniteListLive do
      socket
      |> assign(:loading, AsyncResult.failed(socket.assigns.loading, reason))}
   end
+
+  defp assign_ids_list_if_replace_enabled(socket, items) when socket.assigns.enable_replace do
+    ids_list =
+      items
+      |> Enum.map(fn item -> item.id end)
+      |> IdList.new(socket.assigns.limit)
+
+    socket
+    |> assign(:ids_list, ids_list)
+  end
+
+  defp assign_ids_list_if_replace_enabled(socket, _), do: socket
 
   def render(assigns) do
     ~H"""
@@ -121,17 +133,10 @@ defmodule LukasWeb.InfiniteListLive do
         |> assign(:end_of_timeline?, at == -1)
 
       [_ | _] ->
-        next_ids_list =
-          IdList.concat(
-            socket.assigns.ids_list,
-            Enum.map(items, & &1.id),
-            limit: limit
-          )
-
         socket
+        |> update_ids_list_if_replace_enabled(items, limit)
         |> assign(:end_of_timeline?, false)
         |> assign(:page, page)
-        |> assign(:ids_list, next_ids_list)
         |> stream(:items, items, limit: limit, at: at)
     end
   end
@@ -151,4 +156,18 @@ defmodule LukasWeb.InfiniteListLive do
     next_page = socket.assigns.page + 1
     {:noreply, paginate(socket, next_page)}
   end
+
+  defp update_ids_list_if_replace_enabled(socket, items, limit)
+       when socket.assigns.enable_replace do
+    next_ids_list =
+      IdList.concat(
+        socket.assigns.ids_list,
+        Enum.map(items, & &1.id),
+        limit: limit
+      )
+
+    assign(socket, :ids_list, next_ids_list)
+  end
+
+  defp update_ids_list_if_replace_enabled(socket, _, _), do: socket
 end

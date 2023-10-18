@@ -67,6 +67,7 @@ defmodule LukasWeb.Operator.AllCoursesLive do
       limit={50}
       load={fn opts -> Learning.list_courses(opts) end}
       entry_dom_id={fn course -> "courses-#{course.id}" end}
+      enable_replace={true}
     >
       <:item :let={course} class="flex items-center text-secondary font-bold">
         <img src={~p"/images/#{course.banner_image}"} width={80} height={80} class="rounded" />
