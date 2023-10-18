@@ -10,45 +10,44 @@ defmodule LukasWeb.InfiniteListLive do
     {:ok, socket}
   end
 
-  def update(assigns, socket) do
-    case assigns do
-      %{replace: entry} ->
-        %{ids_list: ids, enable_replace: true} = socket.assigns
+  def update(%{replace: entry}, socket) when socket.assigns.enable_replace do
+    %{ids_list: ids} = socket.assigns
 
-        if IdList.has?(ids, entry.id) do
-          {:ok, stream_insert(socket, :items, entry)}
-        else
-          {:ok, socket}
-        end
-
-      %{first_page_insert: entry} when entry != nil ->
-        if socket.assigns.page == 1 do
-          %{ids_list: ids, limit: limit} = socket.assigns
-          next_ids = IdList.concat(ids, [entry.id], limit: limit)
-          {:ok, socket |> stream_insert(:items, entry) |> assign(:ids_list, next_ids)}
-        else
-          {:ok, socket}
-        end
-
-      _ ->
-        next_socket =
-          socket
-          |> stream_configure(:items, dom_id: assigns.entry_dom_id)
-          |> assign(:id, assigns.id)
-          |> assign(:page, assigns.page)
-          |> assign(:limit, assigns.limit)
-          |> assign(:end_of_timeline?, false)
-          |> assign(:loading, AsyncResult.loading())
-          |> assign(:inner_block, assigns.inner_block)
-          |> assign(:item, assigns.item)
-          |> assign(:load, assigns.load)
-          |> assign(:enable_replace, Map.get(assigns, :enable_replace, false))
-          |> start_async(:loading, fn ->
-            assigns.load.(page: assigns.page, limit: assigns.limit)
-          end)
-
-        {:ok, next_socket}
+    if IdList.has?(ids, entry.id) do
+      {:ok, stream_insert(socket, :items, entry)}
+    else
+      {:ok, socket}
     end
+  end
+
+  def update(%{first_page_insert: entry}, socket) when entry != nil do
+    if socket.assigns.page == 1 do
+      %{ids_list: ids, limit: limit} = socket.assigns
+      next_ids = IdList.concat(ids, [entry.id], limit: limit)
+      {:ok, socket |> stream_insert(:items, entry) |> assign(:ids_list, next_ids)}
+    else
+      {:ok, socket}
+    end
+  end
+
+  def update(assigns, socket) do
+    next_socket =
+      socket
+      |> stream_configure(:items, dom_id: assigns.entry_dom_id)
+      |> assign(:id, assigns.id)
+      |> assign(:page, assigns.page)
+      |> assign(:limit, assigns.limit)
+      |> assign(:end_of_timeline?, false)
+      |> assign(:loading, AsyncResult.loading())
+      |> assign(:inner_block, assigns.inner_block)
+      |> assign(:item, assigns.item)
+      |> assign(:load, assigns.load)
+      |> assign(:enable_replace, Map.get(assigns, :enable_replace, false))
+      |> start_async(:loading, fn ->
+        assigns.load.(page: assigns.page, limit: assigns.limit)
+      end)
+
+    {:ok, next_socket}
   end
 
   def handle_async(:loading, {:ok, items}, socket) do
