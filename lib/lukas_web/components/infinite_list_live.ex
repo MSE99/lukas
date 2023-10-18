@@ -10,6 +10,10 @@ defmodule LukasWeb.InfiniteListLive do
     {:ok, socket}
   end
 
+  def update(%{delete: entry}, socket) do
+    {:ok, stream_delete(socket, :items, entry)}
+  end
+
   def update(%{replace: entry}, socket) when socket.assigns.enable_replace do
     %{ids_list: ids} = socket.assigns
 
@@ -22,9 +26,10 @@ defmodule LukasWeb.InfiniteListLive do
 
   def update(%{first_page_insert: entry}, socket) when entry != nil do
     if socket.assigns.page == 1 do
-      %{ids_list: ids, limit: limit} = socket.assigns
-      next_ids = IdList.concat(ids, [entry.id], limit: limit)
-      {:ok, socket |> stream_insert(:items, entry) |> assign(:ids_list, next_ids)}
+      {:ok,
+       socket
+       |> stream_insert(:items, entry, at: 0)
+       |> sync_ids_list_for_first_page_insert(entry)}
     else
       {:ok, socket}
     end
@@ -49,6 +54,15 @@ defmodule LukasWeb.InfiniteListLive do
 
     {:ok, next_socket}
   end
+
+  defp sync_ids_list_for_first_page_insert(socket, entry)
+       when socket.assigns.enable_replace do
+    %{ids_list: ids} = socket.assigns
+    next_ids = IdList.unshift(ids, [entry.id])
+    assign(socket, ids_list: next_ids)
+  end
+
+  defp sync_ids_list_for_first_page_insert(socket, _), do: socket
 
   def handle_async(:loading, {:ok, items}, socket) do
     loaded_socket =

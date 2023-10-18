@@ -12,14 +12,14 @@ defmodule Lukas.Learning.Course.Students do
     Course.query_student_courses(student.id) |> Repo.all()
   end
 
-  def list_open_courses_for_student(%Accounts.User{} = student) do
+  def list_open_courses_for_student(%Accounts.User{} = student, opts \\ []) do
     Ecto.Multi.new()
     |> Ecto.Multi.all(
       :enrolled_ids,
       Course.query_student_courses_for_course_ids(student.id)
     )
     |> Ecto.Multi.run(:courses, fn _repo, %{enrolled_ids: enrolled_ids} ->
-      {:ok, Course.query_course_not_in(enrolled_ids) |> Repo.all()}
+      {:ok, Course.query_course_not_in(enrolled_ids, opts) |> Repo.all()}
     end)
     |> Repo.transaction()
     |> case do

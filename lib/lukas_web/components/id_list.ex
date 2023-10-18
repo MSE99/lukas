@@ -6,6 +6,11 @@ defmodule Lukas.IdList do
     |> adjust()
   end
 
+  def unshift(%__MODULE__{} = list, next_ids) do
+    %__MODULE__{list | ids: next_ids ++ list.ids}
+    |> adjust()
+  end
+
   def concat(%__MODULE__{} = list, next_ids, opts \\ []) do
     next_limit = Keyword.get(opts, :limit, list.limit)
 

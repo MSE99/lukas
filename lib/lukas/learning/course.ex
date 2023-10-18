@@ -66,8 +66,11 @@ defmodule Lukas.Learning.Course do
     )
   end
 
-  def query_course_not_in(not_wanted) do
-    from(c in __MODULE__, where: c.id not in ^not_wanted)
+  def query_course_not_in(not_wanted, opts \\ []) do
+    limit = Keyword.get(opts, :limit, 50)
+    offset = Keyword.get(opts, :offset, 0)
+
+    from(c in __MODULE__, where: c.id not in ^not_wanted, limit: ^limit, offset: ^offset)
   end
 
   def query_all_with_tags(opts) do
