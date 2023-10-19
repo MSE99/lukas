@@ -4,6 +4,8 @@ defmodule LukasWeb.TagLive.Index do
   alias Lukas.Categories
   alias Lukas.Categories.Tag
 
+  alias LukasWeb.CommonComponents
+
   @impl true
   def mount(_params, _session, socket) do
     Categories.watch_tags()
@@ -16,14 +18,16 @@ defmodule LukasWeb.TagLive.Index do
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
+    tag = Categories.get_tag!(id)
+
     socket
-    |> assign(:page_title, "Edit Tag")
-    |> assign(:tag, Categories.get_tag!(id))
+    |> assign(:page_title, "Edit #{tag.name} tag")
+    |> assign(:tag, tag)
   end
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "New Tag")
+    |> assign(:page_title, "Create New Tag")
     |> assign(:tag, %Tag{})
   end
 

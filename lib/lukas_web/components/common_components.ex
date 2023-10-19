@@ -193,6 +193,14 @@ defmodule LukasWeb.CommonComponents do
     """
   end
 
+  def tag(assigns) do
+    ~H"""
+    <div class="bg-primary hover:bg-green-600 transition-all text-white font-bold px-6 py-2 rounded-full">
+      <%= @tag.name %>
+    </div>
+    """
+  end
+
   attr :on_click, :string, required: true
   attr :price, :float, required: true
   attr :rest, :global

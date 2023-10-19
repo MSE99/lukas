@@ -1,25 +1,26 @@
-<.header>
-  Listing Tags
-  <:actions>
-    <.link patch={~p"/controls/tags/new"}>
-      <.button>New Tag</.button>
-    </.link>
-  </:actions>
-</.header>
 
-<.table
-  id="tags"
-  rows={@streams.tags}
-  row_click={fn {_id, tag} -> JS.navigate(~p"/controls/tags/#{tag}") end}
->
-  <:col :let={{_id, tag}} label="Name"><%= tag.name %></:col>
-  <:action :let={{_id, tag}}>
-    <div class="sr-only">
-      <.link navigate={~p"/controls/tags/#{tag}"}>Show</.link>
-    </div>
-    <.link patch={~p"/controls/tags/#{tag}/edit"}>Edit</.link>
-  </:action>
-</.table>
+<CommonComponents.navigate_breadcrumbs links={[
+  {~p"/controls", "home"},
+  {~p"/controls/tags", "tags"},
+]} />
+
+<div class="flex justify-end">
+  <.link patch={~p"/controls/tags/new"}>
+    <.button class="flex items-center gap-3">
+      Create tag
+      <.icon name="hero-plus-circle-solid" />
+    </.button>
+  </.link>
+</div>
+
+
+<ul id="tags" phx-update="stream" class="flex gap-2 flex-wrap mt-10">
+  <li :for={{id, tag} <- @streams.tags} id={id}>
+    <.link patch={~p"/controls/tags/#{tag.id}/edit"}>
+      <CommonComponents.tag tag={tag} />
+    </.link>
+  </li>
+</ul>
 
 <.modal
   :if={@live_action in [:new, :edit]}

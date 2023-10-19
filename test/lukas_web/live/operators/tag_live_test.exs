@@ -24,12 +24,7 @@ defmodule LukasWeb.TagLiveTest do
     end
 
     test "saves new tag", %{conn: conn} do
-      {:ok, index_live, _html} = live(conn, ~p"/controls/tags")
-
-      assert index_live |> element("a", "New Tag") |> render_click() =~
-               "New Tag"
-
-      assert_patch(index_live, ~p"/controls/tags/new")
+      {:ok, index_live, _html} = live(conn, ~p"/controls/tags/new")
 
       assert index_live
              |> form("#tag-form", tag: @invalid_attrs)
@@ -47,12 +42,7 @@ defmodule LukasWeb.TagLiveTest do
     end
 
     test "updates tag in listing", %{conn: conn, tag: tag} do
-      {:ok, index_live, _html} = live(conn, ~p"/controls/tags")
-
-      assert index_live |> element("#tags-#{tag.id} a", "Edit") |> render_click() =~
-               "Edit Tag"
-
-      assert_patch(index_live, ~p"/controls/tags/#{tag}/edit")
+      {:ok, index_live, _html} = live(conn, ~p"/controls/tags/#{tag.id}/edit")
 
       assert index_live
              |> form("#tag-form", tag: @invalid_attrs)

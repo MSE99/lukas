@@ -45,6 +45,12 @@ defmodule LukasWeb.Operators.HomeLive do
       </li>
 
       <li>
+        <.link navigate={~p"/controls/tags"} class="bg-white shadow p-5 block max-w-xs">
+          <.icon name="hero-envelope-solid mr-5" /> Tags
+        </.link>
+      </li>
+
+      <li>
         <.link href={~p"/users/settings"} class="bg-white shadow p-5 block max-w-xs">
           <.icon name="hero-cog-6-tooth-solid mr-5" /> Settings
         </.link>
