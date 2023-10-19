@@ -46,8 +46,12 @@ defmodule LukasWeb.Operator.CourseEnrollmentsLiveTest do
       {:ok, _} = Students.enroll_student(course, student3)
 
       {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}/enrollments")
+      render_async(lv)
 
-      html = render_async(lv)
+      html =
+        lv
+        |> element("#enrollments")
+        |> render_async()
 
       assert html =~ "#{student1.name}"
       assert html =~ "#{student2.name}"
@@ -70,7 +74,12 @@ defmodule LukasWeb.Operator.CourseEnrollmentsLiveTest do
       {:ok, _} = Students.enroll_student(course, student2)
       {:ok, _} = Students.enroll_student(course, student3)
 
-      html = render_async(lv)
+      render_async(lv)
+
+      html =
+        lv
+        |> element("#enrollments")
+        |> render_async()
 
       assert html =~ "#{student1.name}"
       assert html =~ "#{student2.name}"
@@ -95,7 +104,13 @@ defmodule LukasWeb.Operator.CourseEnrollmentsLiveTest do
 
       {:ok, _} = Learning.update_course(course, %{"name" => "cool course"})
 
-      html = render_async(lv)
+      render_async(lv)
+
+      html =
+        lv
+        |> element("#enrollments")
+        |> render_async()
+
       assert html =~ "#{student1.name}"
       assert html =~ "#{student2.name}"
       assert html =~ "#{student3.name}"
