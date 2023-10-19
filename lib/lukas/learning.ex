@@ -8,23 +8,20 @@ defmodule Lukas.Learning do
   alias Lukas.Repo
   alias Lukas.Accounts
   alias Lukas.Categories.Tag
-  alias Lukas.Learning.{Enrollment, Course, Lesson, Tagging, Teaching}
+  alias Lukas.Learning.{Course, Lesson, Tagging, Teaching, Query}
 
-  def list_courses(opts \\ []), do: Course.query_all_with_tags(opts) |> Repo.all()
+  alias Ecto.Multi
+
+  def list_courses(opts \\ []) do
+    opts
+    |> Query.courses_with_tags()
+    |> Repo.all()
+  end
 
   def get_course_and_tags(course_id) when is_integer(course_id) do
-    Ecto.Multi.new()
-    |> Ecto.Multi.one(:course, from(c in Course, where: c.id == ^course_id))
-    |> Ecto.Multi.all(
-      :tags,
-      from(
-        tagging in Tagging,
-        join: tag in Tag,
-        on: tag.id == tagging.tag_id,
-        where: tagging.course_id == ^course_id,
-        select: tag
-      )
-    )
+    Multi.new()
+    |> Multi.one(:course, Query.course_by_id(course_id))
+    |> Multi.all(:tags, Query.course_tags(course_id))
     |> Repo.transaction()
     |> case do
       {:ok, %{course: course, tags: tags}} ->
@@ -34,54 +31,27 @@ defmodule Lukas.Learning do
 
   def get_course_and_tags_for_lecturer(course_id, lecturer_id)
       when is_integer(course_id) and is_integer(lecturer_id) do
-    Ecto.Multi.new()
-    |> Ecto.Multi.one(:course, from(c in Course, where: c.id == ^course_id))
-    |> Ecto.Multi.one(
-      :teaching,
-      from(t in Teaching, where: t.lecturer_id == ^lecturer_id and t.course_id == ^course_id)
-    )
-    |> Ecto.Multi.all(
-      :tags,
-      from(
-        tagging in Tagging,
-        join: tag in Tag,
-        on: tag.id == tagging.tag_id,
-        where: tagging.course_id == ^course_id,
-        select: tag
-      )
-    )
+    Multi.new()
+    |> Multi.one(:course, Query.course_for_lecturer(course_id, lecturer_id))
+    |> Multi.all(:tags, Query.course_tags(course_id))
     |> Repo.transaction()
     |> case do
-      {:ok, %{course: course, tags: tags, teaching: t}} when t != nil ->
+      {:ok, %{course: course, tags: tags}} ->
         {course, tags}
     end
   end
 
   def untag_course(course_id, tag_id) when is_integer(course_id) and is_integer(tag_id) do
-    from(
-      tagging in Tagging,
-      where: tagging.course_id == ^course_id and tagging.tag_id == ^tag_id
-    )
-    |> Repo.delete_all()
-
+    Query.course_tagging(course_id, tag_id) |> Repo.delete_all()
     emit_course_untagged(course_id, tag_id)
   end
 
   def get_course(id), do: Repo.get(Course, id)
 
   def get_course_with_students(id) when is_integer(id) do
-    Ecto.Multi.new()
-    |> Ecto.Multi.one(:course, from(c in Course, where: c.id == ^id))
-    |> Ecto.Multi.all(
-      :students,
-      from(
-        enr in Enrollment,
-        join: u in Accounts.User,
-        on: u.id == enr.student_id,
-        where: enr.course_id == ^id,
-        select: u
-      )
-    )
+    Multi.new()
+    |> Multi.one(:course, Query.course_by_id(id))
+    |> Multi.all(:students, Query.enrolled_students(id))
     |> Repo.transaction()
     |> case do
       {:ok, %{course: course, students: students}} -> {course, students}
@@ -89,35 +59,11 @@ defmodule Lukas.Learning do
   end
 
   def get_course_for_student(id, %Accounts.User{} = student) when is_integer(id) do
-    Ecto.Multi.new()
-    |> Ecto.Multi.one(:course, from(c in Course, where: c.id == ^id))
-    |> Ecto.Multi.all(
-      :lecturers,
-      from(
-        t in Teaching,
-        join: u in Accounts.User,
-        on: u.id == t.lecturer_id and u.kind == :lecturer,
-        where: t.course_id == ^id,
-        select: u
-      )
-    )
-    |> Ecto.Multi.all(
-      :tags,
-      from(
-        t in Tagging,
-        join: tag in Tag,
-        on: t.tag_id == tag.id,
-        where: t.course_id == ^id,
-        select: tag
-      )
-    )
-    |> Ecto.Multi.exists?(
-      :is_enrolled,
-      from(
-        e in Enrollment,
-        where: e.student_id == ^student.id and e.course_id == ^id
-      )
-    )
+    Multi.new()
+    |> Multi.one(:course, Query.course_by_id(id))
+    |> Multi.all(:lecturers, Query.course_lecturers(id))
+    |> Multi.all(:tags, Query.course_tags(id))
+    |> Multi.exists?(:is_enrolled, Query.student_enrollment(id, student.id))
     |> Repo.transaction()
     |> case do
       {:ok,
@@ -140,7 +86,7 @@ defmodule Lukas.Learning do
 
     tag_ids = Keyword.get(opts, :tag_ids, [])
 
-    Ecto.Multi.new()
+    Multi.new()
     |> create_course_multi(attrs, tag_ids, get_banner_image_path)
     |> Repo.transaction()
     |> case do
@@ -160,9 +106,9 @@ defmodule Lukas.Learning do
     get_banner_image_path =
       Keyword.get(opts, :get_banner_image_path, &Course.default_banner_image/0)
 
-    Ecto.Multi.new()
+    Multi.new()
     |> create_course_multi(attrs, tag_ids, get_banner_image_path)
-    |> Ecto.Multi.run(:teachings, fn _, %{course: course} ->
+    |> Multi.run(:teachings, fn _, %{course: course} ->
       Teaching.changeset(%Teaching{}, %{course_id: course.id, lecturer_id: lecturer.id})
       |> Repo.insert!()
 
@@ -188,11 +134,11 @@ defmodule Lukas.Learning do
         get_banner_image_path
       ) do
     m
-    |> Ecto.Multi.insert(
+    |> Multi.insert(
       :course,
       Course.changeset(%Course{banner_image: get_banner_image_path.()}, attrs)
     )
-    |> Ecto.Multi.run(
+    |> Multi.run(
       :tags,
       fn _, %{course: course} ->
         course_id = course.id
@@ -220,10 +166,10 @@ defmodule Lukas.Learning do
 
     after_effect = Keyword.get(opts, :after_effect, fn _ -> nil end)
 
-    Ecto.Multi.new()
-    |> Ecto.Multi.update(:course, Course.changeset(course, attrs))
-    |> Ecto.Multi.delete_all(:old_tags, Tagging.query_by_course_id(course.id))
-    |> Ecto.Multi.run(:tags, fn _, %{course: course} ->
+    Multi.new()
+    |> Multi.update(:course, Course.changeset(course, attrs))
+    |> Multi.delete_all(:old_tags, Query.course_taggings(course.id))
+    |> Multi.run(:tags, fn _, %{course: course} ->
       course_id = course.id
 
       taggings =
@@ -232,7 +178,7 @@ defmodule Lukas.Learning do
 
       {:ok, taggings}
     end)
-    |> Ecto.Multi.run(:course_with_image, fn _, %{course: course} ->
+    |> Multi.run(:course_with_image, fn _, %{course: course} ->
       Course.changeset(course, %{banner_image: get_banner_image_path.()}) |> Repo.update()
     end)
     |> Repo.transaction()

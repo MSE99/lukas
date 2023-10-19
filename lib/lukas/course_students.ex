@@ -3,23 +3,21 @@ defmodule Lukas.Learning.Course.Students do
 
   alias Lukas.Money
   alias Lukas.Accounts
-  alias Lukas.Learning.{Enrollment, Course, Lesson, Progress}
+  alias Lukas.Learning.{Enrollment, Course, Lesson, Progress, Query}
   alias Lukas.Repo
 
   alias Ecto.Multi
 
-  def list_student_courses(%Accounts.User{} = student) do
-    Course.query_student_courses(student.id) |> Repo.all()
+  def list_student_courses(%Accounts.User{} = student) when must_be_student(student) do
+    Query.student_courses(student.id)
+    |> Repo.all()
   end
 
   def list_open_courses_for_student(%Accounts.User{} = student, opts \\ []) do
-    Ecto.Multi.new()
-    |> Ecto.Multi.all(
-      :enrolled_ids,
-      Course.query_student_courses_for_course_ids(student.id)
-    )
-    |> Ecto.Multi.run(:courses, fn _repo, %{enrolled_ids: enrolled_ids} ->
-      {:ok, Course.query_course_not_in(enrolled_ids, opts) |> Repo.all()}
+    Multi.new()
+    |> Multi.all(:enrolled_ids, Query.student_course_ids(student.id))
+    |> Multi.run(:courses, fn _repo, %{enrolled_ids: enrolled_ids} ->
+      {:ok, Query.course_whose_id_not_in(enrolled_ids, opts) |> Repo.all()}
     end)
     |> Repo.transaction()
     |> case do
@@ -28,7 +26,7 @@ defmodule Lukas.Learning.Course.Students do
   end
 
   def list_enrolled(course_id, opts \\ []) do
-    Enrollment.query_enrolled_students(course_id, opts) |> Repo.all()
+    Query.enrolled_students(course_id, opts) |> Repo.all()
   end
 
   def enroll_student(%Course{} = course, student) when must_be_student(student) do
@@ -125,28 +123,20 @@ defmodule Lukas.Learning.Course.Students do
   end
 
   defp multi_course_progress_for_student(m, student, course_id) do
-    Multi.all(
-      m,
-      :progresses,
-      Progress.query_by_student_and_course_ids(student.id, course_id)
-    )
+    Multi.all(m, :progresses, Query.progress_by_course_and_student_id(course_id, student.id))
   end
 
   defp multi_enrollment_for_student_in_course(m, student, course_id) do
-    Multi.one(
-      m,
-      :enrollment,
-      Enrollment.query_by_student_and_course_ids(student.id, course_id)
-    )
+    Multi.one(m, :enrollment, Query.student_enrollment(course_id, student.id))
   end
 
   defp multi_course_by_id(m, course_id) do
-    Multi.one(m, :course, Course.query_by_id(course_id))
+    Multi.one(m, :course, Query.course_by_id(course_id))
   end
 
   defp load_lessons_with_patched_progress_and_topics(course_id, progs) do
     course_id
-    |> Lesson.query_by_course_id()
+    |> Query.course_lessons()
     |> Repo.all()
     |> Enum.map(fn l -> patch_progress_into_lesson(l, progs) end)
   end
@@ -166,7 +156,7 @@ defmodule Lukas.Learning.Course.Students do
 
   defp load_topics_without_content_with_progress_for(%Lesson{} = l, progs) do
     l.id
-    |> Lesson.Topic.query_by_lesson_id_with_no_content()
+    |> Query.topics_for_lesson_with_no_content()
     |> Repo.all()
     |> Enum.map(fn t ->
       progress_for_topic =

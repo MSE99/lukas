@@ -21,18 +21,4 @@ defmodule Lukas.Learning.Tagging do
     |> validate_required([:tag_id, :course_id])
     |> unique_constraint([:tag_id, :course_id])
   end
-
-  def query_by_course_id(course_id) do
-    from(t in __MODULE__, where: t.course_id == ^course_id)
-  end
-
-  def query_tag_by_course_id(course_id) do
-    from(
-      tagging in __MODULE__,
-      join: tag in Lukas.Categories.Tag,
-      on: tag.id == tagging.tag_id,
-      where: tagging.course_id == ^course_id,
-      select: tag
-    )
-  end
 end

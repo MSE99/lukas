@@ -1,5 +1,5 @@
 defmodule Lukas.Learning.Course.Content do
-  alias Lukas.Learning.{Course, Lesson, Enrollment, Progress}
+  alias Lukas.Learning.{Course, Lesson, Query}
   alias Lukas.Accounts
   alias Lukas.Repo
 
@@ -12,24 +12,20 @@ defmodule Lukas.Learning.Course.Content do
   end
 
   def get_lesson(course_id, lesson_id) when is_integer(course_id) and is_integer(lesson_id) do
-    Lesson.query_by_id_and_course_id(lesson_id, course_id) |> Repo.one()
+    Query.lesson_by_course_id_and_id(course_id, lesson_id)
+    |> Repo.one()
   end
 
   def get_lesson!(course_id, lesson_id) when is_integer(course_id) and is_integer(lesson_id) do
-    Lesson.query_by_id_and_course_id(lesson_id, course_id) |> Repo.one!()
+    Query.lesson_by_course_id_and_id(course_id, lesson_id)
+    |> Repo.one!()
   end
 
   def get_lesson_for_student!(%Accounts.User{} = student, course_id, lesson_id) do
     Multi.new()
-    |> Multi.one(:lesson, Lesson.query_by_id_and_course_id(lesson_id, course_id))
-    |> Multi.one(
-      :prog,
-      Progress.query_lesson_progress_for_student(student.id, course_id, lesson_id)
-    )
-    |> Multi.one(
-      :enrollment,
-      Enrollment.query_enrollment_for_student(student.id, course_id)
-    )
+    |> Multi.one(:lesson, Query.lesson_by_course_id_and_id(course_id, lesson_id))
+    |> Multi.one(:prog, Query.lesson_progress(course_id, lesson_id, student.id))
+    |> Multi.one(:enrollment, Query.student_enrollment(course_id, student.id))
     |> Repo.transaction()
     |> case do
       {:ok, %{lesson: lesson, prog: prog, enrollment: enr}} when enr != nil ->
@@ -41,18 +37,9 @@ defmodule Lukas.Learning.Course.Content do
 
   def get_topic_for_student!(%Accounts.User{} = student, course_id, lesson_id, topic_id) do
     Multi.new()
-    |> Multi.one(
-      :topic,
-      Lesson.Topic.query_by_id(course_id, lesson_id, topic_id)
-    )
-    |> Multi.one(
-      :prog,
-      Progress.query_topic_progress_for_student(student.id, course_id, lesson_id, topic_id)
-    )
-    |> Multi.one(
-      :enrollment,
-      Enrollment.query_by_student_and_course_ids(student.id, course_id)
-    )
+    |> Multi.one(:topic, Query.topic_by_ids(course_id, lesson_id, topic_id))
+    |> Multi.one(:prog, Query.topic_progress(course_id, lesson_id, topic_id, student.id))
+    |> Multi.one(:enrollment, Query.student_enrollment(course_id, student.id))
     |> Repo.transaction()
     |> case do
       {:ok, %{topic: topic, prog: prog, enrollment: enr}} when enr != nil ->
@@ -64,14 +51,8 @@ defmodule Lukas.Learning.Course.Content do
 
   def get_lesson_and_topic_names(course_id, lesson_id) do
     Ecto.Multi.new()
-    |> Ecto.Multi.one(
-      :lesson,
-      Lesson.query_by_id_and_course_id(lesson_id, course_id)
-    )
-    |> Ecto.Multi.all(
-      :topics,
-      Lesson.Topic.query_by_lesson_id_with_no_content(lesson_id)
-    )
+    |> Ecto.Multi.one(:lesson, Query.lesson_by_course_id_and_id(course_id, lesson_id))
+    |> Ecto.Multi.all(:topics, Query.topics_for_lesson_with_no_content(course_id, lesson_id))
     |> Repo.transaction()
     |> case do
       {:ok, %{lesson: lesson, topics: topics}} -> {lesson, topics}
@@ -129,11 +110,13 @@ defmodule Lukas.Learning.Course.Content do
 
   def get_topic!(course_id, lesson_id, topic_id)
       when is_integer(lesson_id) and is_integer(topic_id) do
-    Lesson.Topic.query_by_id(course_id, lesson_id, topic_id) |> Repo.one!()
+    Query.topic_by_ids(course_id, lesson_id, topic_id)
+    |> Repo.one!()
   end
 
   def get_topic(lesson_id, topic_id) when is_integer(topic_id) do
-    Lesson.Topic.query_by_id(lesson_id, topic_id) |> Repo.one()
+    Query.topic_by_lesson_id_and_id(lesson_id, topic_id)
+    |> Repo.one()
   end
 
   def update_topic_changeset(attrs \\ %{}) do

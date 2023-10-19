@@ -2,7 +2,6 @@ defmodule Lukas.Learning.Progress do
   use Ecto.Schema
 
   import Ecto.Changeset
-  import Ecto.Query
 
   schema "progresses" do
     belongs_to(:lesson, Lukas.Learning.Lesson)
@@ -30,30 +29,5 @@ defmodule Lukas.Learning.Progress do
       course_id: course_id,
       topic_id: topic_id
     }
-  end
-
-  def query_by_student_and_course_ids(student_id, course_id) do
-    from(
-      prog in __MODULE__,
-      where: prog.student_id == ^student_id and prog.course_id == ^course_id
-    )
-  end
-
-  def query_lesson_progress_for_student(student_id, course_id, lesson_id) do
-    from(
-      prog in __MODULE__,
-      where:
-        prog.lesson_id == ^lesson_id and prog.student_id == ^student_id and
-          prog.course_id == ^course_id and is_nil(prog.topic_id)
-    )
-  end
-
-  def query_topic_progress_for_student(student_id, course_id, lesson_id, topic_id) do
-    from(
-      prog in __MODULE__,
-      where:
-        prog.lesson_id == ^lesson_id and prog.student_id == ^student_id and
-          prog.course_id == ^course_id and prog.topic_id == ^topic_id
-    )
   end
 end

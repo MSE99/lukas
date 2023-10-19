@@ -1,11 +1,11 @@
 defmodule Lukas.Learning.Course.Staff do
-  alias Lukas.Learning.{Course, Teaching, Tagging}
+  import Lukas.Accounts.User, only: [must_be_lecturer: 1]
+
+  alias Lukas.Learning.{Course, Teaching, Query}
   alias Lukas.Accounts
   alias Lukas.Repo
 
   alias Ecto.Multi
-
-  import Lukas.Accounts.User, only: [must_be_lecturer: 1]
 
   def emit_course_created_by_lecturer(course, lecturer) do
     emit(staff_status_topic(lecturer.id), {:staff_status, :added_to_course, course})
@@ -13,7 +13,7 @@ defmodule Lukas.Learning.Course.Staff do
 
   def list_lecturer_courses(lecturer_id) when is_integer(lecturer_id) do
     lecturer_id
-    |> Course.query_by_lecturer_id()
+    |> Query.lecturer_courses()
     |> Repo.all()
   end
 
@@ -26,10 +26,10 @@ defmodule Lukas.Learning.Course.Staff do
   def staff_status_topic(staff_id), do: "staff-status/#{staff_id}"
 
   def get_course_with_lecturers(id) when is_integer(id) do
-    Ecto.Multi.new()
-    |> Ecto.Multi.one(:course, Course.query_by_id(id))
-    |> Ecto.Multi.all(:lecturers, Teaching.query_course_lecturers(id))
-    |> Ecto.Multi.all(:tags, Tagging.query_tag_by_course_id(id))
+    Multi.new()
+    |> Multi.one(:course, Query.course_by_id(id))
+    |> Multi.all(:lecturers, Query.course_lecturers(id))
+    |> Multi.all(:tags, Query.course_tags(id))
     |> Repo.transaction()
     |> case do
       {:ok, %{course: course, lecturers: lecturers, tags: tags}} ->
@@ -52,11 +52,11 @@ defmodule Lukas.Learning.Course.Staff do
   end
 
   def list_course_lecturers_ids(%Course{} = course) do
-    Teaching.query_course_lecturers_ids(course.id) |> Repo.all()
+    Query.course_lecturers_ids(course.id) |> Repo.all()
   end
 
   def list_course_lecturers(%Course{} = course) do
-    Teaching.query_course_lecturers(course.id) |> Repo.all()
+    Query.course_lecturers(course.id) |> Repo.all()
   end
 
   def add_lecturer_to_course(%Course{} = course, lecturer) when must_be_lecturer(lecturer) do
@@ -86,7 +86,7 @@ defmodule Lukas.Learning.Course.Staff do
     course_id = course.id
 
     Multi.new()
-    |> Multi.one(:teaching, Teaching.query_by_lecturer_and_course_id(course_id, lecturer_id))
+    |> Multi.one(:teaching, Query.teaching_by_lecturer_and_course_ids(course_id, lecturer_id))
     |> Multi.run(:deletion, fn _, %{teaching: t} -> {:ok, Repo.delete(t)} end)
     |> Repo.transaction()
     |> case do
