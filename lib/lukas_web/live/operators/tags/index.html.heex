@@ -1,18 +1,15 @@
-
 <CommonComponents.navigate_breadcrumbs links={[
   {~p"/controls", "home"},
-  {~p"/controls/tags", "tags"},
+  {~p"/controls/tags", "tags"}
 ]} />
 
 <div class="flex justify-end">
   <.link patch={~p"/controls/tags/new"}>
     <.button class="flex items-center gap-3">
-      Create tag
-      <.icon name="hero-plus-circle-solid" />
+      Create tag <.icon name="hero-plus-circle-solid" />
     </.button>
   </.link>
 </div>
-
 
 <ul id="tags" phx-update="stream" class="flex gap-2 flex-wrap mt-10">
   <li :for={{id, tag} <- @streams.tags} id={id}>
