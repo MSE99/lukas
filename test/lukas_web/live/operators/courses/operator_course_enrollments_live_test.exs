@@ -28,7 +28,6 @@ defmodule LukasWeb.Operator.CourseEnrollmentsLiveTest do
 
     test "should redirect if the course id is valid but matches no course.", %{conn: conn} do
       {:ok, lv, _html} = live(conn, ~p"/controls/courses/10/enrollments")
-      render_async(lv)
       assert_redirected(lv, ~p"/controls/courses")
     end
 
