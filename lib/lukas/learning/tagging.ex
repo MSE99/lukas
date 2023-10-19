@@ -2,7 +2,6 @@ defmodule Lukas.Learning.Tagging do
   use Ecto.Schema
 
   import Ecto.Changeset
-  import Ecto.Query
 
   schema "taggings" do
     belongs_to(:tag, Lukas.Categories.Tag)
