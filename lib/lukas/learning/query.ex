@@ -10,6 +10,7 @@ defmodule Lukas.Learning.Query do
     limit = Keyword.get(opts, :limit, 50)
     offset = Keyword.get(opts, :offset, 0)
     order_by = Keyword.get(opts, :order_by, desc: :inserted_at)
+    name = Keyword.get(opts, :name, "")
 
     from(
       c in Course,
@@ -18,6 +19,16 @@ defmodule Lukas.Learning.Query do
       preload: [:tags],
       order_by: ^order_by
     )
+    |> maybe_add_name_filter(name)
+  end
+
+  defp maybe_add_name_filter(q, ""), do: q
+
+  defp maybe_add_name_filter(q, course_name) do
+    like_clause = "%" <> course_name <> "%"
+
+    q
+    |> where([c], like(c.name, ^like_clause))
   end
 
   def course_by_id(course_id) do
