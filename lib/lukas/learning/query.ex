@@ -12,6 +12,7 @@ defmodule Lukas.Learning.Query do
     order_by = Keyword.get(opts, :order_by, desc: :inserted_at)
     name = Keyword.get(opts, :name, "")
     tag_ids = Keyword.get(opts, :tags, [])
+    excluded = Keyword.get(opts, :excluded, [])
 
     like_clause = "%" <> name <> "%"
 
@@ -23,7 +24,8 @@ defmodule Lukas.Learning.Query do
             limit: ^limit,
             offset: ^offset,
             preload: [:tags],
-            order_by: ^order_by
+            order_by: ^order_by,
+            where: c.id not in ^excluded
           )
 
         if name == "" do
@@ -39,7 +41,7 @@ defmodule Lukas.Learning.Query do
             join: c in Course,
             on: c.id == t.course_id,
             group_by: t.course_id,
-            where: t.tag_id in ^tag_ids,
+            where: t.tag_id in ^tag_ids and c.id not in ^excluded,
             limit: ^limit,
             offset: ^offset,
             order_by: ^order_by,

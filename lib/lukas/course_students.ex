@@ -17,7 +17,8 @@ defmodule Lukas.Learning.Course.Students do
     Multi.new()
     |> Multi.all(:enrolled_ids, Query.student_course_ids(student.id))
     |> Multi.run(:courses, fn _repo, %{enrolled_ids: enrolled_ids} ->
-      {:ok, Query.course_whose_id_not_in(enrolled_ids, opts) |> Repo.all()}
+      {:ok,
+       Query.courses_with_taggings(opts |> Keyword.put(:excluded, enrolled_ids)) |> Repo.all()}
     end)
     |> Repo.transaction()
     |> case do
