@@ -38,6 +38,7 @@ defmodule LukasWeb.CoreComponents do
   """
   attr :id, :string, required: true
   attr :show, :boolean, default: false
+  attr :dark, :boolean, default: false
   attr :on_cancel, JS, default: %JS{}
   slot :inner_block, required: true
 
@@ -50,7 +51,7 @@ defmodule LukasWeb.CoreComponents do
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
       class="relative z-50 hidden"
     >
-      <div id={"#{@id}-bg"} class="bg-zinc-50/90 fixed inset-0 transition-opacity" aria-hidden="true" />
+      <div id={"#{@id}-bg"} class="bg-black/70 fixed inset-0 transition-opacity" aria-hidden="true" />
       <div
         class="fixed inset-0 overflow-y-auto"
         aria-labelledby={"#{@id}-title"}

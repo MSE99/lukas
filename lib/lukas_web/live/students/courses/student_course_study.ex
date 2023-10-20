@@ -97,6 +97,8 @@ defmodule LukasWeb.Students.StudyLive do
             <.button :if={@lesson.progressed == false} phx-click="progress-lesson" class="px-8 py-2">
               next
             </.button>
+
+            <.button phx-click={show_modal("lessons-modal")}>Open lessons</.button>
           </div>
         </div>
 
@@ -111,36 +113,41 @@ defmodule LukasWeb.Students.StudyLive do
             <.button :if={@topic.progressed == false} phx-click="progress-topic" class="px-8 py-2">
               next
             </.button>
+
+            <.button phx-click={show_modal("lessons-modal")}>Open lessons</.button>
           </div>
+        </div>
+
+        <div :if={@topic == nil && @lesson == nil}>
+          <.button phx-click={show_modal("lessons-modal")}>Open lessons</.button>
         </div>
       </div>
 
-      <ul
-        id="lessons"
-        phx-update="stream"
-        class="bg-[rgba(0,0,0,0.08)] p-5 w-full min-h-full max-w-sm text-secondary"
-      >
-        <li :for={{id, lesson} <- @streams.lessons} id={id} class="mb-5">
-          <.link
-            patch={~p"/home/courses/#{@course.id}/study?lesson_id=#{lesson.id}"}
-            class="font-bold text-xl"
-          >
-            <%= lesson.title %> <%= if Enum.all?(lesson.topics, fn topic -> topic.progressed end),
-              do: "✓",
-              else: "" %>
-          </.link>
+      <.modal id="lessons-modal">
+        <ul id="lessons" phx-update="stream" class="text-secondary">
+          <li :for={{id, lesson} <- @streams.lessons} id={id} class="mb-5">
+            <.link
+              patch={~p"/home/courses/#{@course.id}/study?lesson_id=#{lesson.id}"}
+              class="font-bold text-xl"
+            >
+              <%= lesson.title %> <%= if Enum.all?(lesson.topics, fn topic -> topic.progressed end) and
+                                           lesson.progressed,
+                                         do: "✓",
+                                         else: "" %>
+            </.link>
 
-          <ul id={"lesson-#{lesson.id}-topics"} class="pl-3">
-            <li :for={topic <- lesson.topics} class="my-1 text-lg">
-              <.link patch={
-                ~p"/home/courses/#{@course.id}/study?lesson_id=#{topic.lesson_id}&topic_id=#{topic.id}"
-              }>
-                <%= topic.title %> <%= if topic.progressed, do: "✓", else: "" %>
-              </.link>
-            </li>
-          </ul>
-        </li>
-      </ul>
+            <ul id={"lesson-#{lesson.id}-topics"} class="pl-3">
+              <li :for={topic <- lesson.topics} class="my-1 text-lg">
+                <.link patch={
+                  ~p"/home/courses/#{@course.id}/study?lesson_id=#{topic.lesson_id}&topic_id=#{topic.id}"
+                }>
+                  <%= topic.title %> <%= if topic.progressed, do: "✓", else: "" %>
+                </.link>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </.modal>
     </div>
     """
   end
