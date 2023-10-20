@@ -81,26 +81,39 @@ defmodule LukasWeb.Operator.AllCoursesLive do
       {~p"/controls/courses", "courses"}
     ]} />
 
-    <.link patch={~p"/controls/courses/new"} class="flex justify-end mt-10 mb-16">
-      <.button class="px-5">Create course</.button>
-    </.link>
+    <div class="flex justify-end mt-10 mb-16">
+      <.link patch={~p"/controls/courses/new"}>
+        <.button class="px-5 flex items-center">
+          Create course <.icon name="hero-plus-circle-solid ml-2" />
+        </.button>
+      </.link>
+    </div>
 
-    <form id="search-form" phx-submit="search">
-      <input type="text" name="name" value={@search_name} />
+    <form id="search-form" phx-submit="search" class="mb-3">
+      <label for="name" class="text-secondary font-bold px-3">Search</label>
+      <input
+        type="text"
+        name="name"
+        value={@search_name}
+        class="w-full mt-3 rounded-full border-0 shadow"
+      />
     </form>
 
     <.async_result assign={@loading_tags}>
-      <:loading>Loading...</:loading>
-      <:failed>Could not load tags...</:failed>
-
-      <ul id="search-tags" phx-update="stream">
+      <ul id="search-tags" phx-update="stream" class="px-3 flex gap-2 flex-wrap">
         <li
           :for={{id, tag} <- @streams.search_tags}
           id={id}
           phx-click="toggle-search-tag"
           phx-value-id={tag.id}
+          phx-throttle={500}
           class={[
-            tag.id in @picked_search_tags && "font-bold"
+            "hover:bg-green-600 hover:text-white transition-all hover:cursor-pointer font-bold px-6 py-2 rounded-full",
+            if(
+              tag.id in @picked_search_tags,
+              do: "bg-primary text-white",
+              else: "bg-gray-300 text-secondary"
+            )
           ]}
         >
           <%= tag.name %>
@@ -117,7 +130,7 @@ defmodule LukasWeb.Operator.AllCoursesLive do
       entry_dom_id={fn course -> "courses-#{course.id}" end}
       enable_replace={true}
     >
-      <:item :let={course} class="flex items-center text-secondary font-bold">
+      <:item :let={course} class="flex items-center text-secondary font-bold mb-3">
         <img src={~p"/images/#{course.banner_image}"} width={80} height={80} class="rounded" />
 
         <.link navigate={~p"/controls/courses/#{course.id}"} class="ml-5 hover:underline">
