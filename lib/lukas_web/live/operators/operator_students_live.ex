@@ -11,7 +11,7 @@ defmodule LukasWeb.Operator.StudentsLive do
       Accounts.watch_students()
     end
 
-    {:ok, socket}
+    {:ok, socket |> assign(:search_name, "")}
   end
 
   def render(assigns) do
@@ -20,6 +20,17 @@ defmodule LukasWeb.Operator.StudentsLive do
       {~p"/controls", "home"},
       {~p"/controls/students", "students"}
     ]} />
+
+    <form id="search-form" phx-submit="search" class="mb-3">
+      <label for="name" class="text-secondary font-bold px-3">Search</label>
+
+      <input
+        type="text"
+        name="name"
+        value={@search_name}
+        class="w-full mt-3 rounded-full border-0 shadow"
+      />
+    </form>
 
     <.live_component
       module={InfiniteListLive}
@@ -82,6 +93,25 @@ defmodule LukasWeb.Operator.StudentsLive do
       |> String.to_integer()
       |> Accounts.get_student!()
       |> Accounts.enable_user()
+
+    {:noreply, socket}
+  end
+
+  def handle_event("search", %{"name" => name}, socket) do
+    cleaned = String.trim(name)
+
+    send_update(
+      self(),
+      LukasWeb.InfiniteListLive,
+      id: "students-list",
+      page: 1,
+      limit: 50,
+      next_loader: fn opts ->
+        opts
+        |> Keyword.put(:name, cleaned)
+        |> Accounts.list_students()
+      end
+    )
 
     {:noreply, socket}
   end

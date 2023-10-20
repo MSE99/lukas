@@ -44,4 +44,16 @@ defmodule LukasWeb.Operator.StudentsLiveTest do
     lv |> element("button#student-#{student.id}-disable") |> render_click()
     lv |> element("button#student-#{student.id}-enable") |> render_click()
   end
+
+  test "should render a search bar for getting a student by name.", %{conn: conn} do
+    1..100 |> Enum.each(fn _ -> student_fixture() end)
+
+    student = student_fixture()
+
+    {:ok, lv, _html} = live(conn, ~p"/controls/students")
+
+    lv |> form("form#search-form", %{"name" => student.name}) |> render_submit()
+
+    assert render(lv) =~ student.name
+  end
 end

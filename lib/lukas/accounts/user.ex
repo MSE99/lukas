@@ -189,14 +189,23 @@ defmodule Lukas.Accounts.User do
   def query_students(opts \\ []) do
     limit = Keyword.get(opts, :limit, 50)
     offset = Keyword.get(opts, :offset, 0)
+    name = Keyword.get(opts, :name, "")
 
-    from(
-      u in __MODULE__,
-      where: u.kind == :student,
-      limit: ^limit,
-      offset: ^offset,
-      order_by: [asc: :id]
-    )
+    q =
+      from(
+        u in __MODULE__,
+        where: u.kind == :student,
+        limit: ^limit,
+        offset: ^offset,
+        order_by: [asc: :id]
+      )
+
+    if name != "" do
+      like_clause = "%" <> name <> "%"
+      q |> where([u], like(u.name, ^like_clause))
+    else
+      q
+    end
   end
 
   def query_lecturers(opts \\ []) do
