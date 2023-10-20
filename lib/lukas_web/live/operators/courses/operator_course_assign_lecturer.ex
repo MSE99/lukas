@@ -4,7 +4,9 @@ defmodule LukasWeb.Operator.AssignLecturerLive do
   alias Lukas.Accounts
   alias Lukas.Learning
   alias Lukas.Learning.Course.Staff
+
   alias Phoenix.LiveView.AsyncResult
+  alias LukasWeb.CommonComponents
 
   def mount(%{"id" => raw_course_id}, _, socket) do
     with {id, _} <- Integer.parse(raw_course_id),
@@ -49,41 +51,62 @@ defmodule LukasWeb.Operator.AssignLecturerLive do
 
   def render(assigns) do
     ~H"""
-    <h1>Add lecturer to <%= @course.name %></h1>
+    <CommonComponents.navigate_breadcrumbs links={[
+      {~p"/controls", "home"},
+      {~p"/controls/courses", "courses"},
+      {~p"/controls/courses/#{@course.id}", @course.name},
+      {~p"/controls/courses/#{@course.id}/assign-lecturer", "assign lecturer"}
+    ]} />
 
-    <.link navigate={~p"/controls/courses/#{@course.id}"}>Back</.link>
+    <h1 class="my-5 text-xl font-bold text-secondary">Add lecturer to <%= @course.name %></h1>
 
     <.async_result assign={@loading}>
       <:loading>Loading lecturers</:loading>
       <:failed>Failed to load lecturers</:failed>
 
-      <h3>Assigned</h3>
+      <h3 class="text-lg font-bold text-secondary mb-3">Assigned</h3>
       <ul id="assigned-lecturers" phx-update="stream">
-        <li :for={{id, lect} <- @streams.assigned} id={id}>
-          <%= lect.name %> |
-          <.button
+        <li :for={{id, lect} <- @streams.assigned} id={id} class="flex items-center gap-3 mb-3">
+          <img
+            src={~p"/images/#{lect.profile_image}"}
+            height="38"
+            width="38"
+            class="rounded-full h-[38px] w-[38px] border-4 border-primary-opaque"
+          />
+
+          <span class="mr-auto"><%= lect.name %></span>
+
+          <CommonComponents.transparent_button
             id={"unassign-lecturer-#{lect.id}"}
             phx-click="unassign-lecturer"
             phx-value-id={lect.id}
             phx-throttle
           >
-            Unassign
-          </.button>
+            Remove
+          </CommonComponents.transparent_button>
         </li>
       </ul>
 
-      <h3>Available</h3>
+      <h3 class="text-lg font-bold text-secondary mt-5 mb-3">Available</h3>
       <ul id="available-lecturers" phx-update="stream">
-        <li :for={{id, lect} <- @streams.available} id={id}>
-          <%= lect.name %> |
-          <.button
+        <li :for={{id, lect} <- @streams.available} id={id} class="flex items-center gap-3 mb-3">
+          <img
+            src={~p"/images/#{lect.profile_image}"}
+            height="38"
+            width="38"
+            class="rounded-full h-[38px] w-[38px] border-4 border-primary-opaque"
+          />
+
+          <span class="mr-auto"><%= lect.name %></span>
+
+          <CommonComponents.transparent_button
             id={"assign-lecturer-#{lect.id}"}
             phx-click="assign-lecturer"
             phx-value-id={lect.id}
             phx-throttle
           >
             Assign
-          </.button>
+          </CommonComponents.transparent_button>
         </li>
       </ul>
     </.async_result>

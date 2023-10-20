@@ -1,7 +1,7 @@
 defmodule LukasWeb.Operator.CourseLive do
   use LukasWeb, :live_view
 
-  alias Lukas.{Learning, Accounts}
+  alias Lukas.Learning
   alias Lukas.Learning.Course
   alias Lukas.Learning.Course.Content
 
