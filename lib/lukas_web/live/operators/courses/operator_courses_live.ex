@@ -60,6 +60,10 @@ defmodule LukasWeb.Operator.AllCoursesLive do
       <.button class="px-5">Create course</.button>
     </.link>
 
+    <form id="search-form" phx-submit="search">
+      <input type="text" name="name" />
+    </form>
+
     <.live_component
       module={InfiniteListLive}
       id="courses-list"
@@ -92,6 +96,7 @@ defmodule LukasWeb.Operator.AllCoursesLive do
         for={@form}
         phx-change="validate"
         phx-submit={if @live_action == :edit, do: "edit", else: "create"}
+        id="course-form"
       >
         <.input field={@form[:name]} type="text" label="Name" phx-debounce="blur" />
         <.input field={@form[:price]} type="number" label="Price" phx-debounce="blur" />
@@ -183,6 +188,21 @@ defmodule LukasWeb.Operator.AllCoursesLive do
     else
       {:noreply, socket |> assign(tag_ids: [id | tag_ids]) |> stream_insert(:tags, tag)}
     end
+  end
+
+  def handle_event("search", %{"name" => name}, socket) do
+    send_update(
+      self(),
+      LukasWeb.InfiniteListLive,
+      id: "courses-list",
+      page: 1,
+      limit: 50,
+      reload: fn ->
+        Learning.list_courses(offset: 0, limit: 50, name: String.trim(name))
+      end
+    )
+
+    {:noreply, socket}
   end
 
   def handle_info({:courses, :course_created, course}, socket) do

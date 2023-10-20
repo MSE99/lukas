@@ -22,14 +22,14 @@ defmodule Lukas.Learning.Query do
     |> maybe_add_name_filter(name)
   end
 
-  defp maybe_add_name_filter(q, ""), do: q
-
-  defp maybe_add_name_filter(q, course_name) do
+  defp maybe_add_name_filter(q, course_name) when is_binary(course_name) and course_name != "" do
     like_clause = "%" <> course_name <> "%"
 
     q
     |> where([c], like(c.name, ^like_clause))
   end
+
+  defp maybe_add_name_filter(q, ""), do: q
 
   def course_by_id(course_id) do
     from(c in Course, where: c.id == ^course_id)
