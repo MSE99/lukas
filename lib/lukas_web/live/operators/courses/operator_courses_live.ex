@@ -8,12 +8,37 @@ defmodule LukasWeb.Operator.AllCoursesLive do
   alias LukasWeb.InfiniteListLive
   alias LukasWeb.CommonComponents
 
+  alias Phoenix.LiveView.AsyncResult
+
   def mount(_, _, socket) do
     if connected?(socket) do
       Learning.watch_courses()
     end
 
-    {:ok, allow_upload(socket, :banner_image, accept: ~w(.jpg .jpeg .png .webp))}
+    next_socket =
+      socket
+      |> stream_configure(:search_tags, dom_id: fn t -> "search-tags-#{t.id}" end)
+      |> assign(:picked_search_tags, [])
+      |> assign(:search_name, "")
+      |> assign(:loading_tags, AsyncResult.loading())
+      |> start_async(:loading_tags, fn -> Categories.list_tags() end)
+      |> allow_upload(:banner_image, accept: ~w(.jpg .jpeg .png .webp))
+
+    {:ok, next_socket}
+  end
+
+  def handle_async(:loading_tags, {:ok, tags}, socket) do
+    next_socket =
+      socket
+      |> assign(:loading_tags, AsyncResult.ok(socket.assigns.loading_tags, nil))
+      |> stream(:search_tags, tags)
+
+    {:noreply, next_socket}
+  end
+
+  def handle_async(:loading_tags, {:exit, reason}, socket) do
+    {:noreply,
+     assign(socket, loading_tags: AsyncResult.failed(socket.assigns.loading_tags, reason))}
   end
 
   def handle_params(params, _, socket),
@@ -61,8 +86,27 @@ defmodule LukasWeb.Operator.AllCoursesLive do
     </.link>
 
     <form id="search-form" phx-submit="search">
-      <input type="text" name="name" />
+      <input type="text" name="name" value={@search_name} />
     </form>
+
+    <.async_result assign={@loading_tags}>
+      <:loading>Loading...</:loading>
+      <:failed>Could not load tags...</:failed>
+
+      <ul id="search-tags" phx-update="stream">
+        <li
+          :for={{id, tag} <- @streams.search_tags}
+          id={id}
+          phx-click="toggle-search-tag"
+          phx-value-id={tag.id}
+          class={[
+            tag.id in @picked_search_tags && "font-bold"
+          ]}
+        >
+          <%= tag.name %>
+        </li>
+      </ul>
+    </.async_result>
 
     <.live_component
       module={InfiniteListLive}
@@ -191,18 +235,56 @@ defmodule LukasWeb.Operator.AllCoursesLive do
   end
 
   def handle_event("search", %{"name" => name}, socket) do
+    cleaned_name = String.trim(name)
+
     send_update(
       self(),
       LukasWeb.InfiniteListLive,
       id: "courses-list",
-      page: 1,
+      page: 0,
       limit: 50,
-      reload: fn ->
-        Learning.list_courses(offset: 0, limit: 50, name: String.trim(name))
+      next_loader: fn opts ->
+        opts
+        |> Keyword.put(:name, cleaned_name)
+        |> Keyword.put(:tags, socket.assigns.picked_search_tags)
+        |> Learning.list_courses()
       end
     )
 
-    {:noreply, socket}
+    {:noreply, assign(socket, :search_name, cleaned_name)}
+  end
+
+  def handle_event("toggle-search-tag", %{"id" => raw_id}, socket) do
+    tag =
+      raw_id
+      |> String.to_integer()
+      |> Categories.get_tag!()
+
+    next_tags_ids =
+      case Enum.filter(socket.assigns.picked_search_tags, fn id -> id == tag.id end) do
+        [] ->
+          [tag.id | socket.assigns.picked_search_tags]
+
+        _ ->
+          Enum.filter(socket.assigns.picked_search_tags, fn id -> id != tag.id end)
+      end
+
+    send_update(
+      self(),
+      LukasWeb.InfiniteListLive,
+      id: "courses-list",
+      page: 0,
+      limit: 50,
+      next_loader: fn opts ->
+        opts
+        |> Keyword.put(:name, socket.assigns.search_name)
+        |> Keyword.put(:tags, next_tags_ids)
+        |> Learning.list_courses()
+      end
+    )
+
+    {:noreply,
+     socket |> assign(picked_search_tags: next_tags_ids) |> stream_insert(:search_tags, tag)}
   end
 
   def handle_info({:courses, :course_created, course}, socket) do

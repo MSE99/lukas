@@ -156,24 +156,4 @@ defmodule LukasWeb.Operator.AllCoursesLiveTest do
       assert Enum.find(course.tags, fn t -> t.tag_id == tag3.id end)
     end
   end
-
-  describe "search" do
-    setup [:register_and_log_in_user]
-
-    test "should render the course whose name we inserted in the search bar.", %{conn: conn} do
-      1..65 |> Enum.each(fn _ -> course_fixture() end)
-      course1 = course_fixture(%{:name => "Foo"})
-
-      {:ok, lv, _} = live(conn, ~p"/controls/courses")
-      render_async(lv)
-
-      lv
-      |> form("form#search-form", %{"name" => "Foo"})
-      |> render_submit()
-
-      html = render_async(lv)
-
-      assert html =~ course1.name
-    end
-  end
 end

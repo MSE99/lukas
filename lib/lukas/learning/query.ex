@@ -6,30 +6,53 @@ defmodule Lukas.Learning.Query do
 
   alias Lukas.Accounts
 
-  def courses_with_tags(opts \\ []) do
+  def courses_with_taggings(opts \\ []) do
     limit = Keyword.get(opts, :limit, 50)
     offset = Keyword.get(opts, :offset, 0)
     order_by = Keyword.get(opts, :order_by, desc: :inserted_at)
     name = Keyword.get(opts, :name, "")
+    tag_ids = Keyword.get(opts, :tags, [])
 
-    from(
-      c in Course,
-      limit: ^limit,
-      offset: ^offset,
-      preload: [:tags],
-      order_by: ^order_by
-    )
-    |> maybe_add_name_filter(name)
+    like_clause = "%" <> name <> "%"
+
+    case tag_ids do
+      [] ->
+        q =
+          from(
+            c in Course,
+            limit: ^limit,
+            offset: ^offset,
+            preload: [:tags],
+            order_by: ^order_by
+          )
+
+        if name == "" do
+          q
+        else
+          where(q, [c], like(c.name, ^like_clause))
+        end
+
+      _ ->
+        q =
+          from(
+            t in Tagging,
+            join: c in Course,
+            on: c.id == t.course_id,
+            group_by: t.course_id,
+            where: t.tag_id in ^tag_ids,
+            limit: ^limit,
+            offset: ^offset,
+            order_by: ^order_by,
+            select: c
+          )
+
+        if name == "" do
+          q
+        else
+          where(q, [_, c], like(c.name, ^like_clause))
+        end
+    end
   end
-
-  defp maybe_add_name_filter(q, course_name) when is_binary(course_name) and course_name != "" do
-    like_clause = "%" <> course_name <> "%"
-
-    q
-    |> where([c], like(c.name, ^like_clause))
-  end
-
-  defp maybe_add_name_filter(q, ""), do: q
 
   def course_by_id(course_id) do
     from(c in Course, where: c.id == ^course_id)

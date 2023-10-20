@@ -35,15 +35,15 @@ defmodule LukasWeb.InfiniteListLive do
     end
   end
 
-  def update(%{reload: reloader, page: page, limit: limit}, socket)
-      when is_function(reloader) do
-    next_items = reloader.()
+  def update(%{next_loader: next_loader, page: page, limit: limit}, socket)
+      when is_function(next_loader) do
+    next_items = next_loader.(page: page, limit: limit)
 
     next_socket =
       socket
+      |> assign(:load, next_loader)
       |> assign(:page, page)
       |> assign(:limit, limit)
-      |> assign(:end_of_timeline?, false)
       |> stream(:items, next_items, reset: true)
       |> assign_ids_list_if_replace_enabled(next_items)
 

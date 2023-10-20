@@ -14,7 +14,7 @@ defmodule Lukas.Learning do
 
   def list_courses(opts \\ []) do
     opts
-    |> Query.courses_with_tags()
+    |> Query.courses_with_taggings()
     |> Repo.all()
   end
 
