@@ -53,4 +53,17 @@ defmodule LukasWeb.Operator.LecturersLiveTest do
 
     assert Accounts.get_lecturer!(lect.id).enabled
   end
+
+  test "should have a search bar for getting the lecturer by name.", %{conn: conn} do
+    1..100
+    |> Enum.map(fn _ -> lecturer_fixture() end)
+
+    target_lecturer = lecturer_fixture(%{name: "Foo is great!"})
+
+    {:ok, lv, _html} = live(conn, ~p"/controls/lecturers")
+
+    lv |> form("form#search-form", %{"name" => target_lecturer.name}) |> render_submit()
+
+    assert render(lv) =~ target_lecturer.name
+  end
 end

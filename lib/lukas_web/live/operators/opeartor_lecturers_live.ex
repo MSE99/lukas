@@ -9,7 +9,7 @@ defmodule LukasWeb.Operator.LecturersLive do
       Accounts.watch_lecturers()
     end
 
-    {:ok, socket}
+    {:ok, socket |> assign(:search_name, "")}
   end
 
   def render(assigns) do
@@ -18,6 +18,17 @@ defmodule LukasWeb.Operator.LecturersLive do
       {~p"/controls", "home"},
       {~p"/controls/lecturers", "lecturers"}
     ]} />
+
+    <form id="search-form" phx-submit="search" class="mb-3">
+      <label for="name" class="text-secondary font-bold px-3">Search</label>
+
+      <input
+        type="text"
+        name="name"
+        value={@search_name}
+        class="w-full mt-3 rounded-full border-0 shadow"
+      />
+    </form>
 
     <.live_component
       module={LukasWeb.InfiniteListLive}
@@ -88,8 +99,29 @@ defmodule LukasWeb.Operator.LecturersLive do
     {:noreply, socket}
   end
 
+  def handle_event("search", %{"name" => name}, socket) do
+    cleaned = name |> String.trim()
+
+    send_update(
+      self(),
+      LukasWeb.InfiniteListLive,
+      id: "lecturers-list",
+      page: 1,
+      limit: 50,
+      next_loader: fn opts ->
+        opts
+        |> Keyword.put(:name, cleaned)
+        |> Accounts.list_lecturers()
+      end
+    )
+
+    {:noreply, assign(socket, :search_name, cleaned)}
+  end
+
   def handle_info({:lecturers, :lecturer_registered, lecturer}, socket) do
-    send_update(self(), LukasWeb.InfiniteListLive,
+    send_update(
+      self(),
+      LukasWeb.InfiniteListLive,
       id: "lecturers-list",
       first_page_insert: lecturer
     )
