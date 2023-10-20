@@ -5,6 +5,8 @@ defmodule LukasWeb.Operator.CourseLive do
   alias Lukas.Learning.Course
   alias Lukas.Learning.Course.Content
 
+  alias LukasWeb.CommonComponents
+
   def mount(%{"id" => raw_id}, _session, socket) do
     with {id, _} <- Integer.parse(raw_id),
          {course, lecturers, _} when course != nil <-
@@ -48,6 +50,57 @@ defmodule LukasWeb.Operator.CourseLive do
 
   def render(assigns) do
     ~H"""
+    <CommonComponents.navigate_breadcrumbs links={[
+      {~p"/controls", "home"},
+      {~p"/controls/courses", "courses"},
+      {~p"/controls/courses/#{@course.id}", @course.name}
+    ]} />
+
+    <CommonComponents.course_banner image_src={~p"/images/#{@course.banner_image}"} />
+
+    <.link patch={~p"/controls/courses/#{@course.id}/new-lesson"}>
+      <CommonComponents.transparent_button>
+        Lessons <.icon name="hero-plus-circle-solid" class="ml-2" />
+      </CommonComponents.transparent_button>
+    </.link>
+
+    <ul id="lessons" phx-update="stream" class="my-10">
+      <li
+        :for={{id, lesson} <- @streams.lessons}
+        id={id}
+        class="flex gap-2 text-black font-bold text-lg"
+      >
+        <.link
+          navigate={~p"/controls/courses/#{@course.id}/lessons/#{lesson.id}"}
+          class="hover:underline mr-auto"
+        >
+          <%= lesson.title %>
+        </.link>
+
+        <.link patch={~p"/controls/courses/#{@course.id}/lessons/#{lesson.id}/edit-lesson"}>
+          <.icon name="hero-pencil-solid text-secondary hover:text-blue-300" />
+        </.link>
+
+        <span id={"lesson-delete-#{lesson.id}"} phx-click="delete-lesson" phx-value-id={lesson.id}>
+          <.icon name="hero-trash-solid text-secondary hover:text-red-500 hover:cursor-pointer" />
+        </span>
+      </li>
+    </ul>
+
+    <CommonComponents.streamed_users_mini_list
+      id="lecturers-list"
+      title="Lecturers"
+      users={@streams.lecturers}
+    />
+
+    <div class="mt-5 flex justify-end pb-5">
+      <.link navigate={~p"/controls/courses/#{@course.id}/assign-lecturer"}>
+        <CommonComponents.transparent_button>
+          <.icon name="hero-pencil" class="mr-3" /> Manage lecturers
+        </CommonComponents.transparent_button>
+      </.link>
+    </div>
+
     <.modal
       :if={@live_action in [:new_lesson, :edit_lesson]}
       id="new-lesson-modal"
@@ -64,47 +117,6 @@ defmodule LukasWeb.Operator.CourseLive do
         <.button>Create</.button>
       </.form>
     </.modal>
-
-    <h1>Course <%= @course.name %></h1>
-
-    <.link patch={~p"/controls/courses/#{@course.id}/new-lesson"}>
-      <.button>New lesson</.button>
-    </.link>
-
-    <ul id="lessons" phx-update="stream">
-      <li :for={{id, lesson} <- @streams.lessons} id={id}>
-        <.link navigate={~p"/controls/courses/#{@course.id}/lessons/#{lesson.id}"}>
-          <%= lesson.title %>
-        </.link>
-        |
-        <.link patch={~p"/controls/courses/#{@course.id}/lessons/#{lesson.id}/edit-lesson"}>
-          Edit
-        </.link>
-        |
-        <.button id={"lesson-delete-#{lesson.id}"} phx-click="delete-lesson" phx-value-id={lesson.id}>
-          Delete lesson
-        </.button>
-      </li>
-    </ul>
-
-    <h3>Lecturers</h3>
-
-    <.link navigate={~p"/controls/courses/#{@course.id}/assign-lecturer"}>
-      <.button>Assign lecturer</.button>
-    </.link>
-
-    <ul id="lecturers" phx-update="stream">
-      <li :for={{id, lect} <- @streams.lecturers} id={id}>
-        <%= lect.name %> |
-        <.button
-          id={"lecturer-delete-#{lect.id}"}
-          phx-click="delete-lecturer"
-          phx-value-lecturer-id={lect.id}
-        >
-          Remove
-        </.button>
-      </li>
-    </ul>
     """
   end
 
@@ -131,22 +143,6 @@ defmodule LukasWeb.Operator.CourseLive do
       {:error, cs} ->
         {:noreply, assign(socket, form: to_form(cs))}
     end
-  end
-
-  def handle_event("add-lecturer", %{"lecturer-id" => raw_lecturer_id}, socket) do
-    {lecturer_id, _} = Integer.parse(raw_lecturer_id)
-    lect = Accounts.get_lecturer!(lecturer_id)
-    {:ok, _} = Course.Staff.add_lecturer_to_course(socket.assigns.course, lect)
-
-    {:noreply, push_patch(socket, to: ~p"/controls/courses/#{socket.assigns.course.id}")}
-  end
-
-  def handle_event("delete-lecturer", %{"lecturer-id" => raw_lecturer_id}, socket) do
-    {lecturer_id, _} = Integer.parse(raw_lecturer_id)
-    lect = Accounts.get_lecturer!(lecturer_id)
-    {:ok, _} = Learning.Course.Staff.remove_lecturer_from_course(socket.assigns.course, lect)
-
-    {:noreply, socket}
   end
 
   def handle_event("delete-lesson", %{"id" => raw_id}, socket) do

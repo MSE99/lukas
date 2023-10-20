@@ -239,7 +239,7 @@ defmodule LukasWeb.Courses.CourseLiveTest do
       lesson = lesson_fixture(course)
 
       lv
-      |> element("button#lesson-delete-#{lesson.id}")
+      |> element("#lesson-delete-#{lesson.id}")
       |> render_click()
 
       refute render(lv) =~ lesson.title

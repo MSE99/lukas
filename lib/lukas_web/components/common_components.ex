@@ -223,6 +223,20 @@ defmodule LukasWeb.CommonComponents do
     """
   end
 
+  slot :inner_block
+  attr :rest, :global
+
+  def transparent_button(assigns) do
+    ~H"""
+    <button
+      class="px-4 py-2 font-bold rounded-lg transition-all text-secondary hover:bg-gray-200 flex items-center active:scale-95"
+      {@rest}
+    >
+      <%= render_slot(@inner_block) %>
+    </button>
+    """
+  end
+
   attr :course, Lukas.Learning.Course, required: true
 
   def course_card(assigns) do
