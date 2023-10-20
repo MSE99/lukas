@@ -49,19 +49,6 @@ defmodule LukasWeb.Operator.CourseLive do
   def render(assigns) do
     ~H"""
     <.modal
-      :if={@live_action == :add_lecturer}
-      id="new-lecturer-modal"
-      on_cancel={JS.patch(~p"/controls/courses/#{@course.id}")}
-      show
-    >
-      <ul id="lecturers-list" phx-update="stream">
-        <li :for={{id, lect} <- @streams.possible_lecturers} id={id}>
-          <.button phx-click="add-lecturer" phx-value-lecturer-id={lect.id}><%= lect.name %></.button>
-        </li>
-      </ul>
-    </.modal>
-
-    <.modal
       :if={@live_action in [:new_lesson, :edit_lesson]}
       id="new-lesson-modal"
       on_cancel={JS.patch(~p"/controls/courses/#{@course.id}")}
@@ -101,10 +88,6 @@ defmodule LukasWeb.Operator.CourseLive do
     </ul>
 
     <h3>Lecturers</h3>
-
-    <.link patch={~p"/controls/courses/#{@course.id}/add-lecturer"}>
-      <.button>Add lecturer</.button>
-    </.link>
 
     <.link navigate={~p"/controls/courses/#{@course.id}/assign-lecturer"}>
       <.button>Assign lecturer</.button>
