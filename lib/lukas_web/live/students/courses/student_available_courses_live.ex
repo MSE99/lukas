@@ -108,10 +108,12 @@ defmodule LukasWeb.Students.AvailableCoursesLive do
       page: 0,
       limit: 50,
       next_loader: fn opts ->
-        opts
-        |> Keyword.put(:name, cleaned_name)
-        |> Keyword.put(:tags, socket.assigns.picked_search_tags)
-        |> Learning.list_courses()
+        opts_with_query =
+          opts
+          |> Keyword.put(:name, cleaned_name)
+          |> Keyword.put(:tags, socket.assigns.picked_search_tags)
+
+        Students.list_open_courses_for_student(socket.assigns.current_user, opts_with_query)
       end
     )
 
@@ -137,13 +139,15 @@ defmodule LukasWeb.Students.AvailableCoursesLive do
       self(),
       LukasWeb.InfiniteListLive,
       id: "courses-list",
-      page: 0,
+      page: 1,
       limit: 50,
       next_loader: fn opts ->
-        opts
-        |> Keyword.put(:name, socket.assigns.search_name)
-        |> Keyword.put(:tags, next_tags_ids)
-        |> Learning.list_courses()
+        opts_with_query =
+          opts
+          |> Keyword.put(:name, socket.assigns.search_name)
+          |> Keyword.put(:tags, next_tags_ids)
+
+        Students.list_open_courses_for_student(socket.assigns.current_user, opts_with_query)
       end
     )
 

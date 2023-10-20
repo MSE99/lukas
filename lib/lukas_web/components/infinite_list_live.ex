@@ -37,7 +37,7 @@ defmodule LukasWeb.InfiniteListLive do
 
   def update(%{next_loader: next_loader, page: page, limit: limit}, socket)
       when is_function(next_loader) do
-    next_items = next_loader.(page: page, limit: limit)
+    next_items = next_loader.(offset: page - 1, limit: limit)
 
     next_socket =
       socket
