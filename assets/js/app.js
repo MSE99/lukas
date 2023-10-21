@@ -38,15 +38,17 @@ let ImageCropper = {
       })
     })
 
-    document.getElementById('done-button').addEventListener('click', async _ => {
-      if (!cr || !input.files.length) {
-        return
-      }
-
+    document.getElementById('crop-button').addEventListener('click', async _ => {
       const blob = await cr.result({ type: 'blob' })
       const file = new File([blob], 'upload', { type: blob.type })
 
-      this.upload(field, [file])
+      const transfer = new DataTransfer()
+      transfer.items.add(file)
+
+      const fileInput = document.querySelector('.live-file-input')
+      fileInput.files = transfer.files
+
+      fileInput.dispatchEvent(new Event('change', { bubbles: true }))
     })
   }
 }

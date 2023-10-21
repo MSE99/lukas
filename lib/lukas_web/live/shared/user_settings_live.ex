@@ -48,27 +48,8 @@ defmodule LukasWeb.UserSettingsLive do
           width={250}
           height={250}
           class="rounded-full border-8 border-primary-opaque mb-7 w-[250px] h-[250px]"
+          phx-click={show_modal("update-profile-image-modal")}
         />
-
-        <form
-          id="profile-image-form"
-          phx-change="validate-profile-image"
-          phx-submit="update-profile-image"
-          class="flex flex-col gap-3"
-        >
-          <.live_file_input upload={@uploads.profile_image} />
-          <.button class="bg-primary shadow">Update</.button>
-
-          <%= for entry <- @uploads.profile_image.entries do %>
-            <progress value={entry.progress} max="100">
-              <%= entry.progress %>%
-            </progress>
-
-            <%= for err <- upload_errors(@uploads.profile_image, entry) do %>
-              <p class="alert alert-danger"><%= error_to_string(err) %></p>
-            <% end %>
-          <% end %>
-        </form>
       </div>
 
       <div>
@@ -137,6 +118,44 @@ defmodule LukasWeb.UserSettingsLive do
         </.form>
       </div>
     </div>
+
+    <.modal id="update-profile-image-modal">
+      <div
+        id="image-cropper"
+        phx-update="ignore"
+        phx-hook="ImageCropper"
+        data-name="profile_image"
+        class="w-full"
+      >
+        <input type="file" id="image-cropper-input" accept=".jpg,.jpeg,.png" />
+      </div>
+
+      <.button class="mt-5" id="crop-button">Crop</.button>
+
+      <form
+        id="profile-image-form"
+        phx-change="validate-profile-image"
+        phx-submit="update-profile-image"
+        class="flex flex-col gap-3"
+      >
+        <.live_file_input upload={@uploads.profile_image} class="hidden live-file-input" />
+        <.button :if={length(@uploads.profile_image.entries) > 0} class="mt-5" id="upload-button">
+          Save
+        </.button>
+
+        <%= for entry <- @uploads.profile_image.entries do %>
+          <progress value={entry.progress} max="100">
+            <%= entry.progress %>%
+          </progress>
+
+          <.live_img_preview entry={entry} width={100} height={100} />
+
+          <%= for err <- upload_errors(@uploads.profile_image, entry) do %>
+            <p class="alert alert-danger"><%= error_to_string(err) %></p>
+          <% end %>
+        <% end %>
+      </form>
+    </.modal>
     """
   end
 
