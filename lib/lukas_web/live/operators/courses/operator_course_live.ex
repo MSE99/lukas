@@ -107,6 +107,8 @@ defmodule LukasWeb.Operator.CourseLive do
       on_cancel={JS.patch(~p"/controls/courses/#{@course.id}")}
       show
     >
+      <h1 class="mb-5 font-bold text-lg text-primary">Create new lesson</h1>
+
       <.form
         for={@form}
         phx-change="validate"
@@ -114,7 +116,10 @@ defmodule LukasWeb.Operator.CourseLive do
       >
         <.input type="text" label="Title" field={@form[:title]} />
         <.input type="textarea" label="Description" field={@form[:description]} />
-        <.button>Create</.button>
+
+        <div class="mt-5 flex justify-end">
+          <.button class="px-8">Create</.button>
+        </div>
       </.form>
     </.modal>
     """
