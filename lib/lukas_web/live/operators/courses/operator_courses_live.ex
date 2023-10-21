@@ -149,6 +149,8 @@ defmodule LukasWeb.Operator.AllCoursesLive do
       on_cancel={JS.patch(~p"/controls/courses")}
       show
     >
+      <h1 class="mb-5 font-bold text-lg text-primary">Create new course</h1>
+
       <.form
         for={@form}
         phx-change="validate"
@@ -159,21 +161,30 @@ defmodule LukasWeb.Operator.AllCoursesLive do
         <.input field={@form[:price]} type="number" label="Price" phx-debounce="blur" />
         <.input field={@form[:description]} type="textarea" label="Description" phx-debounce="blur" />
 
-        <div id="tags" phx-update="stream">
-          <span
+        <p class="font-semibold mt-5">Tags</p>
+        <ul id="tags" phx-update="stream" class="mt-3 flex flex-wrap gap-2">
+          <li
             :for={{id, tag} <- @streams.tags}
             id={id}
             phx-click="toggle-tag"
             phx-value-id={tag.id}
             class={[
-              tag.id in @tag_ids && "font-bold"
+              "hover:bg-green-600 hover:text-white transition-all hover:cursor-pointer font-bold text-sm px-4 py-1 rounded-full",
+              if(
+                tag.id in @tag_ids,
+                do: "bg-primary text-white",
+                else: "bg-gray-300 text-secondary"
+              )
             ]}
           >
             <%= tag.name %>
-          </span>
-        </div>
+          </li>
+        </ul>
 
-        <.live_file_input upload={@uploads.banner_image} />
+        <div class="my-5">
+          <p class="font-bold mb-3">Banner image</p>
+          <.live_file_input upload={@uploads.banner_image} />
+        </div>
 
         <%= for entry <- @uploads.banner_image.entries do %>
           <progress value={entry.progress} max="100">
@@ -185,7 +196,9 @@ defmodule LukasWeb.Operator.AllCoursesLive do
           <% end %>
         <% end %>
 
-        <.button>Create</.button>
+        <div class="flex justify-end">
+          <.button class="px-10">Create</.button>
+        </div>
       </.form>
     </.modal>
     """
