@@ -8,7 +8,7 @@ defmodule LukasWeb.TagLive.FormComponent do
     ~H"""
     <div>
       <.header>
-        <%= @title %>
+        <span class="text-primary"><%= @title %></span>
       </.header>
 
       <.simple_form
@@ -19,9 +19,10 @@ defmodule LukasWeb.TagLive.FormComponent do
         phx-submit="save"
       >
         <.input field={@form[:name]} type="text" label="Name" />
-        <:actions>
+
+        <div class="flex justify-end">
           <.button phx-disable-with="Saving...">Save Tag</.button>
-        </:actions>
+        </div>
       </.simple_form>
     </div>
     """
