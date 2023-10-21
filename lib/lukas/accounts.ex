@@ -2,19 +2,20 @@ defmodule Lukas.Accounts do
   import Ecto.Query, warn: false
 
   alias Lukas.Repo
-  alias Lukas.Accounts.{User, UserToken, UserNotifier, Invite}
+  alias Lukas.Accounts.{User, UserToken, UserNotifier, Invite, Query}
+
   alias Ecto.Multi
 
   # Operators
   def get_operator(id) when is_integer(id) do
     id
-    |> User.query_operator_by_id()
+    |> Query.operator_by_id()
     |> Repo.one()
   end
 
   def list_operators(opts \\ []) do
     opts
-    |> User.query_operators()
+    |> Query.operators()
     |> Repo.all()
   end
 
@@ -84,7 +85,9 @@ defmodule Lukas.Accounts do
   end
 
   def list_students(opts \\ []) do
-    User.query_students(opts) |> Repo.all()
+    opts
+    |> Query.students()
+    |> Repo.all()
   end
 
   # Lecturers
@@ -129,7 +132,9 @@ defmodule Lukas.Accounts do
   end
 
   def list_lecturers(opts \\ []) do
-    User.query_lecturers(opts) |> Repo.all()
+    opts
+    |> Query.lecturers()
+    |> Repo.all()
   end
 
   def get_lecturer(lecturer_id) when is_integer(lecturer_id) do
@@ -184,32 +189,40 @@ defmodule Lukas.Accounts do
 
   defp maybe_emit_user_updated(res), do: res
 
-  def get_user_by_phone_number(phone_number) when is_binary(phone_number) do
-    Repo.get_by(User, phone_number: phone_number, enabled: true)
-  end
-
-  def get_user_by_email(email) when is_binary(email) do
-    Repo.get_by(User, email: email, enabled: true)
-  end
-
   def get_user_by_phone_number_and_password(phone_number, password)
       when is_binary(phone_number) and is_binary(password) do
-    user = Repo.get_by(User, phone_number: phone_number, enabled: true)
+    user = get_user_by_phone_number(phone_number)
     if User.valid_password?(user, password), do: user
   end
 
   def get_user_by_email_and_password(email, password)
       when is_binary(email) and is_binary(password) do
-    user = Repo.get_by(User, email: email, enabled: true)
+    user = get_user_by_email(email)
     if User.valid_password?(user, password), do: user
   end
 
+  def get_user_by_phone_number(phone_number) when is_binary(phone_number) do
+    phone_number
+    |> Query.user_by_phone_number_and_enabled()
+    |> Repo.one()
+  end
+
+  def get_user_by_email(email) when is_binary(email) do
+    email
+    |> Query.user_by_email_and_enabled()
+    |> Repo.one()
+  end
+
   def get_student(id) when is_integer(id) do
-    id |> User.query_student_by_id() |> Repo.one()
+    id
+    |> Query.student_by_id()
+    |> Repo.one()
   end
 
   def get_student!(id) when is_integer(id) do
-    id |> User.query_student_by_id() |> Repo.one!()
+    id
+    |> Query.student_by_id()
+    |> Repo.one!()
   end
 
   def get_user!(id), do: Repo.get!(User, id)

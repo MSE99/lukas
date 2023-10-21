@@ -2,7 +2,6 @@ defmodule Lukas.Accounts.User do
   use Ecto.Schema
 
   import Ecto.Changeset
-  import Ecto.Query
 
   @user_kinds [:operator, :student, :lecturer]
 
@@ -185,83 +184,4 @@ defmodule Lukas.Accounts.User do
 
   def is_lecturer?(%__MODULE__{kind: :lecturer}), do: true
   def is_lecturer?(_), do: false
-
-  def query_students(opts \\ []) do
-    limit = Keyword.get(opts, :limit, 50)
-    offset = Keyword.get(opts, :offset, 0)
-    name = Keyword.get(opts, :name, "")
-
-    q =
-      from(
-        u in __MODULE__,
-        where: u.kind == :student,
-        limit: ^limit,
-        offset: ^offset,
-        order_by: [asc: :id]
-      )
-
-    if name != "" do
-      like_clause = "%" <> name <> "%"
-      q |> where([u], like(u.name, ^like_clause))
-    else
-      q
-    end
-  end
-
-  def query_lecturers(opts \\ []) do
-    limit = Keyword.get(opts, :limit, 50)
-    offset = Keyword.get(opts, :offset, 0)
-    name = Keyword.get(opts, :name, "")
-
-    q =
-      from(
-        u in __MODULE__,
-        where: u.kind == :lecturer,
-        limit: ^limit,
-        offset: ^offset,
-        order_by: [desc: :inserted_at]
-      )
-
-    if name != "" do
-      like_clause = "%" <> name <> "%"
-      q |> where([u], like(u.name, ^like_clause))
-    else
-      q
-    end
-  end
-
-  def query_operators(opts \\ []) do
-    limit = Keyword.get(opts, :limit, 50)
-    offset = Keyword.get(opts, :offset, 0)
-
-    from(
-      u in __MODULE__,
-      where: u.kind == :operator,
-      limit: ^limit,
-      offset: ^offset,
-      order_by: [desc: :inserted_at]
-    )
-  end
-
-  def query_whose_id_not_in(exclusion_list, opts \\ []) do
-    kind = Keyword.get(opts, :kind, :student)
-    limit = Keyword.get(opts, :limit, 50)
-    offset = Keyword.get(opts, :offset, 0)
-
-    from(
-      u in __MODULE__,
-      where: u.kind == ^kind and u.id not in ^exclusion_list,
-      limit: ^limit,
-      offset: ^offset,
-      order_by: [desc: :inserted_at]
-    )
-  end
-
-  def query_student_by_id(id) do
-    from(u in __MODULE__, where: u.kind == :student and u.id == ^id)
-  end
-
-  def query_operator_by_id(id) do
-    from(opr in __MODULE__, where: opr.kind == :operator and opr.id == ^id)
-  end
 end
