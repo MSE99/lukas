@@ -44,6 +44,7 @@ defmodule LukasWeb.Students.StudyLiveTest do
 
       assert html =~ lesson1.title
       assert html =~ lesson1.description
+      assert html =~ "completed 0.0%"
     end
 
     test "should react to student making progress.", %{
@@ -68,10 +69,14 @@ defmodule LukasWeb.Students.StudyLiveTest do
 
       Students.progress_through_lesson(student, lesson1)
 
+      {_, next_lessons} = Students.get_progress(student, course.id)
+      wanted_progress_value = Students.calculate_progress_percentage(next_lessons)
+
       html = render(lv)
 
       assert html =~ wanted_topic.title
       assert html =~ wanted_topic.content
+      assert html =~ "completed #{wanted_progress_value |> :erlang.float_to_binary(decimals: 1)}%"
 
       assert_patched(
         lv,

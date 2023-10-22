@@ -19,6 +19,7 @@ defmodule LukasWeb.Students.StudyLive do
       |> assign(next: next)
       |> assign(lesson: nil)
       |> assign(topic: nil)
+      |> assign(:completed, Students.calculate_progress_percentage(lessons))
       |> stream(:lessons, lessons)
 
     {:ok, next_socket, layout: {LukasWeb.Layouts, :frameless}}
@@ -123,7 +124,12 @@ defmodule LukasWeb.Students.StudyLive do
         </div>
       </div>
 
-      <.modal id="lessons-modal">
+      <.modal id="lessons-modal" show>
+        <div class="flex gap-3 mb-3">
+          <h1 class="font-bold text-primary text-sm">
+            completed <%= :erlang.float_to_binary(@completed, decimals: 1) %>%
+          </h1>
+        </div>
         <ul id="lessons" phx-update="stream" class="text-secondary">
           <li :for={{id, lesson} <- @streams.lessons} id={id} class="mb-5">
             <.link
@@ -160,6 +166,7 @@ defmodule LukasWeb.Students.StudyLive do
       |> assign(course: course)
       |> assign(next: next)
       |> stream(:lessons, lessons, reset: true)
+      |> assign(:completed, Students.calculate_progress_percentage(lessons))
       |> patch_to_next(patch_home?: true)
 
     {:noreply, next_socket}
