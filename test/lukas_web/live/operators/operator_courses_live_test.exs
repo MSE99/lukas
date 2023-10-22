@@ -25,9 +25,9 @@ defmodule LukasWeb.Operator.AllCoursesLiveTest do
 
       {:ok, lv, _} = live(conn, ~p"/controls/courses/new")
 
-      lv |> element("span", tag1.name) |> render_click()
-      lv |> element("span", tag2.name) |> render_click()
-      lv |> element("span", tag3.name) |> render_click()
+      lv |> element("#tags-#{tag1.id}") |> render_click()
+      lv |> element("#tags-#{tag2.id}") |> render_click()
+      lv |> element("#tags-#{tag3.id}") |> render_click()
 
       render_result =
         lv
@@ -44,9 +44,9 @@ defmodule LukasWeb.Operator.AllCoursesLiveTest do
 
       {:ok, lv, _} = live(conn, ~p"/controls/courses/new")
 
-      lv |> element("span", tag1.name) |> render_click()
-      lv |> element("span", tag2.name) |> render_click()
-      lv |> element("span", tag3.name) |> render_click()
+      lv |> element("#tags-#{tag1.id}") |> render_click()
+      lv |> element("#tags-#{tag2.id}") |> render_click()
+      lv |> element("#tags-#{tag3.id}") |> render_click()
 
       render_result =
         lv
@@ -64,9 +64,9 @@ defmodule LukasWeb.Operator.AllCoursesLiveTest do
       {:ok, lv, _} = live(conn, ~p"/controls/courses/new")
       render_async(lv)
 
-      lv |> element("span", tag1.name) |> render_click()
-      lv |> element("span", tag2.name) |> render_click()
-      lv |> element("span", tag3.name) |> render_click()
+      lv |> element("#tags-#{tag1.id}") |> render_click()
+      lv |> element("#tags-#{tag2.id}") |> render_click()
+      lv |> element("#tags-#{tag3.id}") |> render_click()
 
       lv
       |> form("form#course-form", %{"course" => %{"name" => "foo bar baz", "price" => 500}})
@@ -98,9 +98,9 @@ defmodule LukasWeb.Operator.AllCoursesLiveTest do
 
       {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}/edit")
 
-      lv |> element("span", tag1.name) |> render_click()
-      lv |> element("span", tag2.name) |> render_click()
-      lv |> element("span", tag3.name) |> render_click()
+      lv |> element("#tags-#{tag1.id}") |> render_click()
+      lv |> element("#tags-#{tag2.id}") |> render_click()
+      lv |> element("#tags-#{tag3.id}") |> render_click()
 
       render_result =
         lv
@@ -117,9 +117,9 @@ defmodule LukasWeb.Operator.AllCoursesLiveTest do
 
       {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}/edit")
 
-      lv |> element("span", tag1.name) |> render_click()
-      lv |> element("span", tag2.name) |> render_click()
-      lv |> element("span", tag3.name) |> render_click()
+      lv |> element("#tags-#{tag1.id}") |> render_click()
+      lv |> element("#tags-#{tag2.id}") |> render_click()
+      lv |> element("#tags-#{tag3.id}") |> render_click()
 
       render_result =
         lv
@@ -137,9 +137,9 @@ defmodule LukasWeb.Operator.AllCoursesLiveTest do
       {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}/edit")
       render_async(lv)
 
-      lv |> element("span", tag1.name) |> render_click()
-      lv |> element("span", tag2.name) |> render_click()
-      lv |> element("span", tag3.name) |> render_click()
+      lv |> element("#tags-#{tag1.id}") |> render_click()
+      lv |> element("#tags-#{tag2.id}") |> render_click()
+      lv |> element("#tags-#{tag3.id}") |> render_click()
 
       lv
       |> form("form#course-form", %{"course" => %{"name" => "foo bar baz", "price" => 500}})
