@@ -81,9 +81,19 @@ defmodule LukasWeb.Lecturer.CoursesLive do
       <:failed>failed...</:failed>
 
       <ul id="courses" phx-update="stream" class="mt-5">
-        <li :for={{id, course} <- @streams.courses} id={id} class="mb-2">
-          <.link navigate={~p"/tutor/my-courses/#{course.id}"}>
-            <CommonComponents.course_card course={course} />
+        <li
+          :for={{id, course} <- @streams.courses}
+          id={id}
+          class="mb-2 flex items-center text-secondary font-bold mb-3"
+        >
+          <img src={~p"/images/#{course.banner_image}"} width={80} height={80} class="rounded" />
+
+          <.link navigate={~p"/tutor/my-courses/#{course.id}"} class="ml-5 hover:underline">
+            <%= course.name %>
+          </.link>
+
+          <.link class="ml-auto" patch={~p"/tutor/my-courses/#{course.id}/edit"}>
+            <.icon name="hero-pencil-solid" />
           </.link>
         </li>
       </ul>
@@ -95,31 +105,41 @@ defmodule LukasWeb.Lecturer.CoursesLive do
       on_cancel={JS.patch(~p"/tutor/my-courses")}
       show
     >
+      <h1 class="mb-5 font-bold text-lg text-primary">Create new course</h1>
+
       <.form
         for={@form}
         phx-change="validate"
         phx-submit={if @live_action == :edit, do: "edit", else: "create"}
       >
         <.input field={@form[:name]} type="text" label="Name" phx-debounce="blur" />
-        <.input field={@form[:price]} type="number" label="Name" phx-debounce="blur" />
+        <.input field={@form[:price]} type="number" label="Price" phx-debounce="blur" />
         <.input field={@form[:description]} type="textarea" label="Description" phx-debounce="blur" />
 
-        <div id="tags" phx-update="stream">
-          <span
+        <p class="font-semibold mt-5">Tags</p>
+        <ul id="tags" phx-update="stream" class="mt-3 flex flex-wrap gap-2">
+          <li
             :for={{id, tag} <- @streams.tags}
             id={id}
             phx-click="toggle-tag"
             phx-value-id={tag.id}
             class={[
-              tag.id in @chosen_tag_ids && "font-bold blue"
+              "hover:bg-green-600 hover:text-white transition-all hover:cursor-pointer font-bold text-sm px-4 py-1 rounded-full",
+              if(
+                tag.id in @chosen_tag_ids,
+                do: "bg-primary text-white",
+                else: "bg-gray-300 text-secondary"
+              )
             ]}
-            phx-throttle
           >
             <%= tag.name %>
-          </span>
-        </div>
+          </li>
+        </ul>
 
-        <.live_file_input upload={@uploads.banner_image} />
+        <div class="my-5">
+          <p class="font-bold mb-3">Banner image</p>
+          <.live_file_input upload={@uploads.banner_image} />
+        </div>
 
         <%= for entry <- @uploads.banner_image.entries do %>
           <progress value={entry.progress} max="100"></progress>
@@ -129,7 +149,9 @@ defmodule LukasWeb.Lecturer.CoursesLive do
           <% end %>
         <% end %>
 
-        <.button>Create</.button>
+        <div class="flex justify-end">
+          <.button class="px-10">Create</.button>
+        </div>
       </.form>
     </.modal>
     """
