@@ -411,5 +411,117 @@ defmodule Lukas.LearningTest do
       {_, lessons} = Students.get_progress(student, course.id)
       assert :course_home == Students.get_next_lesson_or_topic(lessons)
     end
+
+    test "calculate_progress_percentage/1 should return 0.0 when given []." do
+      assert Students.calculate_progress_percentage([]) == 0.0
+    end
+
+    test "calculate_progress_percentage/1 should return 0.0 when the user has progressed through none of the content.",
+         %{student: student} do
+      course = course_fixture()
+
+      lesson1 = lesson_fixture(course)
+      lesson2 = lesson_fixture(course)
+      lesson3 = lesson_fixture(course)
+
+      text_topic_fixture(lesson1)
+      text_topic_fixture(lesson2)
+      text_topic_fixture(lesson3)
+
+      {:ok, _} = Students.enroll_student(course, student)
+      {_, lessons} = Students.get_progress(student, course.id)
+
+      assert Students.calculate_progress_percentage(lessons) == 0.0
+    end
+
+    test "calculate_progress_percentage/1 should return %50.0 when the user has progressed through half of the content.",
+         %{student: student} do
+      course = course_fixture()
+
+      lesson1 = lesson_fixture(course)
+      topic1 = text_topic_fixture(lesson1)
+
+      lesson2 = lesson_fixture(course)
+      topic2 = text_topic_fixture(lesson2)
+
+      lesson3 = lesson_fixture(course)
+      text_topic_fixture(lesson3)
+
+      lesson4 = lesson_fixture(course)
+      text_topic_fixture(lesson4)
+
+      {:ok, _} = Students.enroll_student(course, student)
+
+      Students.progress_through_lesson(student, lesson1)
+      Students.progress_through_topic(student, topic1)
+
+      Students.progress_through_lesson(student, lesson2)
+      Students.progress_through_topic(student, topic2)
+
+      {_, lessons} = Students.get_progress(student, course.id)
+
+      assert Students.calculate_progress_percentage(lessons) == 50.0
+    end
+
+    test "calculate_progress_percentage/1 should return %25.0 when the user has progressed through quarter of the content.",
+         %{student: student} do
+      course = course_fixture()
+
+      lesson1 = lesson_fixture(course)
+      topic1 = text_topic_fixture(lesson1)
+
+      lesson2 = lesson_fixture(course)
+      text_topic_fixture(lesson2)
+
+      lesson3 = lesson_fixture(course)
+      text_topic_fixture(lesson3)
+
+      lesson4 = lesson_fixture(course)
+      text_topic_fixture(lesson4)
+
+      {:ok, _} = Students.enroll_student(course, student)
+
+      Students.progress_through_lesson(student, lesson1)
+      Students.progress_through_topic(student, topic1)
+
+      {_, lessons} = Students.get_progress(student, course.id)
+
+      assert Students.calculate_progress_percentage(lessons) == 25.0
+    end
+
+    test "calculate_progress_percentage/1 should return %100.0 when the user has finished the course.",
+         %{student: student} do
+      course = course_fixture()
+
+      lesson1 = lesson_fixture(course)
+      topic1 = text_topic_fixture(lesson1)
+
+      lesson2 = lesson_fixture(course)
+      topic2 = text_topic_fixture(lesson2)
+
+      lesson3 = lesson_fixture(course)
+      topic3 = text_topic_fixture(lesson3)
+
+      lesson4 = lesson_fixture(course)
+      topic4 = text_topic_fixture(lesson4)
+
+      {:ok, _} = Students.enroll_student(course, student)
+
+      Students.progress_through_lesson(student, lesson1)
+      Students.progress_through_topic(student, topic1)
+
+      Students.progress_through_lesson(student, lesson2)
+      Students.progress_through_topic(student, topic2)
+
+      Students.progress_through_lesson(student, lesson3)
+      Students.progress_through_topic(student, topic3)
+
+      Students.progress_through_lesson(student, lesson4)
+      Students.progress_through_topic(student, topic4)
+
+      {_, lessons} = Students.get_progress(student, course.id)
+
+      assert Students.calculate_progress_percentage(lessons) == 100.0
+    end
   end
 end

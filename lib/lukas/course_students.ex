@@ -117,6 +117,40 @@ defmodule Lukas.Learning.Course.Students do
     end
   end
 
+  def calculate_progress_percentage([]), do: 0.0
+
+  def calculate_progress_percentage(lessons) do
+    lessons_count =
+      lessons
+      |> Enum.count()
+
+    topics_count =
+      lessons
+      |> Enum.map(fn l -> length(l.topics) end)
+      |> Enum.sum()
+
+    finished_lessons_count =
+      lessons
+      |> Enum.filter(&filter_progressed_only/1)
+      |> Enum.count()
+
+    finished_topics_count =
+      lessons
+      |> Enum.map(fn l ->
+        l.topics
+        |> Enum.filter(&filter_progressed_only/1)
+        |> Enum.count()
+      end)
+      |> Enum.sum()
+
+    total = lessons_count + topics_count
+    finished = finished_lessons_count + finished_topics_count
+
+    finished / total * 100
+  end
+
+  defp filter_progressed_only(lesson_or_topic), do: lesson_or_topic.progressed
+
   defp multi_load_lessons_with_patched_progress(m) do
     Multi.run(m, :lessons, fn _, %{enrollment: enr, progresses: progs} when enr != nil ->
       {:ok, load_lessons_with_patched_progress_and_topics(enr.course_id, progs)}
