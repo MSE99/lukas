@@ -12,9 +12,14 @@ defmodule LukasWeb.Operator.CourseLive do
          {course, lecturers, _} when course != nil <-
            Course.Staff.get_course_with_lecturers(id) do
       Learning.watch_course(course)
+      tags = Learning.list_course_tags(course)
 
       {:ok,
-       socket |> assign(course: course) |> load_lessons(course) |> stream(:lecturers, lecturers)}
+       socket
+       |> assign(course: course)
+       |> load_lessons(course)
+       |> stream(:lecturers, lecturers)
+       |> stream(:tags, tags)}
     else
       _ -> {:ok, redirect(socket, to: ~p"/")}
     end
@@ -101,6 +106,9 @@ defmodule LukasWeb.Operator.CourseLive do
       </.link>
     </div>
 
+    <div class="pb-5">
+      <CommonComponents.streamed_tag_list id="tags-list" title="Tags" tags={@streams.tags} />
+    </div>
     <.modal
       :if={@live_action in [:new_lesson, :edit_lesson]}
       id="new-lesson-modal"

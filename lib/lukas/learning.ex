@@ -158,6 +158,12 @@ defmodule Lukas.Learning do
     |> maybe_emit_course_tagged()
   end
 
+  def list_course_tags(course) do
+    course.id
+    |> Query.course_tags()
+    |> Repo.all()
+  end
+
   def update_course(course, attrs, opts \\ []) do
     tag_ids = Keyword.get(opts, :tag_ids, [])
 

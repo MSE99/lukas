@@ -6,6 +6,7 @@ defmodule LukasWeb.Courses.CourseLiveTest do
   import Lukas.AccountsFixtures
   import Lukas.MoneyFixtures
 
+  alias Lukas.Learning
   alias Lukas.Learning.Course.{Content, Students}
 
   def create_course(ctx) do
@@ -59,6 +60,24 @@ defmodule LukasWeb.Courses.CourseLiveTest do
       {:ok, _} = Students.enroll_student(course, student)
 
       assert render(lv) =~ course.name
+    end
+
+    test "should render all course tags.", %{conn: conn, course: course} do
+      tag1 = tag_fixture()
+      tag2 = tag_fixture()
+      tag3 = tag_fixture()
+
+      {:ok, _} = Learning.tag_course(course.id, tag1.id)
+      {:ok, _} = Learning.tag_course(course.id, tag2.id)
+      {:ok, _} = Learning.tag_course(course.id, tag3.id)
+
+      {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}")
+
+      html = render(lv)
+
+      assert html =~ tag1.name
+      assert html =~ tag2.name
+      assert html =~ tag3.name
     end
   end
 
