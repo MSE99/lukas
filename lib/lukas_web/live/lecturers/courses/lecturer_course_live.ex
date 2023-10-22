@@ -59,23 +59,32 @@ defmodule LukasWeb.Lecturer.CourseLive do
 
     <CommonComponents.course_banner image_src={~p"/images/#{@course.banner_image}"} />
 
-    <.link patch={~p"/tutor/my-courses/#{@course.id}/new-lesson"} class="flex justify-end mt-10">
-      <.button>New lesson</.button>
+    <.link patch={~p"/tutor/my-courses/#{@course.id}/new-lesson"}>
+      <CommonComponents.transparent_button>
+        Lessons <.icon name="hero-plus-circle-solid" class="ml-2" />
+      </CommonComponents.transparent_button>
     </.link>
 
-    <ul id="lessons" phx-update="stream">
-      <li :for={{id, lesson} <- @streams.lessons} id={id}>
-        <.link navigate={~p"/tutor/my-courses/#{@course.id}/lessons/#{lesson.id}"}>
+    <ul id="lessons" phx-update="stream" class="my-10">
+      <li
+        :for={{id, lesson} <- @streams.lessons}
+        id={id}
+        class="flex gap-2 text-black font-bold text-lg"
+      >
+        <.link
+          navigate={~p"/tutor/my-courses/#{@course.id}/lessons/#{lesson.id}"}
+          class="hover:underline mr-auto"
+        >
           <%= lesson.title %>
         </.link>
-        |
+
         <.link patch={~p"/tutor/my-courses/#{@course.id}/lessons/#{lesson.id}/edit-lesson"}>
-          Edit
+          <.icon name="hero-pencil-solid text-secondary hover:text-blue-300" />
         </.link>
-        |
-        <.button id={"lesson-delete-#{lesson.id}"} phx-click="delete-lesson" phx-value-id={lesson.id}>
-          Delete lesson
-        </.button>
+
+        <span id={"lesson-delete-#{lesson.id}"} phx-click="delete-lesson" phx-value-id={lesson.id}>
+          <.icon name="hero-trash-solid text-secondary hover:text-red-500 hover:cursor-pointer" />
+        </span>
       </li>
     </ul>
 
@@ -106,6 +115,10 @@ defmodule LukasWeb.Lecturer.CourseLive do
       on_cancel={JS.patch(~p"/tutor/my-courses/#{@course.id}")}
       show
     >
+      <h1 class="mb-5 font-bold text-lg text-primary">
+        <%= if @live_action == :new_lesson, do: "Create new lesson", else: "Update #{@lesson.title}" %>
+      </h1>
+
       <.form
         for={@form}
         phx-change="validate"
@@ -113,7 +126,10 @@ defmodule LukasWeb.Lecturer.CourseLive do
       >
         <.input type="text" label="Title" field={@form[:title]} />
         <.input type="textarea" label="Description" field={@form[:description]} />
-        <.button>Create</.button>
+
+        <div class="mt-5 flex justify-end">
+          <.button class="px-8">Create</.button>
+        </div>
       </.form>
     </.modal>
     """

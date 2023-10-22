@@ -107,7 +107,9 @@ defmodule LukasWeb.Operator.CourseLive do
       on_cancel={JS.patch(~p"/controls/courses/#{@course.id}")}
       show
     >
-      <h1 class="mb-5 font-bold text-lg text-primary">Create new lesson</h1>
+      <h1 class="mb-5 font-bold text-lg text-primary">
+        <%= if @live_action == :new_lesson, do: "Create new lesson", else: "Update #{@lesson.title}" %>
+      </h1>
 
       <.form
         for={@form}
