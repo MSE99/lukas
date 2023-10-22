@@ -9,10 +9,9 @@ defmodule LukasWeb.Operator.CourseLive do
 
   def mount(%{"id" => raw_id}, _session, socket) do
     with {id, _} <- Integer.parse(raw_id),
-         {course, lecturers, _} when course != nil <-
+         {course, lecturers, tags} when course != nil <-
            Course.Staff.get_course_with_lecturers(id) do
       Learning.watch_course(course)
-      tags = Learning.list_course_tags(course)
 
       {:ok,
        socket
