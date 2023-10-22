@@ -14,7 +14,7 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
   setup :register_and_log_in_student
 
   setup ctx do
-    course = course_fixture()
+    course = course_fixture(%{description: "Foo is great bar is none!"})
     lecturers = [lecturer_fixture(), lecturer_fixture(), lecturer_fixture()]
     tags = [tag_fixture(), tag_fixture()]
 
@@ -36,6 +36,7 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
 
     html = render_async(lv)
     assert html =~ course.name
+    assert html =~ course.description
 
     Enum.each(lecturers, fn lect -> assert html =~ lect.name end)
     Enum.each(tags, fn tag -> assert html =~ tag.name end)

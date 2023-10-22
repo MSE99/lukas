@@ -97,7 +97,7 @@ defmodule LukasWeb.Students.CourseLive do
         <h3 class="font-bold mb-3"><%= @course.name %></h3>
 
         <p class="mb-3">
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cumque recusandae odio, veritatis asperiores eum eveniet et dolorum, temporibus debitis sed ex culpa, amet saepe maxime ratione ullam eaque doloribus reiciendis?
+          <%= @course.description %>
         </p>
 
         <.link
