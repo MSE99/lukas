@@ -243,10 +243,13 @@ defmodule LukasWeb.Lecturer.CoursesLive do
         {:ok, filename}
       end)
 
-    case uploaded_images do
-      [entry] -> entry
-      [] -> Course.default_banner_image()
-    end
+    default_banner_image =
+      case socket.assigns.live_action do
+        :edit -> socket.assigns.course.banner_image
+        _ -> Course.default_banner_image()
+      end
+
+    List.first(uploaded_images, default_banner_image)
   end
 
   defp ext(upload_entry) do
