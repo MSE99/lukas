@@ -297,7 +297,7 @@ defmodule Lukas.Learning.Query do
       on: l.id == t.lesson_id,
       join: p in Progress,
       on: p.lesson_id == l.id and p.student_id == ^student_id,
-      where: p.lesson_id == l.id and p.topic_id == t.id,
+      where: p.lesson_id == l.id and p.topic_id == t.id and l.course_id == ^course_id,
       select: count(t.id)
     )
   end
