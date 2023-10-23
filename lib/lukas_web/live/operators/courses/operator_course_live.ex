@@ -105,9 +105,14 @@ defmodule LukasWeb.Operator.CourseLive do
       </.link>
     </div>
 
-    <div class="pb-5">
+    <div>
       <CommonComponents.streamed_tag_list id="tags-list" title="Tags" tags={@streams.tags} />
     </div>
+
+    <h3 class="mt-5 pb-5 font-bold text-primary">
+      Price <%= :erlang.float_to_binary(@course.price, decimals: 1) %> LYD
+    </h3>
+
     <.modal
       :if={@live_action in [:new_lesson, :edit_lesson]}
       id="new-lesson-modal"

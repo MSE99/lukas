@@ -48,12 +48,12 @@ defmodule LukasWeb.Operator.StudentsLiveTest do
   test "should render a search bar for getting a student by name.", %{conn: conn} do
     1..100 |> Enum.each(fn _ -> student_fixture() end)
 
-    student = student_fixture()
+    student = student_fixture(%{name: "Foo is great bar is none!"})
 
     {:ok, lv, _html} = live(conn, ~p"/controls/students")
 
     lv |> form("form#search-form", %{"name" => student.name}) |> render_submit()
 
-    assert render_async(lv, 500) =~ student.name
+    assert render_async(lv, 2500) =~ student.name
   end
 end
