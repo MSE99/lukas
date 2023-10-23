@@ -40,7 +40,10 @@ defmodule LukasWeb.Operator.InvitesLive do
     ]} />
 
     <.async_result assign={@loading_result}>
-      <:loading>Loading...</:loading>
+      <:loading>
+        <.loading_spinner />
+      </:loading>
+
       <:failed>Failed to load invites...</:failed>
 
       <div class="flex justify-center md:justify-end gap-2 mb-10">

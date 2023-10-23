@@ -538,6 +538,17 @@ defmodule LukasWeb.CoreComponents do
   end
 
   @doc """
+    Renders a loading spinner.
+  """
+  def loading_spinner(assigns) do
+    ~H"""
+    <div class="flex justify-center items-center my-10">
+      <span class="loader"></span>
+    </div>
+    """
+  end
+
+  @doc """
   Renders a [Hero Icon](https://heroicons.com).
 
   Hero icons come in three styles – outline, solid, and mini.

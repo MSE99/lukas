@@ -111,7 +111,10 @@ defmodule LukasWeb.InfiniteListLive do
     ~H"""
     <div>
       <.async_result assign={@loading}>
-        <:loading>Loading...</:loading>
+        <:loading>
+          <.loading_spinner />
+        </:loading>
+
         <:failed>failed...</:failed>
         <ul
           id={@id}

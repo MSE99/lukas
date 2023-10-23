@@ -38,7 +38,10 @@ defmodule LukasWeb.Operator.OperatorsLive do
   def render(assigns) do
     ~H"""
     <.async_result assign={@loading}>
-      <:loading>Loading operators...</:loading>
+      <:loading>
+        <.loading_spinner />
+      </:loading>
+
       <:failed>Failed...</:failed>
 
       <CommonComponents.navigate_breadcrumbs links={[
