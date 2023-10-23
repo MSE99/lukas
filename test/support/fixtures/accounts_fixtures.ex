@@ -29,7 +29,10 @@ defmodule Lukas.AccountsFixtures do
     full_attrs = attrs |> valid_user_attributes()
     inv = lecturer_invite_fixture()
     {:ok, lect} = Lukas.Accounts.register_lecturer(inv, full_attrs)
-    lect
+
+    {:ok, enabled_lect} = Lukas.Accounts.enable_user(lect)
+
+    enabled_lect
   end
 
   def user_fixture(attrs \\ %{}) do

@@ -97,7 +97,10 @@ defmodule Lukas.Accounts do
         get_image_path \\ fn -> "default-profile.png" end
       ) do
     Ecto.Multi.new()
-    |> Ecto.Multi.insert(:user, User.lecturer_changeset(%User{kind: :lecturer}, attrs))
+    |> Ecto.Multi.insert(
+      :user,
+      User.lecturer_changeset(%User{kind: :lecturer, enabled: false}, attrs)
+    )
     |> Ecto.Multi.delete(:invite, invite)
     |> Ecto.Multi.run(:user_with_image, fn _, %{user: user} ->
       updated =

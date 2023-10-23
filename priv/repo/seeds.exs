@@ -22,7 +22,7 @@ Lukas.Money.directly_deposit_to_student!(clerk, student, 5000)
 
 invite = Lukas.Accounts.generate_lecturer_invite!()
 
-{:ok, _} =
+{:ok, lect} =
   Lukas.Accounts.register_lecturer(invite, %{
     "kind" => "lecturer",
     "phone_number" => "094",
@@ -30,3 +30,5 @@ invite = Lukas.Accounts.generate_lecturer_invite!()
     "email" => "cool3@gmail.com",
     "name" => "Ali ageel"
   })
+
+{:ok, _} = Lukas.Accounts.enable_user(lect)
