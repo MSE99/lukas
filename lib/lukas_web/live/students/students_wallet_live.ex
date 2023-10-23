@@ -56,15 +56,8 @@ defmodule LukasWeb.Students.WalletLive do
         <p><%= @wallet_amount |> format_amount() %> LYD</p>
       </div>
 
-      <ul id="txs" phx-update="stream">
-        <li :for={{id, tx} <- @streams.transactions} id={id} class="m-3 flex items-center gap-2">
-          <.icon
-            name="hero-currency-dollar-solid"
-            class={
-              ["w-8 h-8", if(Money.is_deposit(tx), do: "text-primary", else: "text-red-500")]
-              |> Enum.join(" ")
-            }
-          />
+      <ul id="txs" phx-update="stream" class="list-disc pl-3 text-secondary">
+        <li :for={{id, tx} <- @streams.transactions} id={id} class="flex items-center pb-2 border-b">
           <%= Money.describe_tx(tx) %>
         </li>
       </ul>

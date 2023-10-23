@@ -31,7 +31,7 @@ defmodule Lukas.Money do
       {:ok, %{deposits: deposits, purchases: purchases}} ->
         deposits
         |> Enum.concat(purchases)
-        |> Enum.sort_by(fn tx -> tx.inserted_at end, {:desc, Date})
+        |> Enum.sort_by(fn tx -> tx.inserted_at end, {:desc, NaiveDateTime})
     end
   end
 
