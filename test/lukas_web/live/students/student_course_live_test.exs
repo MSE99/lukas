@@ -227,4 +227,23 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
 
     assert Money.get_deposited_amount!(student) == 0.0
   end
+
+  test "should render 25% if the student finished 1/4 lesson.", %{
+    conn: conn,
+    course: course,
+    user: student
+  } do
+    lesson = lesson_fixture(course)
+    lesson_fixture(course)
+    lesson_fixture(course)
+    lesson_fixture(course)
+
+    {:ok, _} = Students.enroll_student(course, student)
+    Students.progress_through_lesson(student, lesson)
+
+    {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}")
+    html = render_async(lv)
+
+    assert html =~ "25.0%"
+  end
 end

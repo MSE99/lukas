@@ -149,6 +149,35 @@ defmodule Lukas.Learning.Course.Students do
     finished / total * 100
   end
 
+  def get_progress_percentage(course_id, student_id) do
+    {:ok, counts} =
+      Multi.new()
+      |> Multi.one(:lessons_count, Query.count_lessons(course_id))
+      |> Multi.one(:topics_count, Query.count_topics(course_id))
+      |> Multi.one(:finished_lessons_count, Query.count_finished_lessons(course_id, student_id))
+      |> Multi.one(:finished_topics_count, Query.count_finished_topics(course_id, student_id))
+      |> Repo.transaction()
+
+    %{
+      lessons_count: lessons,
+      topics_count: topics,
+      finished_lessons_count: finished_lessons,
+      finished_topics_count: finished_topics
+    } = counts
+
+    total = normalize_db_int(lessons) + normalize_db_int(topics)
+    finished = normalize_db_int(finished_lessons) + normalize_db_int(finished_topics)
+
+    if total == 0.0 do
+      0.0
+    else
+      finished / total * 100
+    end
+  end
+
+  defp normalize_db_int(nil), do: 0
+  defp normalize_db_int(i), do: i
+
   defp filter_progressed_only(lesson_or_topic), do: lesson_or_topic.progressed
 
   defp multi_load_lessons_with_patched_progress(m) do

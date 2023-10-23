@@ -260,4 +260,45 @@ defmodule Lukas.Learning.Query do
       where: prog.student_id == ^student_id and prog.course_id == ^course_id
     )
   end
+
+  def count_lessons(course_id) do
+    from(
+      l in Lesson,
+      where: l.course_id == ^course_id,
+      select: count(l.id)
+    )
+  end
+
+  def count_topics(course_id) do
+    from(
+      t in Lesson.Topic,
+      join: l in Lesson,
+      on: l.id == t.lesson_id,
+      where: l.course_id == ^course_id,
+      select: t
+    )
+  end
+
+  def count_finished_lessons(course_id, student_id) do
+    from(
+      l in Lesson,
+      where: l.course_id == ^course_id,
+      join: p in Progress,
+      on: p.lesson_id == l.id and p.student_id == ^student_id,
+      where: is_nil(p.topic_id),
+      select: count(l.id)
+    )
+  end
+
+  def count_finished_topics(course_id, student_id) do
+    from(
+      t in Lesson.Topic,
+      join: l in Lesson,
+      on: l.id == t.lesson_id,
+      join: p in Progress,
+      on: p.lesson_id == l.id and p.student_id == ^student_id,
+      where: p.lesson_id == l.id and p.topic_id == t.id,
+      select: count(t.id)
+    )
+  end
 end

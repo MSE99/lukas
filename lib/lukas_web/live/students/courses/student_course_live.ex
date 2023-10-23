@@ -24,13 +24,15 @@ defmodule LukasWeb.Students.CourseLive do
          {course, lect, tags, is_enrolled} when course != nil <-
            Learning.get_course_for_student(id, current_user) do
       wallet_amount = Money.get_deposited_amount!(current_user)
+      progress = Students.get_progress_percentage(course.id, current_user.id)
 
       %{
         course: course,
         lecturers: lect,
         tags: tags,
         is_enrolled: is_enrolled,
-        wallet_amount: wallet_amount
+        wallet_amount: wallet_amount,
+        progress: progress
       }
     else
       _ -> :error
@@ -47,7 +49,8 @@ defmodule LukasWeb.Students.CourseLive do
       lecturers: lecturers,
       tags: tags,
       is_enrolled: is_enrolled,
-      wallet_amount: wallet_amount
+      wallet_amount: wallet_amount,
+      progress: progress
     } = ctx
 
     Learning.watch_course(course.id)
@@ -56,6 +59,7 @@ defmodule LukasWeb.Students.CourseLive do
     next_socket =
       socket
       |> assign(:course, course)
+      |> assign(:progress, progress)
       |> assign(:is_enrolled, is_enrolled)
       |> assign(:wallet_amount, wallet_amount)
       |> assign(:loading, AsyncResult.ok(socket.assigns.loading, nil))
@@ -105,7 +109,7 @@ defmodule LukasWeb.Students.CourseLive do
           class="font-bold underline"
           navigate={~p"/home/courses/#{@course.id}/study"}
         >
-          Open lessons  »
+          Open lessons (<%= format_price(@progress) %>% completed)  »
         </.link>
 
         <div
