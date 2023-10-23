@@ -54,6 +54,6 @@ defmodule LukasWeb.Operator.StudentsLiveTest do
 
     lv |> form("form#search-form", %{"name" => student.name}) |> render_submit()
 
-    assert render(lv) =~ student.name
+    assert render_async(lv, 500) =~ student.name
   end
 end
