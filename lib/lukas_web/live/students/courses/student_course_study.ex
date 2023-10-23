@@ -124,7 +124,7 @@ defmodule LukasWeb.Students.StudyLive do
         </div>
       </div>
 
-      <.modal id="lessons-modal" show>
+      <.modal id="lessons-modal">
         <div class="flex gap-3 mb-3">
           <h1 class="font-bold text-primary text-sm">
             completed <%= :erlang.float_to_binary(@completed, decimals: 1) %>%

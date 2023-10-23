@@ -54,6 +54,8 @@ defmodule LukasWeb.Students.CourseLive do
     } = ctx
 
     Learning.watch_course(course.id)
+    Students.watch_progress(socket.assigns.current_user, course.id)
+
     Money.watch_wallet(socket.assigns.current_user)
 
     next_socket =
@@ -169,6 +171,11 @@ defmodule LukasWeb.Students.CourseLive do
 
   def handle_info({:wallet, _, :amount_updated, next_amount}, socket) do
     {:noreply, assign(socket, wallet_amount: next_amount)}
+  end
+
+  def handle_info({:progress, _, {_course, lessons}}, socket) do
+    progress_percentage = Students.calculate_progress_percentage(lessons)
+    {:noreply, assign(socket, :progress, progress_percentage)}
   end
 
   defp format_price(p), do: :erlang.float_to_binary(p, decimals: 1)

@@ -246,4 +246,27 @@ defmodule LukasWeb.Students.StudentCourseLiveTest do
 
     assert html =~ "25.0%"
   end
+
+  test "should react to student making progress in course.", %{
+    conn: conn,
+    course: course,
+    user: student
+  } do
+    lesson1 = lesson_fixture(course)
+    lesson2 = lesson_fixture(course)
+    lesson_fixture(course)
+    lesson_fixture(course)
+
+    {:ok, _} = Students.enroll_student(course, student)
+    Students.progress_through_lesson(student, lesson1)
+
+    {:ok, lv, _} = live(conn, ~p"/home/courses/#{course.id}")
+    html = render_async(lv)
+
+    assert html =~ "25.0%"
+
+    Students.progress_through_lesson(student, lesson2)
+
+    assert render(lv) =~ "50.0%"
+  end
 end
