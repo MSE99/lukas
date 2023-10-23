@@ -96,6 +96,10 @@ defmodule LukasWeb.Lecturer.CourseLive do
 
     <CommonComponents.streamed_tag_list id="tags-list" title="Tags" tags={@streams.tags} />
 
+    <h3 class="mt-5 pb-5 font-bold text-primary">
+      Price <%= :erlang.float_to_binary(@course.price, decimals: 1) %> LYD
+    </h3>
+
     <.modal
       :if={@live_action == :add_lecturer}
       id="new-lecturer-modal"
