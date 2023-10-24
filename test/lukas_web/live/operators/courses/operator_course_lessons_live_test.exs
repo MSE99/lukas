@@ -114,4 +114,44 @@ defmodule LukasWeb.Operator.CourseLessonsLiveTest do
       assert post_update_html =~ updated.name
     end
   end
+
+  describe "new" do
+    test "should render errors on change.", %{conn: conn, course: course} do
+      {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}/lessons")
+
+      render_async(lv)
+
+      lv
+      |> form("form", %{"lesson" => %{"title" => "", "description" => "foo is great bar is none"}})
+      |> render_change()
+
+      assert render(lv) =~ "can&#39;t be blank"
+    end
+
+    test "should render errors on submit.", %{conn: conn, course: course} do
+      {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}/lessons")
+
+      render_async(lv)
+
+      lv
+      |> form("form", %{"lesson" => %{"title" => "", "description" => "foo is great bar is none"}})
+      |> render_submit()
+
+      assert render(lv) =~ "can&#39;t be blank"
+    end
+
+    test "should create and render the new lesson on screen.", %{conn: conn, course: course} do
+      {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}/lessons")
+
+      render_async(lv)
+
+      lv
+      |> form("form", %{
+        "lesson" => %{"title" => "Cool title", "description" => "foo is great bar is none"}
+      })
+      |> render_submit()
+
+      assert render(lv) =~ "Cool title"
+    end
+  end
 end

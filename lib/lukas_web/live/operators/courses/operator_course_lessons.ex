@@ -4,6 +4,7 @@ defmodule LukasWeb.Operator.CourseLessonsLive do
   alias Lukas.Learning
 
   alias Phoenix.LiveView.AsyncResult
+  alias Lukas.Learning
 
   def mount(params, _session, socket) do
     {:ok,
@@ -25,10 +26,13 @@ defmodule LukasWeb.Operator.CourseLessonsLive do
   def handle_async(:loading, {:ok, {course, lessons}}, socket) do
     Learning.watch_course(course)
 
+    form = Learning.Course.Content.create_lesson_changeset(course) |> to_form()
+
     next_socket =
       socket
       |> assign(:loading, AsyncResult.ok(socket.assigns.loading, nil))
       |> assign(:course, course)
+      |> assign(:form, form)
       |> stream(:lessons, lessons)
 
     {:noreply, next_socket}
@@ -59,8 +63,35 @@ defmodule LukasWeb.Operator.CourseLessonsLive do
           <%= lesson.title %>
         </li>
       </ul>
+
+      <.modal id="form-modal">
+        <.form for={@form} phx-change="validate" phx-submit="create">
+          <.input type="text" label="Title" field={@form[:title]} />
+          <.input type="textarea" label="Description" field={@form[:description]} />
+
+          <div class="mt-5 flex justify-end">
+            <.button class="px-8">Create</.button>
+          </div>
+        </.form>
+      </.modal>
     </.async_result>
     """
+  end
+
+  def handle_event("create", %{"lesson" => params}, socket) do
+    case Learning.Course.Content.create_lesson(socket.assigns.course, params) do
+      {:ok, lesson} ->
+        {:noreply, stream_insert(socket, :lessons, lesson)}
+
+      {:error, cs} ->
+        {:noreply, assign(socket, form: to_form(cs))}
+    end
+  end
+
+  def handle_event("validate", %{"lesson" => params}, socket) do
+    cs = Learning.Course.Content.validate_lesson(socket.assigns.course, params)
+    form = to_form(cs)
+    {:noreply, assign(socket, form: form)}
   end
 
   def handle_info({:course, _, :lesson_added, lesson}, socket) do
