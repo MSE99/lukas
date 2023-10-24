@@ -76,6 +76,10 @@ defmodule LukasWeb.Operator.CourseLessonsLive do
           >
             Edit
           </.button>
+
+          <.button id={"lessons-#{lesson.id}-delete"} phx-click="delete" phx-value-id={lesson.id}>
+            Delete
+          </.button>
         </li>
       </ul>
 
@@ -151,6 +155,16 @@ defmodule LukasWeb.Operator.CourseLessonsLive do
     cs = Learning.Course.Content.validate_lesson(socket.assigns.course, params)
     form = to_form(cs)
     {:noreply, assign(socket, form: form)}
+  end
+
+  # TODO: Replace this insecure code, attacker can use
+  # the id parameter to delete any lesson on the system. 
+  def handle_event("delete", %{"id" => raw_id}, socket) do
+    raw_id
+    |> String.to_integer()
+    |> Learning.Course.Content.remove_lesson()
+
+    {:noreply, socket |> stream_delete_by_dom_id(:lessons, "lessons-#{raw_id}")}
   end
 
   def handle_info({:course, _, :lesson_added, lesson}, socket) do

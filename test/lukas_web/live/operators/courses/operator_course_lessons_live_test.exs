@@ -221,4 +221,23 @@ defmodule LukasWeb.Operator.CourseLessonsLiveTest do
       refute html =~ l1.title
     end
   end
+
+  describe "delete" do
+    test "should render a button for deleting the course lesson.", %{conn: conn, course: course} do
+      l1 = lesson_fixture(course)
+      l2 = lesson_fixture(course)
+      l3 = lesson_fixture(course)
+
+      {:ok, lv, _html} = live(conn, ~p"/controls/courses/#{course.id}/lessons")
+      render_async(lv)
+
+      lv |> element("#lessons-#{l1.id}-delete") |> render_click()
+
+      html = render(lv)
+
+      assert html =~ l2.title
+      assert html =~ l3.title
+      refute html =~ l1.title
+    end
+  end
 end
