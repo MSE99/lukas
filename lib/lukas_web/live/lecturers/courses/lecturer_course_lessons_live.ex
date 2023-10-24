@@ -69,9 +69,10 @@ defmodule LukasWeb.Lecturer.CourseLessonsLive do
       <:failed>Failed...</:failed>
 
       <CommonComponents.navigate_breadcrumbs links={[
-        {~p"/controls", "home"},
-        {~p"/controls/courses/#{@course.id}", @course.name},
-        {~p"/controls/courses/#{@course.id}/lessons", "lessons"}
+        {~p"/tutor", "home"},
+        {~p"/tutor/my-courses", "my courses"},
+        {~p"/tutor/my-courses/#{@course.id}", @course.name},
+        {~p"/tutor/my-courses/#{@course.id}/lessons", "lessons"}
       ]} />
 
       <div class="flex justify-end">
@@ -82,7 +83,7 @@ defmodule LukasWeb.Lecturer.CourseLessonsLive do
 
       <ul id="lessons" phx-update="stream" class="mt-10">
         <li :for={{id, lesson} <- @streams.lessons} id={id} class="flex items-center gap-2">
-          <.link navigate={~p"/controls/courses/#{@course.id}/lessons/#{lesson.id}"}>
+          <.link navigate={~p"/tutor/my-courses/#{@course.id}/lessons/#{lesson.id}"}>
             <strong class="text-lg underline lg:no-underline hover:underline">
               <%= lesson.title %>
             </strong>
