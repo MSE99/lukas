@@ -181,11 +181,11 @@ defmodule LukasWeb.CommonComponents do
     ~H"""
     <p class="font-bold mt-5 mb-6 text-secondary"><%= @title %></p>
 
-    <ul id={@id} phx-update="stream" class="flex gap-1">
+    <ul id={@id} phx-update="stream" class="flex gap-1 flex-wrap">
       <li
         :for={{id, tag} <- @tags}
         id={id}
-        class="bg-primary text-white font-bold px-6 py-2 rounded-full"
+        class="bg-primary text-white font-bold sm:text-sm lg:text-base px-6 py-2 rounded-full"
       >
         <%= tag.name %>
       </li>

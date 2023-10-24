@@ -37,27 +37,33 @@ defmodule LukasWeb.Operator.CourseLive do
 
     <CommonComponents.course_banner image_src={~p"/images/#{@course.banner_image}"} />
 
-    <.link navigate={~p"/controls/courses/#{@course.id}/lessons"}>
-      <CommonComponents.transparent_button>
-        <.icon name="hero-book-open" class="ml-2" /> Lessons
-      </CommonComponents.transparent_button>
-    </.link>
+    <div class="mt-10 text-secondary px-2 pb-5">
+      <h3 class="text-xl font-bold mb-3"><%= @course.name %></h3>
 
-    <CommonComponents.streamed_users_mini_list
-      id="lecturers-list"
-      title="Lecturers"
-      users={@streams.lecturers}
-    />
+      <p class="mb-8 mt-5 ">
+        <%= @course.description %>
+      </p>
 
-    <div class="mt-5 flex justify-end pb-5">
-      <.link navigate={~p"/controls/courses/#{@course.id}/assign-lecturer"}>
+      <.link navigate={~p"/controls/courses/#{@course.id}/lessons"}>
         <CommonComponents.transparent_button>
-          <.icon name="hero-pencil" class="mr-3" /> Manage lecturers
+          <.icon name="hero-book-open" class="mr-2" /> Lessons
         </CommonComponents.transparent_button>
       </.link>
-    </div>
 
-    <div>
+      <CommonComponents.streamed_users_mini_list
+        id="users-list"
+        title="Lecturers"
+        users={@streams.lecturers}
+      />
+
+      <div class="mt-5 flex justify-end pb-5">
+        <.link navigate={~p"/controls/courses/#{@course.id}/assign-lecturer"}>
+          <CommonComponents.transparent_button>
+            <.icon name="hero-pencil" class="mr-3" /> Manage lecturers
+          </CommonComponents.transparent_button>
+        </.link>
+      </div>
+
       <CommonComponents.streamed_tag_list id="tags-list" title="Tags" tags={@streams.tags} />
     </div>
 

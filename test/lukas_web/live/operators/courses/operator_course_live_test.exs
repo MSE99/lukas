@@ -37,6 +37,7 @@ defmodule LukasWeb.Courses.CourseLiveTest do
 
       assert html =~ course.name
       assert html =~ "#{course.price |> :erlang.float_to_binary(decimals: 1)} LYD"
+      assert html =~ course.description
     end
 
     test "should handle students enrollments.", %{conn: conn, course: course} do
