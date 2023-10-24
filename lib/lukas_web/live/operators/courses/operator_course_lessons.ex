@@ -60,6 +60,7 @@ defmodule LukasWeb.Operator.CourseLessonsLive do
 
       <CommonComponents.navigate_breadcrumbs links={[
         {~p"/controls", "home"},
+        {~p"/controls/courses", "courses"},
         {~p"/controls/courses/#{@course.id}", @course.name},
         {~p"/controls/courses/#{@course.id}/lessons", "lessons"}
       ]} />

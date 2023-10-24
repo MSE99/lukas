@@ -6,7 +6,7 @@ defmodule LukasWeb.Lecturer.CourseLiveTest do
   import Lukas.AccountsFixtures
   import Lukas.MoneyFixtures
 
-  alias Lukas.Learning.Course.{Content, Students}
+  alias Lukas.Learning.Course.Students
 
   def create_course(ctx) do
     %{user: user} = ctx
@@ -45,14 +45,12 @@ defmodule LukasWeb.Lecturer.CourseLiveTest do
 
     test "should render the course data if the course id is valid.", %{
       conn: conn,
-      course: course,
-      lesson: lesson
+      course: course
     } do
       {:ok, _, html} = live(conn, ~p"/tutor/my-courses/#{course.id}")
 
       assert html =~ course.name
       assert html =~ "#{course.price |> :erlang.float_to_binary(decimals: 1)} LYD"
-      assert html =~ lesson.title
     end
 
     test "should handle students enrollments.", %{conn: conn, course: course} do

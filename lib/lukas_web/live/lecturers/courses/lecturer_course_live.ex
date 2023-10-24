@@ -3,7 +3,6 @@ defmodule LukasWeb.Lecturer.CourseLive do
 
   alias Lukas.Learning
   alias Lukas.Learning.Course
-  alias Lukas.Learning.Course.Content
 
   alias LukasWeb.CommonComponents
 
@@ -68,18 +67,6 @@ defmodule LukasWeb.Lecturer.CourseLive do
     """
   end
 
-  def handle_info({:course, _, :lesson_added, lesson}, socket) do
-    {:noreply, stream_insert(socket, :lessons, lesson)}
-  end
-
-  def handle_info({:course, _, :lesson_updated, lesson}, socket) do
-    {:noreply, stream_insert(socket, :lessons, lesson)}
-  end
-
-  def handle_info({:course, _, :lesson_deleted, lesson}, socket) do
-    {:noreply, stream_delete(socket, :lessons, lesson)}
-  end
-
   def handle_info({:course, _, :lecturer_added, lecturer}, socket) do
     {:noreply, stream_insert(socket, :lecturers, lecturer)}
   end
@@ -90,5 +77,9 @@ defmodule LukasWeb.Lecturer.CourseLive do
 
   def handle_info({:course, _, :student_enrolled, student}, socket) do
     {:noreply, socket |> put_flash(:info, "#{student.id} enrolled in the course")}
+  end
+
+  def handle_info({:course, _, _, _}, socket) do
+    {:noreply, socket}
   end
 end
