@@ -58,9 +58,28 @@ let hooks = { ImageCropper }
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, { params: { _csrf_token: csrfToken }, hooks })
 
-topbar.config({ barColors: { 0: "#29d" }, shadowColor: "rgba(0, 0, 0, .3)" })
-window.addEventListener("phx:page-loading-start", _info => topbar.show(300))
-window.addEventListener("phx:page-loading-stop", _info => topbar.hide())
+topbar.config({
+  barColors: { 0: "rgba(253, 0, 0, .25)", ".5": "rgba(253, 186, 116, .5)", 1: "rgba(253, 186, 116, 1)" },
+  shadowColor: "rgba(0, 0, 0, .3)",
+  barThickness: 5
+})
+
+window.addEventListener("phx:page-loading-start", info => {
+  topbar.show(300)
+
+  if (info.detail.kind === 'redirect') {
+    const main = document.querySelector('main')
+    main?.classList.add('phx-page-loading')
+  }
+})
+window.addEventListener("phx:page-loading-stop", info => {
+  topbar.hide()
+
+  if (info.detail.kind === 'redirect') {
+    const main = document.querySelector('main')
+    main?.classList.remove('phx-page-loading')
+  }
+})
 
 liveSocket.connect()
 
