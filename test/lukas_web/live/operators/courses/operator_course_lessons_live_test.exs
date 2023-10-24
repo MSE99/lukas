@@ -121,6 +121,8 @@ defmodule LukasWeb.Operator.CourseLessonsLiveTest do
 
       render_async(lv)
 
+      lv |> element("#new-button") |> render_click()
+
       lv
       |> form("form", %{"lesson" => %{"title" => "", "description" => "foo is great bar is none"}})
       |> render_change()
@@ -132,6 +134,8 @@ defmodule LukasWeb.Operator.CourseLessonsLiveTest do
       {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}/lessons")
 
       render_async(lv)
+
+      lv |> element("#new-button") |> render_click()
 
       lv
       |> form("form", %{"lesson" => %{"title" => "", "description" => "foo is great bar is none"}})
@@ -145,6 +149,8 @@ defmodule LukasWeb.Operator.CourseLessonsLiveTest do
 
       render_async(lv)
 
+      lv |> element("#new-button") |> render_click()
+
       lv
       |> form("form", %{
         "lesson" => %{"title" => "Cool title", "description" => "foo is great bar is none"}
@@ -152,6 +158,67 @@ defmodule LukasWeb.Operator.CourseLessonsLiveTest do
       |> render_submit()
 
       assert render(lv) =~ "Cool title"
+    end
+  end
+
+  describe "edit" do
+    test "should render errors on change.", %{conn: conn, course: course} do
+      l1 = lesson_fixture(course)
+
+      {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}/lessons")
+
+      render_async(lv)
+
+      lv |> element("#lessons-#{l1.id}-edit") |> render_click()
+
+      lv
+      |> form("form", %{"lesson" => %{"title" => "", "description" => "foo is great bar is none"}})
+      |> render_change()
+
+      assert render(lv) =~ "can&#39;t be blank"
+    end
+
+    test "should render errors on submit.", %{conn: conn, course: course} do
+      l1 = lesson_fixture(course)
+
+      {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}/lessons")
+
+      render_async(lv)
+
+      lv |> element("#lessons-#{l1.id}-edit") |> render_click()
+
+      lv
+      |> form("form", %{"lesson" => %{"title" => "", "description" => "foo is great bar is none"}})
+      |> render_submit()
+
+      assert render(lv) =~ "can&#39;t be blank"
+    end
+
+    test "should edit the lesson.", %{conn: conn, course: course} do
+      l1 = lesson_fixture(course)
+      l2 = lesson_fixture(course)
+
+      {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}/lessons")
+
+      render_async(lv)
+
+      lv |> element("#lessons-#{l1.id}-edit") |> render_click()
+
+      lv
+      |> form("form", %{
+        "lesson" => %{
+          "title" => "Next title for edit",
+          "description" => "foo is great bar is none"
+        }
+      })
+      |> render_submit()
+
+      html = render(lv)
+
+      assert html =~ "Next title for edit"
+      assert html =~ l2.title
+
+      refute html =~ l1.title
     end
   end
 end
