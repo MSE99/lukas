@@ -299,7 +299,7 @@ defmodule LukasWeb.Operator.AllCoursesLive do
       self(),
       LukasWeb.InfiniteListLive,
       id: "courses-list",
-      page: 0,
+      page: 1,
       limit: 50,
       next_loader: fn opts ->
         opts
