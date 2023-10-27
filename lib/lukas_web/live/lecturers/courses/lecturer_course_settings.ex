@@ -68,7 +68,7 @@ defmodule LukasWeb.Lecturer.CourseSettingsLive do
       <:loading>
         <CommonComponents.navigate_breadcrumbs links={[
           {~p"/tutor", "home"},
-          {~p"/tutor/my-courses", "courses"}
+          {~p"/tutor/my-courses", "my courses"}
         ]} />
 
         <.loading_spinner />
@@ -77,8 +77,9 @@ defmodule LukasWeb.Lecturer.CourseSettingsLive do
 
       <CommonComponents.navigate_breadcrumbs links={[
         {~p"/tutor", "home"},
-        {~p"/tutor/my-courses", "courses"},
-        {~p"/tutor/my-courses/#{@course.id}", @course.name}
+        {~p"/tutor/my-courses", "my courses"},
+        {~p"/tutor/my-courses/#{@course.id}", @course.name},
+        {~p"/tutor/my-courses/#{@course.id}/settings", "settings"}
       ]} />
 
       <h1 class="mb-5 font-bold text-lg text-primary">Settings</h1>

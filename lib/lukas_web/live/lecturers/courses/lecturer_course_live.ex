@@ -52,6 +52,12 @@ defmodule LukasWeb.Lecturer.CourseLive do
         </CommonComponents.transparent_button>
       </.link>
 
+      <.link navigate={~p"/tutor/my-courses/#{@course.id}/settings"}>
+        <CommonComponents.transparent_button>
+          <.icon name="hero-cog-6-tooth" class="mr-2" /> settings
+        </CommonComponents.transparent_button>
+      </.link>
+
       <CommonComponents.streamed_users_mini_list
         id="users-list"
         title="Lecturers"
