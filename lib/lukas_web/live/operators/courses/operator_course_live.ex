@@ -50,19 +50,29 @@ defmodule LukasWeb.Operator.CourseLive do
         </CommonComponents.transparent_button>
       </.link>
 
+      <.link navigate={~p"/controls/courses/#{@course.id}/settings"}>
+        <CommonComponents.transparent_button>
+          <.icon name="hero-cog-6-tooth" class="mr-2" /> settings
+        </CommonComponents.transparent_button>
+      </.link>
+
+      <.link navigate={~p"/controls/courses/#{@course.id}/enrollments"}>
+        <CommonComponents.transparent_button>
+          <.icon name="hero-academic-cap" class="mr-2" /> enrollments
+        </CommonComponents.transparent_button>
+      </.link>
+
+      <.link navigate={~p"/controls/courses/#{@course.id}/assign-lecturer"}>
+        <CommonComponents.transparent_button>
+          <.icon name="hero-sparkles" class="mr-2" /> Lecturers
+        </CommonComponents.transparent_button>
+      </.link>
+
       <CommonComponents.streamed_users_mini_list
         id="users-list"
         title="Lecturers"
         users={@streams.lecturers}
       />
-
-      <div class="mt-5 flex justify-end pb-5">
-        <.link navigate={~p"/controls/courses/#{@course.id}/assign-lecturer"}>
-          <CommonComponents.transparent_button>
-            <.icon name="hero-pencil" class="mr-3" /> Manage lecturers
-          </CommonComponents.transparent_button>
-        </.link>
-      </div>
 
       <CommonComponents.streamed_tag_list id="tags-list" title="Tags" tags={@streams.course_tags} />
     </div>

@@ -72,7 +72,8 @@ defmodule LukasWeb.Operator.CourseSettingsLive do
       <CommonComponents.navigate_breadcrumbs links={[
         {~p"/controls", "home"},
         {~p"/controls/courses", "courses"},
-        {~p"/controls/courses/#{@course.id}", @course.name}
+        {~p"/controls/courses/#{@course.id}", @course.name},
+        {~p"/controls/courses/#{@course.id}/settings", "settings"}
       ]} />
 
       <h1 class="mb-5 font-bold text-lg text-primary">Settings</h1>
