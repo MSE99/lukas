@@ -145,6 +145,12 @@ defmodule LukasWeb.Router do
     end
   end
 
+  scope "/locale", LukasWeb do
+    pipe_through :browser
+
+    patch "/", LocaleController, :switch
+  end
+
   scope "/", LukasWeb do
     pipe_through([:browser])
 

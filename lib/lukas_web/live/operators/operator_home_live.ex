@@ -62,6 +62,10 @@ defmodule LukasWeb.Operators.HomeLive do
         Logout
       </.danger_button>
     </.link>
+
+    <.link href={~p"/locale"} method="patch">
+      Switch locale :D
+    </.link>
     """
   end
 end
