@@ -8,7 +8,7 @@ defmodule LukasWeb.Operator.CourseLive do
 
   def mount(%{"id" => raw_id}, _session, socket) do
     with {id, _} <- Integer.parse(raw_id),
-         {course, lecturers, tags} when course != nil <-
+         {course, lecturers, course_tags} when course != nil <-
            Course.Staff.get_course_with_lecturers(id) do
       Learning.watch_course(course)
 
@@ -17,7 +17,7 @@ defmodule LukasWeb.Operator.CourseLive do
        |> assign(course: course)
        |> load_lessons(course)
        |> stream(:lecturers, lecturers)
-       |> stream(:tags, tags)}
+       |> stream(:course_tags, course_tags)}
     else
       _ -> {:ok, redirect(socket, to: ~p"/")}
     end
@@ -64,7 +64,7 @@ defmodule LukasWeb.Operator.CourseLive do
         </.link>
       </div>
 
-      <CommonComponents.streamed_tag_list id="tags-list" title="Tags" tags={@streams.tags} />
+      <CommonComponents.streamed_tag_list id="tags-list" title="Tags" tags={@streams.course_tags} />
     </div>
 
     <h3 class="mt-5 pb-5 font-bold text-primary">
