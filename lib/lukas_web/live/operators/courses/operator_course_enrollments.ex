@@ -3,6 +3,7 @@ defmodule LukasWeb.Operator.CourseEnrollmentsLive do
 
   alias Lukas.Learning
   alias Lukas.Learning.Course.Students
+  alias LukasWeb.CommonComponents
 
   alias Phoenix.LiveView.AsyncResult
   alias LukasWeb.InfiniteListLive
@@ -38,13 +39,23 @@ defmodule LukasWeb.Operator.CourseEnrollmentsLive do
 
   def render(assigns) do
     ~H"""
-    <h1>Enrollments</h1>
-
     <.async_result :let={course} assign={@course}>
-      <:loading>Loading course...</:loading>
+      <:loading>
+        <CommonComponents.navigate_breadcrumbs links={[
+          {~p"/controls", "home"},
+          {~p"/controls/courses", "courses"}
+        ]} />
+
+        <.loading_spinner />
+      </:loading>
       <:failed>Failed to load course...</:failed>
 
-      <h3><%= course.name %></h3>
+      <CommonComponents.navigate_breadcrumbs links={[
+        {~p"/controls", "home"},
+        {~p"/controls/courses", "courses"},
+        {~p"/controls/courses/#{course.id}", course.name},
+        {~p"/controls/courses/#{course.id}/enrollments", "enrollments"}
+      ]} />
 
       <.live_component
         module={InfiniteListLive}
@@ -55,7 +66,7 @@ defmodule LukasWeb.Operator.CourseEnrollmentsLive do
         load={fn opts -> Students.list_enrolled(course.id, opts) end}
       >
         <:item :let={student}>
-          <%= student.name %>
+          <CommonComponents.user_record user={student} />
         </:item>
       </.live_component>
     </.async_result>
