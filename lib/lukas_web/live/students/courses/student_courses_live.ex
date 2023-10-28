@@ -32,17 +32,10 @@ defmodule LukasWeb.Students.CoursesLive do
 
   def render(assigns) do
     ~H"""
-    <ul class="flex gap-1 text-lg text-secondary my-8">
-      <li>
-        <.link navigate={~p"/home"}>home</.link>
-      </li>
-      <li>
-        /
-      </li>
-      <li>
-        <.link navigate={~p"/home/courses"}>my courses</.link>
-      </li>
-    </ul>
+    <CommonComponents.navigate_breadcrumbs links={[
+      {~p"/home", gettext("home")},
+      {~p"/home/courses", gettext("my courses")}
+    ]} />
 
     <.async_result assign={@loading}>
       <:loading>Loading courses...</:loading>

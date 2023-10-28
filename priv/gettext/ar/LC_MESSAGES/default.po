@@ -25,4 +25,335 @@ msgstr "مرحبا"
 #: lib/lukas_web/components/core_components.ex:129
 #, elixir-autogen, elixir-format
 msgid "close"
-msgstr ""
+msgstr "اغلاق"
+
+#: lib/lukas_web/live/operators/operator_home_live.ex:20
+#, elixir-autogen, elixir-format
+msgid "Courses"
+msgstr "كورسات"
+
+#: lib/lukas_web/live/operators/operator_home_live.ex:44
+#, elixir-autogen, elixir-format
+msgid "Invites & staff"
+msgstr "دعوات"
+
+#: lib/lukas_web/live/operators/courses/operator_course_live.ex:67
+#: lib/lukas_web/live/operators/courses/operator_course_live.ex:73
+#: lib/lukas_web/live/operators/operator_home_live.ex:26
+#: lib/lukas_web/live/students/courses/student_course_live.ex:132
+#, elixir-autogen, elixir-format
+msgid "Lecturers"
+msgstr "المحاضرين"
+
+#: lib/lukas_web/live/operators/operator_home_live.ex:63
+#: lib/lukas_web/live/students/students_home_live.ex:40
+#, elixir-autogen, elixir-format
+msgid "Logout"
+msgstr "تسجيل خروج"
+
+#: lib/lukas_web/live/operators/operator_home_live.ex:38
+#, elixir-autogen, elixir-format
+msgid "Operators"
+msgstr "الادمنز"
+
+#: lib/lukas_web/live/operators/courses/operator_course_settings.ex:80
+#: lib/lukas_web/live/operators/operator_home_live.ex:56
+#, elixir-autogen, elixir-format
+msgid "Settings"
+msgstr "الاعدادات"
+
+#: lib/lukas_web/live/operators/operator_home_live.ex:32
+#, elixir-autogen, elixir-format
+msgid "Students"
+msgstr "الطلبة"
+
+#: lib/lukas_web/live/operators/courses/operator_course_live.ex:79
+#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:173
+#: lib/lukas_web/live/operators/operator_home_live.ex:50
+#: lib/lukas_web/live/students/courses/student_course_live.ex:138
+#, elixir-autogen, elixir-format
+msgid "Tags"
+msgstr "الاوسمة"
+
+#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:195
+#, elixir-autogen, elixir-format
+msgid "Banner image"
+msgstr "الصورة"
+
+#: lib/lukas_web/live/operators/courses/operator_course_lessons.ex:106
+#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:213
+#, elixir-autogen, elixir-format
+msgid "Create"
+msgstr "حفظ"
+
+#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:87
+#, elixir-autogen, elixir-format
+msgid "Create course"
+msgstr "انشاء كورس"
+
+#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:155
+#, elixir-autogen, elixir-format
+msgid "Create new course"
+msgstr "انشاء كورس جديد"
+
+#: lib/lukas_web/live/operators/courses/operator_course_lessons.ex:102
+#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:169
+#, elixir-autogen, elixir-format
+msgid "Description"
+msgstr "الوصف"
+
+#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:164
+#, elixir-autogen, elixir-format
+msgid "Name"
+msgstr "الاسم"
+
+#: lib/lukas_web/live/operators/courses/operator_course_live.ex:85
+#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:165
+#, elixir-autogen, elixir-format
+msgid "Price"
+msgstr "السعر"
+
+#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:94
+#: lib/lukas_web/live/students/courses/student_available_courses_live.ex:55
+#, elixir-autogen, elixir-format
+msgid "Search"
+msgstr "ابحث"
+
+#: lib/lukas_web/live/operators/courses/operator_course_settings.ex:133
+#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:221
+#: lib/lukas_web/live/shared/user_settings_live.ex:169
+#, elixir-autogen, elixir-format
+msgid "Too large"
+msgstr "الحجم كبير جدا"
+
+#: lib/lukas_web/live/operators/courses/operator_course_settings.ex:134
+#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:222
+#: lib/lukas_web/live/shared/user_settings_live.ex:170
+#, elixir-autogen, elixir-format
+msgid "You have selected an unacceptable file type"
+msgstr "لقد ادخلت ملف غير مدعوم"
+
+#: lib/lukas_web/live/operators/courses/operator_course_assign_lecturer.ex:62
+#, elixir-autogen, elixir-format
+msgid "Add lecturer to"
+msgstr "اضف محاضر الي"
+
+#: lib/lukas_web/live/operators/courses/operator_course_lessons.ex:70
+#, elixir-autogen, elixir-format
+msgid "Add lesson"
+msgstr "اضف درس"
+
+#: lib/lukas_web/live/operators/courses/operator_course_assign_lecturer.ex:112
+#, elixir-autogen, elixir-format
+msgid "Assign"
+msgstr "تعيين"
+
+#: lib/lukas_web/live/operators/courses/operator_course_assign_lecturer.ex:70
+#, elixir-autogen, elixir-format
+msgid "Assigned"
+msgstr "تم التعيين"
+
+#: lib/lukas_web/live/operators/courses/operator_course_assign_lecturer.ex:94
+#, elixir-autogen, elixir-format
+msgid "Available"
+msgstr "موجود"
+
+#: lib/lukas_web/live/operators/courses/operator_lesson_live.ex:65
+#: lib/lukas_web/live/operators/courses/operator_lesson_live.ex:71
+#, elixir-autogen, elixir-format
+msgid "Content"
+msgstr "المحتوى"
+
+#: lib/lukas_web/live/operators/courses/operator_lesson_live.ex:96
+#, elixir-autogen, elixir-format
+msgid "Delete"
+msgstr "حذف"
+
+#: lib/lukas_web/live/operators/courses/operator_lesson_live.ex:93
+#, elixir-autogen, elixir-format
+msgid "Edit"
+msgstr "تعديل"
+
+#: lib/lukas_web/live/operators/courses/operator_lesson_live.ex:57
+#, elixir-autogen, elixir-format
+msgid "Kind"
+msgstr "النوع"
+
+#: lib/lukas_web/live/operators/courses/operator_course_assign_lecturer.ex:89
+#, elixir-autogen, elixir-format
+msgid "Remove"
+msgstr "حذف"
+
+#: lib/lukas_web/live/operators/courses/operator_course_lessons.ex:101
+#: lib/lukas_web/live/operators/courses/operator_lesson_live.ex:53
+#, elixir-autogen, elixir-format
+msgid "Title"
+msgstr "العنوان"
+
+#: lib/lukas_web/live/operators/courses/operator_course_assign_lecturer.ex:58
+#, elixir-autogen, elixir-format
+msgid "assign lecturer"
+msgstr "تعيين محاضر"
+
+#: lib/lukas_web/live/operators/courses/operator_course_assign_lecturer.ex:56
+#: lib/lukas_web/live/operators/courses/operator_course_enrollments.ex:46
+#: lib/lukas_web/live/operators/courses/operator_course_enrollments.ex:55
+#: lib/lukas_web/live/operators/courses/operator_course_lessons.ex:63
+#: lib/lukas_web/live/operators/courses/operator_course_live.ex:34
+#: lib/lukas_web/live/operators/courses/operator_course_settings.ex:74
+#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:81
+#: lib/lukas_web/live/students/courses/student_course_live.ex:96
+#, elixir-autogen, elixir-format, fuzzy
+msgid "courses"
+msgstr "كورسات"
+
+#: lib/lukas_web/live/operators/courses/operator_course_enrollments.ex:57
+#: lib/lukas_web/live/operators/courses/operator_course_live.ex:61
+#, elixir-autogen, elixir-format
+msgid "enrollments"
+msgstr "الطلبة"
+
+#: lib/lukas_web/live/operators/courses/operator_course_assign_lecturer.ex:55
+#: lib/lukas_web/live/operators/courses/operator_course_enrollments.ex:45
+#: lib/lukas_web/live/operators/courses/operator_course_enrollments.ex:54
+#: lib/lukas_web/live/operators/courses/operator_course_lessons.ex:62
+#: lib/lukas_web/live/operators/courses/operator_course_live.ex:33
+#: lib/lukas_web/live/operators/courses/operator_course_settings.ex:73
+#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:80
+#: lib/lukas_web/live/students/courses/student_available_courses_live.ex:48
+#: lib/lukas_web/live/students/courses/student_course_live.ex:85
+#: lib/lukas_web/live/students/courses/student_course_live.ex:93
+#: lib/lukas_web/live/students/courses/student_courses_live.ex:36
+#: lib/lukas_web/live/students/students_wallet_live.ex:40
+#, elixir-autogen, elixir-format
+msgid "home"
+msgstr "الرئيسية"
+
+#: lib/lukas_web/live/operators/courses/operator_course_lessons.ex:65
+#, elixir-autogen, elixir-format
+msgid "lessons"
+msgstr "الدروس"
+
+#: lib/lukas_web/live/operators/courses/operator_course_live.ex:55
+#: lib/lukas_web/live/operators/courses/operator_course_settings.ex:76
+#: lib/lukas_web/live/students/students_home_live.ex:33
+#, elixir-autogen, elixir-format, fuzzy
+msgid "settings"
+msgstr "الاعدادات"
+
+#: lib/lukas_web/live/operators/courses/operator_course_live.ex:49
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Lessons"
+msgstr "الدروس"
+
+#: lib/lukas_web/live/students/students_home_live.ex:15
+#, elixir-autogen, elixir-format, fuzzy
+msgid "My courses"
+msgstr "كورساتي"
+
+#: lib/lukas_web/live/students/students_home_live.ex:27
+#, elixir-autogen, elixir-format
+msgid "My wallet"
+msgstr "محفظتي"
+
+#: lib/lukas_web/live/students/students_home_live.ex:21
+#, elixir-autogen, elixir-format
+msgid "Other courses"
+msgstr "الكورسات الاخرى"
+
+#: lib/lukas_web/live/students/courses/student_courses_live.ex:37
+#, elixir-autogen, elixir-format, fuzzy
+msgid "my courses"
+msgstr "كورساتي"
+
+#: lib/lukas_web/components/common_components.ex:217
+#, elixir-autogen, elixir-format
+msgid "Buy now"
+msgstr "اشتري الان"
+
+#: lib/lukas_web/live/students/courses/student_course_live.ex:116
+#, elixir-autogen, elixir-format
+msgid "Open lessons"
+msgstr "افتح الدروس"
+
+#: lib/lukas_web/live/students/courses/student_available_courses_live.ex:49
+#: lib/lukas_web/live/students/courses/student_course_live.ex:97
+#, elixir-autogen, elixir-format
+msgid "available courses"
+msgstr "الكورسات المتاحة"
+
+#: lib/lukas_web/live/students/students_wallet_live.ex:41
+#, elixir-autogen, elixir-format, fuzzy
+msgid "wallet"
+msgstr "محفظتي"
+
+#: lib/lukas/money.ex:16
+#, elixir-autogen, elixir-format
+msgid "Course %{course_id} was bought for %{amount}"
+msgstr "كورس %{course_id} تم شراءه بي %{amount}"
+
+#: lib/lukas/money.ex:20
+#, elixir-autogen, elixir-format
+msgid "Operator with id %{operator_id} deposited %{amount} in your account"
+msgstr "الادمن %{operator_id} قام بتوديع %{amount} في حسابك"
+
+#: lib/lukas_web/live/shared/user_settings_live.ex:41
+#, elixir-autogen, elixir-format
+msgid "Account Settings"
+msgstr "اعدادت حسابك"
+
+#: lib/lukas_web/live/shared/user_settings_live.ex:74
+#, elixir-autogen, elixir-format
+msgid "Change Email"
+msgstr "غير الايميل"
+
+#: lib/lukas_web/live/shared/user_settings_live.ex:123
+#, elixir-autogen, elixir-format
+msgid "Change Password"
+msgstr "غير كلمة السر"
+
+#: lib/lukas_web/live/shared/user_settings_live.ex:73
+#: lib/lukas_web/live/shared/user_settings_live.ex:122
+#, elixir-autogen, elixir-format
+msgid "Changing..."
+msgstr "يتم التغيير"
+
+#: lib/lukas_web/live/shared/user_settings_live.ex:111
+#, elixir-autogen, elixir-format
+msgid "Confirm new password"
+msgstr "التأكيد على كلمة السر"
+
+#: lib/lukas_web/live/shared/user_settings_live.ex:140
+#, elixir-autogen, elixir-format
+msgid "Crop"
+msgstr "قص"
+
+#: lib/lukas_web/live/shared/user_settings_live.ex:117
+#, elixir-autogen, elixir-format
+msgid "Current password"
+msgstr "كلمة السر الحالية"
+
+#: lib/lukas_web/live/shared/user_settings_live.ex:13
+#, elixir-autogen, elixir-format
+msgid "Email change link is invalid or it has expired."
+msgstr "رابط الايميل غير صالح"
+
+#: lib/lukas_web/live/shared/user_settings_live.ex:10
+#, elixir-autogen, elixir-format
+msgid "Email changed successfully."
+msgstr "تم تغيير الايميل بنجاح"
+
+#: lib/lukas_web/live/shared/user_settings_live.ex:105
+#, elixir-autogen, elixir-format
+msgid "New password"
+msgstr "كلمة سر جديدة"
+
+#: lib/lukas_web/live/shared/user_settings_live.ex:150
+#, elixir-autogen, elixir-format
+msgid "Save"
+msgstr "حفظ"
+
+#: lib/lukas_web/live/shared/user_settings_live.ex:63
+#, elixir-autogen, elixir-format
+msgid "Email"
+msgstr "الايميل"

@@ -30,8 +30,8 @@ defmodule LukasWeb.Operator.CourseLive do
   def render(assigns) do
     ~H"""
     <CommonComponents.navigate_breadcrumbs links={[
-      {~p"/controls", "home"},
-      {~p"/controls/courses", "courses"},
+      {~p"/controls", gettext("home")},
+      {~p"/controls/courses", gettext("courses")},
       {~p"/controls/courses/#{@course.id}", @course.name}
     ]} />
 
@@ -46,39 +46,43 @@ defmodule LukasWeb.Operator.CourseLive do
 
       <.link navigate={~p"/controls/courses/#{@course.id}/lessons"}>
         <CommonComponents.transparent_button>
-          <.icon name="hero-book-open" class="mr-2" /> Lessons
+          <.icon name="hero-book-open" class="me-2" /> <%= gettext("Lessons") %>
         </CommonComponents.transparent_button>
       </.link>
 
       <.link navigate={~p"/controls/courses/#{@course.id}/settings"}>
         <CommonComponents.transparent_button>
-          <.icon name="hero-cog-6-tooth" class="mr-2" /> settings
+          <.icon name="hero-cog-6-tooth" class="me-2" /> <%= gettext("settings") %>
         </CommonComponents.transparent_button>
       </.link>
 
       <.link navigate={~p"/controls/courses/#{@course.id}/enrollments"}>
         <CommonComponents.transparent_button>
-          <.icon name="hero-academic-cap" class="mr-2" /> enrollments
+          <.icon name="hero-academic-cap" class="me-2" /> <%= gettext("enrollments") %>
         </CommonComponents.transparent_button>
       </.link>
 
       <.link navigate={~p"/controls/courses/#{@course.id}/assign-lecturer"}>
         <CommonComponents.transparent_button>
-          <.icon name="hero-sparkles" class="mr-2" /> Lecturers
+          <.icon name="hero-sparkles" class="me-2" /> <%= gettext("Lecturers") %>
         </CommonComponents.transparent_button>
       </.link>
 
       <CommonComponents.streamed_users_mini_list
         id="users-list"
-        title="Lecturers"
+        title={gettext("Lecturers")}
         users={@streams.lecturers}
       />
 
-      <CommonComponents.streamed_tag_list id="tags-list" title="Tags" tags={@streams.course_tags} />
+      <CommonComponents.streamed_tag_list
+        id="tags-list"
+        title={gettext("Tags")}
+        tags={@streams.course_tags}
+      />
     </div>
 
     <h3 class="mt-5 pb-5 font-bold text-primary">
-      Price <%= :erlang.float_to_binary(@course.price, decimals: 1) %> LYD
+      <%= gettext("Price") %> <%= :erlang.float_to_binary(@course.price, decimals: 1) %> LYD
     </h3>
     """
   end

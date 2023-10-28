@@ -45,13 +45,15 @@ defmodule LukasWeb.Students.AvailableCoursesLive do
   def render(assigns) do
     ~H"""
     <CommonComponents.navigate_breadcrumbs links={[
-      {~p"/home", "home"},
-      {~p"/home/courses/available", "available courses"}
+      {~p"/home", gettext("home")},
+      {~p"/home/courses/available", gettext("available courses")}
     ]} />
 
     <.async_result assign={@loading_tags}>
       <form id="search-form" phx-submit="search" class="mb-3">
-        <label for="name" class="text-secondary font-bold px-3">Search</label>
+        <label for="name" class="text-secondary font-bold px-3">
+          <%= gettext("Search") %>
+        </label>
         <input
           type="text"
           name="name"

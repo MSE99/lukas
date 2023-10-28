@@ -50,17 +50,27 @@ defmodule LukasWeb.Operator.LessonLive do
         phx-change="validate"
         phx-submit={if @live_action == :new_topic, do: "create", else: "update"}
       >
-        <.input field={@form[:title]} type="text" label="Title" />
+        <.input field={@form[:title]} type="text" label={gettext("Title")} />
         <.input
           field={@form[:kind]}
           type="select"
-          label="Kind"
+          label={gettext("Kind")}
           options={Content.topic_kinds()}
           phx-change="update-topic-kind"
         />
 
-        <.input :if={@topic_kind == "text"} type="textarea" label="Content" field={@form[:content]} />
-        <.input :if={@topic_kind != "text"} type="text" label="Content" field={@form[:content]} />
+        <.input
+          :if={@topic_kind == "text"}
+          type="textarea"
+          label={gettext("Content")}
+          field={@form[:content]}
+        />
+        <.input
+          :if={@topic_kind != "text"}
+          type="text"
+          label={gettext("Content")}
+          field={@form[:content]}
+        />
 
         <.button>Create</.button>
       </.form>
@@ -80,10 +90,10 @@ defmodule LukasWeb.Operator.LessonLive do
         <.link patch={
           ~p"/controls/courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{topic.id}/edit-topic"
         }>
-          <.button>Edit</.button>
+          <.button><%= gettext("Edit") %></.button>
         </.link>
         <.button id={"delete-topic-#{topic.id}"} phx-click="delete-topic" phx-value-id={topic.id}>
-          Delete
+          <%= gettext("Delete") %>
         </.button>
       </li>
     </ul>

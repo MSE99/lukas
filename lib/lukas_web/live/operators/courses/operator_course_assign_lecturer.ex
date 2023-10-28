@@ -52,19 +52,23 @@ defmodule LukasWeb.Operator.AssignLecturerLive do
   def render(assigns) do
     ~H"""
     <CommonComponents.navigate_breadcrumbs links={[
-      {~p"/controls", "home"},
-      {~p"/controls/courses", "courses"},
+      {~p"/controls", gettext("home")},
+      {~p"/controls/courses", gettext("courses")},
       {~p"/controls/courses/#{@course.id}", @course.name},
-      {~p"/controls/courses/#{@course.id}/assign-lecturer", "assign lecturer"}
+      {~p"/controls/courses/#{@course.id}/assign-lecturer", gettext("assign lecturer")}
     ]} />
 
-    <h1 class="my-5 text-xl font-bold text-secondary">Add lecturer to <%= @course.name %></h1>
+    <h1 class="my-5 text-xl font-bold text-secondary">
+      <%= gettext("Add lecturer to") %> <%= @course.name %>
+    </h1>
 
     <.async_result assign={@loading}>
       <:loading>Loading lecturers</:loading>
       <:failed>Failed to load lecturers</:failed>
 
-      <h3 class="text-lg font-bold text-secondary mb-3">Assigned</h3>
+      <h3 class="text-lg font-bold text-secondary mb-3">
+        <%= gettext("Assigned") %>
+      </h3>
       <ul id="assigned-lecturers" phx-update="stream">
         <li :for={{id, lect} <- @streams.assigned} id={id} class="flex items-center gap-3 mb-3">
           <img
@@ -82,12 +86,12 @@ defmodule LukasWeb.Operator.AssignLecturerLive do
             phx-value-id={lect.id}
             phx-throttle
           >
-            Remove
+            <%= gettext("Remove") %>
           </CommonComponents.transparent_button>
         </li>
       </ul>
 
-      <h3 class="text-lg font-bold text-secondary mt-5 mb-3">Available</h3>
+      <h3 class="text-lg font-bold text-secondary mt-5 mb-3"><%= gettext("Available") %></h3>
       <ul id="available-lecturers" phx-update="stream">
         <li :for={{id, lect} <- @streams.available} id={id} class="flex items-center gap-3 mb-3">
           <img
@@ -105,7 +109,7 @@ defmodule LukasWeb.Operator.AssignLecturerLive do
             phx-value-id={lect.id}
             phx-throttle
           >
-            Assign
+            <%= gettext("Assign") %>
           </CommonComponents.transparent_button>
         </li>
       </ul>

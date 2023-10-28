@@ -12,31 +12,33 @@ defmodule LukasWeb.Students.HomeLive do
     <ul class="flex flex-col gap-2">
       <li>
         <.link class="bg-white shadow p-5 block max-w-xs" navigate={~p"/home/courses"}>
-          <.icon name="hero-academic-cap-solid" class="me-5" />My courses
+          <.icon name="hero-academic-cap-solid" class="me-5" /><%= gettext("My courses") %>
         </.link>
       </li>
 
       <li>
         <.link class="bg-white shadow p-5 block max-w-xs" navigate={~p"/home/courses/available"}>
-          <.icon name="hero-academic-cap-solid" class="me-5" />Other courses
+          <.icon name="hero-academic-cap-solid" class="me-5" /><%= gettext("Other courses") %>
         </.link>
       </li>
 
       <li>
         <.link class="bg-white shadow p-5 block max-w-xs" navigate={~p"/home/wallet"}>
-          <.icon name="hero-envelope-solid" class="me-5" />My wallet
+          <.icon name="hero-envelope-solid" class="me-5" /><%= gettext("My wallet") %>
         </.link>
       </li>
 
       <li>
         <.link class="bg-white shadow p-5 block max-w-xs" href={~p"/users/settings"}>
-          <.icon name="hero-cog-6-tooth-solid" class="me-5" />settings
+          <.icon name="hero-cog-6-tooth-solid" class="me-5" /><%= gettext("settings") %>
         </.link>
       </li>
     </ul>
 
     <.link method="DELETE" href={~p"/users/log_out"}>
-      <.button>Logout</.button>
+      <.button>
+        <%= gettext("Logout") %>
+      </.button>
     </.link>
 
     <.link method="patch" href={~p"/locale"}>

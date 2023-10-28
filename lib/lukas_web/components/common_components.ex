@@ -214,7 +214,7 @@ defmodule LukasWeb.CommonComponents do
         {@rest}
         class="shadow px-4 py-2 bg-primary font-bold text-white rounded-ts-lg rounded-bs-lg hover:bg-green-500 transition-all"
       >
-        Buy now
+        <%= gettext("Buy now") %>
       </button>
       <label class="shadow p-2 bg-white rounded-te-lg rounded-be-lg font-bold">
         <%= @price %> LYD

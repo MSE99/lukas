@@ -59,15 +59,15 @@ defmodule LukasWeb.Operator.CourseLessonsLive do
       <:failed>Failed...</:failed>
 
       <CommonComponents.navigate_breadcrumbs links={[
-        {~p"/controls", "home"},
-        {~p"/controls/courses", "courses"},
+        {~p"/controls", gettext("home")},
+        {~p"/controls/courses", gettext("courses")},
         {~p"/controls/courses/#{@course.id}", @course.name},
-        {~p"/controls/courses/#{@course.id}/lessons", "lessons"}
+        {~p"/controls/courses/#{@course.id}/lessons", gettext("lessons")}
       ]} />
 
       <div class="flex justify-end">
-        <.button id="new-button" phx-click="prep-create" class="px-5 flex items-center">
-          Add lesson <.icon name="hero-plus-circle-solid ml-2" />
+        <.button id="new-button" phx-click="prep-create" class="px-5 flex justify-center items-center">
+          <%= gettext("Add lesson") %> <.icon name="hero-plus-circle-solid ms-2" />
         </.button>
       </div>
 
@@ -85,7 +85,7 @@ defmodule LukasWeb.Operator.CourseLessonsLive do
               JS.push("prep-edit", value: %{id: lesson.id}, page_loading: true)
               |> show_modal("form-modal")
             }
-            class="ml-auto hover:cursor-pointer"
+            class="ms-auto hover:cursor-pointer"
           >
             <.icon name="hero-pencil-solid text-secondary hover:text-blue-300" />
           </span>
@@ -98,11 +98,13 @@ defmodule LukasWeb.Operator.CourseLessonsLive do
 
       <.modal :if={@show_form_modal} id="form-modal" on_cancel={JS.push("clear")} show>
         <.form for={@form} phx-change="validate" phx-submit={if @lesson, do: "edit", else: "create"}>
-          <.input type="text" label="Title" field={@form[:title]} />
-          <.input type="textarea" label="Description" field={@form[:description]} />
+          <.input type="text" label={gettext("Title")} field={@form[:title]} />
+          <.input type="textarea" label={gettext("Description")} field={@form[:description]} />
 
           <div class="mt-5 flex justify-end">
-            <.button class="px-8">Create</.button>
+            <.button class="px-8">
+              <%= gettext("Create") %>
+            </.button>
           </div>
         </.form>
       </.modal>

@@ -3,6 +3,7 @@ defmodule LukasWeb.Students.WalletLive do
 
   alias Lukas.Money
   alias Phoenix.LiveView.AsyncResult
+  alias LukasWeb.CommonComponents
 
   def mount(_, _, socket) do
     next_socket =
@@ -35,20 +36,15 @@ defmodule LukasWeb.Students.WalletLive do
 
   def render(assigns) do
     ~H"""
-    <ul class="flex gap-1 text-lg text-secondary my-8">
-      <li>
-        <.link navigate={~p"/home"}>home</.link>
-      </li>
-      <li>
-        /
-      </li>
-      <li>
-        <.link navigate={~p"/home/wallet"}>wallet</.link>
-      </li>
-    </ul>
+    <CommonComponents.navigate_breadcrumbs links={[
+      {~p"/home", gettext("home")},
+      {~p"/home/wallet", gettext("wallet")}
+    ]} />
 
     <.async_result assign={@loading}>
-      <:loading>Loading...</:loading>
+      <:loading>
+        <.loading_spinner />
+      </:loading>
       <:failed>Failed to load wallet</:failed>
 
       <div class="text-secondary flex flex-col justify-center items-center mb-10">

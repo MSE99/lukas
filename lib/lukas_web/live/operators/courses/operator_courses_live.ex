@@ -77,20 +77,22 @@ defmodule LukasWeb.Operator.AllCoursesLive do
   def render(assigns) do
     ~H"""
     <CommonComponents.navigate_breadcrumbs links={[
-      {~p"/controls", "home"},
-      {~p"/controls/courses", "courses"}
+      {~p"/controls", gettext("home")},
+      {~p"/controls/courses", gettext("courses")}
     ]} />
 
     <div class="flex justify-end mt-10 mb-16">
       <.link patch={~p"/controls/courses/new"}>
         <.button class="px-5 flex items-center">
-          Create course <.icon name="hero-plus-circle-solid ms-2" />
+          <%= gettext("Create course") %> <.icon name="hero-plus-circle-solid ms-2" />
         </.button>
       </.link>
     </div>
 
     <form id="search-form" phx-submit="search" class="mb-3">
-      <label for="name" class="text-secondary font-bold px-3">Search</label>
+      <label for="name" class="text-secondary font-bold px-3">
+        <%= gettext("Search") %>
+      </label>
       <input
         type="text"
         name="name"
@@ -149,7 +151,9 @@ defmodule LukasWeb.Operator.AllCoursesLive do
       on_cancel={JS.patch(~p"/controls/courses")}
       show
     >
-      <h1 class="mb-5 font-bold text-lg text-primary">Create new course</h1>
+      <h1 class="mb-5 font-bold text-lg text-primary">
+        <%= gettext("Create new course") %>
+      </h1>
 
       <.form
         for={@form}
@@ -157,11 +161,16 @@ defmodule LukasWeb.Operator.AllCoursesLive do
         phx-submit={if @live_action == :edit, do: "edit", else: "create"}
         id="course-form"
       >
-        <.input field={@form[:name]} type="text" label="Name" phx-debounce="blur" />
-        <.input field={@form[:price]} type="number" label="Price" phx-debounce="blur" />
-        <.input field={@form[:description]} type="textarea" label="Description" phx-debounce="blur" />
+        <.input field={@form[:name]} type="text" label={gettext("Name")} phx-debounce="blur" />
+        <.input field={@form[:price]} type="number" label={gettext("Price")} phx-debounce="blur" />
+        <.input
+          field={@form[:description]}
+          type="textarea"
+          label={gettext("Description")}
+          phx-debounce="blur"
+        />
 
-        <p class="font-semibold mt-5">Tags</p>
+        <p class="font-semibold mt-5"><%= gettext("Tags") %></p>
         <ul id="tags" phx-update="stream" class="mt-3 flex flex-wrap gap-2">
           <li
             :for={{id, tag} <- @streams.tags}
@@ -182,7 +191,10 @@ defmodule LukasWeb.Operator.AllCoursesLive do
         </ul>
 
         <div class="my-5">
-          <p class="font-bold mb-3">Banner image</p>
+          <p class="font-bold mb-3">
+            <%= gettext("Banner image") %>
+          </p>
+
           <.live_file_input upload={@uploads.banner_image} />
         </div>
 
@@ -197,15 +209,17 @@ defmodule LukasWeb.Operator.AllCoursesLive do
         <% end %>
 
         <div class="flex justify-end">
-          <.button class="px-10">Create</.button>
+          <.button class="px-10">
+            <%= gettext("Create") %>
+          </.button>
         </div>
       </.form>
     </.modal>
     """
   end
 
-  def error_to_string(:too_large), do: "Too large"
-  def error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
+  def error_to_string(:too_large), do: gettext("Too large")
+  def error_to_string(:not_accepted), do: gettext("You have selected an unacceptable file type")
 
   def handle_event("validate", %{"course" => course_attrs}, socket) do
     cs = Learning.validate_course(course_attrs)

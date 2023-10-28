@@ -1,5 +1,6 @@
 defmodule Lukas.Money do
   import Lukas.Accounts.User, only: [must_be_operator: 1, must_be_student: 1]
+  import LukasWeb.Gettext
 
   alias Lukas.Accounts.User
   alias Lukas.Learning.Course
@@ -12,11 +13,15 @@ defmodule Lukas.Money do
   def tag_from_tx(%DirectDepositTx{} = d), do: "tx-deposit-#{d.id}"
 
   def describe_tx(%CoursePurchase{} = c) do
-    "Course #{c.id} was purchased for #{c.amount |> :erlang.float_to_binary(decimals: 1)}"
+    gettext("Course %{course_id} was bought for %{amount}", course_id: c.id, amount: c.amount)
   end
 
   def describe_tx(%DirectDepositTx{} = dtx) do
-    "Operator with id #{dtx.id} deposited #{dtx.amount |> :erlang.float_to_binary(decimals: 1)} in your account"
+    gettext(
+      "Operator with id %{operator_id} deposited %{amount} in your account",
+      operator_id: dtx.clerk_id,
+      amount: :erlang.float_to_binary(dtx.amount, decimals: 1)
+    )
   end
 
   def is_deposit(%DirectDepositTx{}), do: true

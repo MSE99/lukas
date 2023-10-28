@@ -82,17 +82,19 @@ defmodule LukasWeb.Students.CourseLive do
     <.async_result assign={@loading}>
       <:loading>
         <CommonComponents.navigate_breadcrumbs links={[
-          {~p"/home", "home"}
-        ]} /> Loading course...
+          {~p"/home", gettext("home")}
+        ]} />
+
+        <.loading_spinner />
       </:loading>
       <:failed>Failed to load course..</:failed>
 
       <CommonComponents.navigate_breadcrumbs links={[
-        {~p"/home", "home"},
+        {~p"/home", gettext("home")},
         if(
           @is_enrolled,
-          do: {~p"/home/courses", "courses"},
-          else: {~p"/home/courses/available", "available courses"}
+          do: {~p"/home/courses", gettext("courses")},
+          else: {~p"/home/courses/available", gettext("available courses")}
         ),
         {~p"/home/courses/#{@course.id}", @course.name}
       ]} />
@@ -111,7 +113,7 @@ defmodule LukasWeb.Students.CourseLive do
           class="font-bold underline"
           navigate={~p"/home/courses/#{@course.id}/study"}
         >
-          Open lessons (<%= format_price(@progress) %>% completed)  »
+          <%= gettext("Open lessons") %> (<%= format_price(@progress) %>% completed)  »
         </.link>
 
         <div
@@ -127,11 +129,15 @@ defmodule LukasWeb.Students.CourseLive do
 
         <CommonComponents.streamed_users_mini_list
           id="users-list"
-          title="Lecturers"
+          title={gettext("Lecturers")}
           users={@streams.lecturers}
         />
 
-        <CommonComponents.streamed_tag_list id="tags-list" title="Tags" tags={@streams.tags} />
+        <CommonComponents.streamed_tag_list
+          id="tags-list"
+          title={gettext("Tags")}
+          tags={@streams.tags}
+        />
       </div>
     </.async_result>
     """

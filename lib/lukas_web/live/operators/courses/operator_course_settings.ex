@@ -70,13 +70,15 @@ defmodule LukasWeb.Operator.CourseSettingsLive do
       <:failed>Failed to load</:failed>
 
       <CommonComponents.navigate_breadcrumbs links={[
-        {~p"/controls", "home"},
-        {~p"/controls/courses", "courses"},
+        {~p"/controls", gettext("home")},
+        {~p"/controls/courses", gettext("courses")},
         {~p"/controls/courses/#{@course.id}", @course.name},
-        {~p"/controls/courses/#{@course.id}/settings", "settings"}
+        {~p"/controls/courses/#{@course.id}/settings", gettext("settings")}
       ]} />
 
-      <h1 class="mb-5 font-bold text-lg text-primary">Settings</h1>
+      <h1 class="mb-5 font-bold text-lg text-primary">
+        <%= gettext("Settings") %>
+      </h1>
 
       <CommonComponents.course_banner image_src={~p"/images/#{@course.banner_image}"} />
 
@@ -128,8 +130,8 @@ defmodule LukasWeb.Operator.CourseSettingsLive do
     """
   end
 
-  defp error_to_string(:too_large), do: "Too large"
-  defp error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
+  defp error_to_string(:too_large), do: gettext("Too large")
+  defp error_to_string(:not_accepted), do: gettext("You have selected an unacceptable file type")
 
   def handle_event("validate", %{"course" => params}, socket) do
     next_form =

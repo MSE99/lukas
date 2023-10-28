@@ -42,8 +42,8 @@ defmodule LukasWeb.Operator.CourseEnrollmentsLive do
     <.async_result :let={course} assign={@course}>
       <:loading>
         <CommonComponents.navigate_breadcrumbs links={[
-          {~p"/controls", "home"},
-          {~p"/controls/courses", "courses"}
+          {~p"/controls", gettext("home")},
+          {~p"/controls/courses", gettext("courses")}
         ]} />
 
         <.loading_spinner />
@@ -51,10 +51,10 @@ defmodule LukasWeb.Operator.CourseEnrollmentsLive do
       <:failed>Failed to load course...</:failed>
 
       <CommonComponents.navigate_breadcrumbs links={[
-        {~p"/controls", "home"},
-        {~p"/controls/courses", "courses"},
+        {~p"/controls", gettext("home")},
+        {~p"/controls/courses", gettext("courses")},
         {~p"/controls/courses/#{course.id}", course.name},
-        {~p"/controls/courses/#{course.id}/enrollments", "enrollments"}
+        {~p"/controls/courses/#{course.id}/enrollments", gettext("enrollments")}
       ]} />
 
       <.live_component
