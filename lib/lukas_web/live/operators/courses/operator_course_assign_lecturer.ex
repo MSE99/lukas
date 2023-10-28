@@ -63,7 +63,9 @@ defmodule LukasWeb.Operator.AssignLecturerLive do
     </h1>
 
     <.async_result assign={@loading}>
-      <:loading>Loading lecturers</:loading>
+      <:loading>
+        <.loading_spinner />
+      </:loading>
       <:failed>Failed to load lecturers</:failed>
 
       <h3 class="text-lg font-bold text-secondary mb-3">
@@ -78,7 +80,7 @@ defmodule LukasWeb.Operator.AssignLecturerLive do
             class="rounded-full h-[38px] w-[38px] border-4 border-primary-opaque"
           />
 
-          <span class="mr-auto"><%= lect.name %></span>
+          <span class="me-auto"><%= lect.name %></span>
 
           <CommonComponents.transparent_button
             id={"unassign-lecturer-#{lect.id}"}
@@ -101,7 +103,7 @@ defmodule LukasWeb.Operator.AssignLecturerLive do
             class="rounded-full h-[38px] w-[38px] border-4 border-primary-opaque"
           />
 
-          <span class="mr-auto"><%= lect.name %></span>
+          <span class="me-auto"><%= lect.name %></span>
 
           <CommonComponents.transparent_button
             id={"assign-lecturer-#{lect.id}"}
