@@ -27,7 +27,7 @@ defmodule LukasWeb.CommonComponents do
         src={~p"/images/#{@user.profile_image}"}
         width="50"
         height="50"
-        class="w-[50px] h-[50px] rounded-full mr-3 lg:mr-5 border-4 border-primary-opaque"
+        class="w-[50px] h-[50px] rounded-full me-3 lg:me-5 border-4 border-primary-opaque"
       />
 
       <%= render_slot(@links, @user) || rendered_username(assigns) %>

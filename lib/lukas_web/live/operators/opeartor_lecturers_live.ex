@@ -44,7 +44,7 @@ defmodule LukasWeb.Operator.LecturersLive do
           <:links :let={lect}>
             <.link
               navigate={~p"/controls/lecturers/#{lect.id}"}
-              class="mr-auto text-secondary hover:underline"
+              class="me-auto text-secondary hover:underline"
             >
               <%= lect.name %>
             </.link>
