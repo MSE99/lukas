@@ -58,14 +58,18 @@ defmodule LukasWeb.UserAuth do
   def fetch_current_locale(conn, _opts) do
     if conn.cookies["locale"] in ["ar", "en"] do
       locale = conn.cookies["locale"]
-      Gettext.put_locale(Lukas.Gettext, locale)
-      assign(conn, :locale, locale)
+      Gettext.put_locale(LukasWeb.Gettext, locale)
+
+      conn
+      |> assign(:locale, locale)
+      |> put_session(:locale, locale)
     else
-      Gettext.put_locale(Lukas.Gettext, "en")
+      Gettext.put_locale(LukasWeb.Gettext, "en")
 
       conn
       |> assign(:locale, "en")
       |> put_resp_cookie("locale", "en", max_age: 10 * 24 * 60 * 60)
+      |> put_session(:locale, "en")
     end
   end
 

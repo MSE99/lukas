@@ -10,7 +10,8 @@ defmodule LukasWeb.Operators.HomeLive do
   def render(assigns) do
     ~H"""
     <.greeting>
-      Hello <%= @current_user.name %>
+      <%= gettext("Hello") %>
+      <%= @current_user.name %>
     </.greeting>
 
     <ul class="flex flex-col gap-2 mt-5">

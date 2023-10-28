@@ -54,6 +54,7 @@ defmodule LukasWeb do
       use Phoenix.LiveView,
         layout: {LukasWeb.Layouts, :app}
 
+      on_mount LukasWeb.UserLocale
       unquote(html_helpers())
     end
   end
