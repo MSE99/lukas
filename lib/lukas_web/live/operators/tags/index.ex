@@ -21,19 +21,19 @@ defmodule LukasWeb.TagLive.Index do
     tag = Categories.get_tag!(id)
 
     socket
-    |> assign(:page_title, "Edit #{tag.name} tag")
+    |> assign(:page_title, gettext("Edit %{tag_name} tag", tag_name: tag.name))
     |> assign(:tag, tag)
   end
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "Create New Tag")
+    |> assign(:page_title, gettext("Create New Tag"))
     |> assign(:tag, %Tag{})
   end
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Tags")
+    |> assign(:page_title, gettext("Listing Tags"))
     |> assign(:tag, nil)
   end
 

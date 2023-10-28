@@ -18,10 +18,10 @@ defmodule LukasWeb.TagLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={@form[:name]} type="text" label="Name" />
+        <.input field={@form[:name]} type="text" label={gettext("Name")} />
 
         <div class="flex justify-end">
-          <.button phx-disable-with="Saving...">Save Tag</.button>
+          <.button phx-disable-with="Saving..."><%= gettext("save") %></.button>
         </div>
       </.simple_form>
     </div>
@@ -57,7 +57,7 @@ defmodule LukasWeb.TagLive.FormComponent do
       {:ok, _} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Tag updated successfully")
+         |> put_flash(:info, gettext("Tag updated successfully"))
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -70,7 +70,7 @@ defmodule LukasWeb.TagLive.FormComponent do
       {:ok, _} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Tag created successfully")
+         |> put_flash(:info, gettext("Tag created successfully"))
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

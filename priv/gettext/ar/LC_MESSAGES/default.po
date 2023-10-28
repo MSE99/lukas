@@ -103,6 +103,7 @@ msgid "Description"
 msgstr "الوصف"
 
 #: lib/lukas_web/live/operators/courses/operator_courses_live.ex:166
+#: lib/lukas_web/live/operators/tags/form_component.ex:21
 #, elixir-autogen, elixir-format
 msgid "Name"
 msgstr "الاسم"
@@ -222,6 +223,7 @@ msgstr "الطلبة"
 #: lib/lukas_web/live/operators/courses/operator_course_settings.ex:73
 #: lib/lukas_web/live/operators/courses/operator_courses_live.ex:80
 #: lib/lukas_web/live/operators/invites_live.ex:38
+#: lib/lukas_web/live/operators/tags/index.html.heex:2
 #: lib/lukas_web/live/students/courses/student_available_courses_live.ex:48
 #: lib/lukas_web/live/students/courses/student_course_live.ex:85
 #: lib/lukas_web/live/students/courses/student_course_live.ex:93
@@ -395,3 +397,43 @@ msgstr "محاضر"
 #, elixir-autogen, elixir-format, fuzzy
 msgid "operator"
 msgstr "ادمن"
+
+#: lib/lukas_web/live/operators/tags/index.html.heex:9
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Create tag"
+msgstr "انشاء وسم جديد"
+
+#: lib/lukas_web/live/operators/tags/index.html.heex:3
+#, elixir-autogen, elixir-format, fuzzy
+msgid "tags"
+msgstr "الاوسمة"
+
+#: lib/lukas_web/live/operators/tags/index.ex:30
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Create New Tag"
+msgstr "انشاء وسم جديد"
+
+#: lib/lukas_web/live/operators/tags/index.ex:24
+#, elixir-autogen, elixir-format
+msgid "Edit %{tag_name} tag"
+msgstr "تعديل %{tag_name}"
+
+#: lib/lukas_web/live/operators/tags/index.ex:36
+#, elixir-autogen, elixir-format
+msgid "Listing Tags"
+msgstr "الاوسمة"
+
+#: lib/lukas_web/live/operators/tags/form_component.ex:73
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Tag created successfully"
+msgstr "تم تغيير الايميل بنجاح"
+
+#: lib/lukas_web/live/operators/tags/form_component.ex:60
+#, elixir-autogen, elixir-format
+msgid "Tag updated successfully"
+msgstr "تم تعديل الوسم بنجاح"
+
+#: lib/lukas_web/live/operators/tags/form_component.ex:24
+#, elixir-autogen, elixir-format, fuzzy
+msgid "save"
+msgstr "حفظ"
