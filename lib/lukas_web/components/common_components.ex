@@ -212,11 +212,11 @@ defmodule LukasWeb.CommonComponents do
         phx-click={@on_click}
         phx-throttle
         {@rest}
-        class="shadow px-4 py-2 bg-primary font-bold text-white rounded-tl-lg rounded-bl-lg hover:bg-green-500 transition-all"
+        class="shadow px-4 py-2 bg-primary font-bold text-white rounded-ts-lg rounded-bs-lg hover:bg-green-500 transition-all"
       >
         Buy now
       </button>
-      <label class="shadow p-2 bg-white rounded-tr-lg rounded-br-lg font-bold">
+      <label class="shadow p-2 bg-white rounded-te-lg rounded-be-lg font-bold">
         <%= @price %> LYD
       </label>
     </div>
@@ -246,7 +246,7 @@ defmodule LukasWeb.CommonComponents do
         src={~p"/images/#{@course.banner_image}"}
         width={110}
         height={104}
-        class="w-[110px] h-[104px] rounded-tl-lg rounded-bl-lg"
+        class="w-[110px] h-[104px] rounded-ts-lg rounded-bs-lg"
       />
 
       <div class="p-3 text-ellipsis overflow-y-auto">
