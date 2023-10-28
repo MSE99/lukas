@@ -16,43 +16,43 @@ defmodule LukasWeb.Operators.HomeLive do
     <ul class="flex flex-col gap-2 mt-5">
       <li>
         <.link navigate={~p"/controls/courses"} class="bg-white shadow p-5 block max-w-xs">
-          <.icon name="hero-academic-cap-solid mr-5" /> Courses
+          <.icon name="hero-academic-cap-solid me-5" /> Courses
         </.link>
       </li>
 
       <li>
         <.link navigate={~p"/controls/lecturers"} class="bg-white shadow p-5 block max-w-xs">
-          <.icon name="hero-academic-cap-solid mr-5" /> Lecturers
+          <.icon name="hero-academic-cap-solid me-5" /> Lecturers
         </.link>
       </li>
 
       <li>
         <.link navigate={~p"/controls/students"} class="bg-white shadow p-5 block max-w-xs">
-          <.icon name="hero-academic-cap-solid mr-5" /> Students
+          <.icon name="hero-academic-cap-solid me-5" /> Students
         </.link>
       </li>
 
       <li>
         <.link navigate={~p"/controls/operators"} class="bg-white shadow p-5 block max-w-xs">
-          <.icon name="hero-academic-cap-solid mr-5" /> Operators
+          <.icon name="hero-academic-cap-solid me-5" /> Operators
         </.link>
       </li>
 
       <li>
         <.link navigate={~p"/controls/invites"} class="bg-white shadow p-5 block max-w-xs">
-          <.icon name="hero-envelope-solid mr-5" /> Invites & staff
+          <.icon name="hero-envelope-solid me-5" /> Invites & staff
         </.link>
       </li>
 
       <li>
         <.link navigate={~p"/controls/tags"} class="bg-white shadow p-5 block max-w-xs">
-          <.icon name="hero-envelope-solid mr-5" /> Tags
+          <.icon name="hero-envelope-solid me-5" /> Tags
         </.link>
       </li>
 
       <li>
         <.link href={~p"/users/settings"} class="bg-white shadow p-5 block max-w-xs">
-          <.icon name="hero-cog-6-tooth-solid mr-5" /> Settings
+          <.icon name="hero-cog-6-tooth-solid me-5" /> Settings
         </.link>
       </li>
     </ul>

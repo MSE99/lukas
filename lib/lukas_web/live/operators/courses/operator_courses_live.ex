@@ -84,7 +84,7 @@ defmodule LukasWeb.Operator.AllCoursesLive do
     <div class="flex justify-end mt-10 mb-16">
       <.link patch={~p"/controls/courses/new"}>
         <.button class="px-5 flex items-center">
-          Create course <.icon name="hero-plus-circle-solid ml-2" />
+          Create course <.icon name="hero-plus-circle-solid ms-2" />
         </.button>
       </.link>
     </div>
@@ -133,11 +133,11 @@ defmodule LukasWeb.Operator.AllCoursesLive do
       <:item :let={course} class="flex items-center text-secondary font-bold mb-3">
         <img src={~p"/images/#{course.banner_image}"} width={80} height={80} class="rounded" />
 
-        <.link navigate={~p"/controls/courses/#{course.id}"} class="ml-5 hover:underline">
+        <.link navigate={~p"/controls/courses/#{course.id}"} class="ms-5 hover:underline">
           <%= course.name %>
         </.link>
 
-        <.link class="ml-auto" patch={~p"/controls/courses/#{course.id}/edit"}>
+        <.link class="ms-auto" patch={~p"/controls/courses/#{course.id}/edit"}>
           <.icon name="hero-pencil-solid" />
         </.link>
       </:item>
