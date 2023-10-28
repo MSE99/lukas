@@ -46,7 +46,7 @@ defmodule LukasWeb.Operator.StudentsLive do
           <:links>
             <.link
               navigate={~p"/controls/students/#{student.id}"}
-              class="mr-auto text-secondary hover:underline"
+              class="me-auto text-secondary hover:underline"
             >
               <%= student.name %>
             </.link>
