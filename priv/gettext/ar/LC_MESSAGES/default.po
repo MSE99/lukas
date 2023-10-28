@@ -68,20 +68,20 @@ msgid "Students"
 msgstr "الطلبة"
 
 #: lib/lukas_web/live/operators/courses/operator_course_live.ex:79
-#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:173
+#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:175
 #: lib/lukas_web/live/operators/operator_home_live.ex:50
 #: lib/lukas_web/live/students/courses/student_course_live.ex:138
 #, elixir-autogen, elixir-format
 msgid "Tags"
 msgstr "الاوسمة"
 
-#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:195
+#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:197
 #, elixir-autogen, elixir-format
 msgid "Banner image"
 msgstr "الصورة"
 
 #: lib/lukas_web/live/operators/courses/operator_course_lessons.ex:106
-#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:213
+#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:215
 #, elixir-autogen, elixir-format
 msgid "Create"
 msgstr "حفظ"
@@ -91,24 +91,24 @@ msgstr "حفظ"
 msgid "Create course"
 msgstr "انشاء كورس"
 
-#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:155
+#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:156
 #, elixir-autogen, elixir-format
 msgid "Create new course"
 msgstr "انشاء كورس جديد"
 
 #: lib/lukas_web/live/operators/courses/operator_course_lessons.ex:102
-#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:169
+#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:171
 #, elixir-autogen, elixir-format
 msgid "Description"
 msgstr "الوصف"
 
-#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:164
+#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:166
 #, elixir-autogen, elixir-format
 msgid "Name"
 msgstr "الاسم"
 
 #: lib/lukas_web/live/operators/courses/operator_course_live.ex:85
-#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:165
+#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:167
 #, elixir-autogen, elixir-format
 msgid "Price"
 msgstr "السعر"
@@ -120,14 +120,14 @@ msgid "Search"
 msgstr "ابحث"
 
 #: lib/lukas_web/live/operators/courses/operator_course_settings.ex:133
-#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:221
+#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:223
 #: lib/lukas_web/live/shared/user_settings_live.ex:169
 #, elixir-autogen, elixir-format
 msgid "Too large"
 msgstr "الحجم كبير جدا"
 
 #: lib/lukas_web/live/operators/courses/operator_course_settings.ex:134
-#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:222
+#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:224
 #: lib/lukas_web/live/shared/user_settings_live.ex:170
 #, elixir-autogen, elixir-format
 msgid "You have selected an unacceptable file type"
@@ -328,6 +328,7 @@ msgstr "التأكيد على كلمة السر"
 msgid "Crop"
 msgstr "قص"
 
+#: lib/lukas_web/live/shared/user_settings_live.ex:69
 #: lib/lukas_web/live/shared/user_settings_live.ex:117
 #, elixir-autogen, elixir-format
 msgid "Current password"
@@ -357,3 +358,8 @@ msgstr "حفظ"
 #, elixir-autogen, elixir-format
 msgid "Email"
 msgstr "الايميل"
+
+#: lib/lukas_web/live/operators/courses/operator_courses_live.ex:157
+#, elixir-autogen, elixir-format
+msgid "Editing %{course_name}"
+msgstr "تعديل %{course_name}"

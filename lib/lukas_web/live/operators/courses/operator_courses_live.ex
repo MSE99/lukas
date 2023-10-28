@@ -152,7 +152,9 @@ defmodule LukasWeb.Operator.AllCoursesLive do
       show
     >
       <h1 class="mb-5 font-bold text-lg text-primary">
-        <%= gettext("Create new course") %>
+        <%= if @live_action == :new,
+          do: gettext("Create new course"),
+          else: gettext("Editing %{course_name}", course_name: @course.name) %>
       </h1>
 
       <.form

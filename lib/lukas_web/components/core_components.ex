@@ -69,7 +69,7 @@ defmodule LukasWeb.CoreComponents do
               phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
               class="shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-t-2xl bg-white p-14 shadow-lg ring-1 transition"
             >
-              <div class="absolute top-6 right-5">
+              <div class="absolute top-6 end-5">
                 <button
                   phx-click={JS.exec("data-cancel", to: "##{@id}")}
                   type="button"

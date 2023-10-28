@@ -58,14 +58,16 @@ defmodule LukasWeb.Operators.HomeLive do
       </li>
     </ul>
 
-    <.link href={~p"/users/log_out"} method="DELETE" class="flex justify-end mt-5">
-      <.danger_button>
-        <%= gettext("Logout") %>
-      </.danger_button>
-    </.link>
+    <div class="flex justify-end my-5">
+      <.link href={~p"/users/log_out"} method="DELETE">
+        <.danger_button>
+          <%= gettext("Logout") %>
+        </.danger_button>
+      </.link>
+    </div>
 
     <.link href={~p"/locale"} method="patch">
-      Switch locale :D
+      <.icon name="hero-language" />
     </.link>
     """
   end
