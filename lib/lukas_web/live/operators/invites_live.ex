@@ -57,7 +57,7 @@ defmodule LukasWeb.Operator.InvitesLive do
       </div>
 
       <div class="text-secondary font-bold gap-2 mb-5">
-        <span class="mr-4">Code</span>
+        <span class="ms-4">Code</span>
         <span>Kind</span>
       </div>
 
@@ -71,7 +71,7 @@ defmodule LukasWeb.Operator.InvitesLive do
           <span><%= inv.kind %></span>
 
           <div
-            class="delete-invite-button ml-auto hover:cursor-pointer"
+            class="delete-invite-button ms-auto hover:cursor-pointer"
             phx-value-id={inv.id}
             phx-click="delete-invite"
           >
