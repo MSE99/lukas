@@ -45,7 +45,7 @@ msgstr ""
 msgid "Lecturers"
 msgstr ""
 
-#: lib/lukas_web/live/operators/operator_home_live.ex:63
+#: lib/lukas_web/live/operators/operator_home_live.ex:64
 #: lib/lukas_web/live/students/students_home_live.ex:40
 #, elixir-autogen, elixir-format
 msgid "Logout"
@@ -143,17 +143,17 @@ msgstr ""
 msgid "Add lesson"
 msgstr ""
 
-#: lib/lukas_web/live/operators/courses/operator_course_assign_lecturer.ex:112
+#: lib/lukas_web/live/operators/courses/operator_course_assign_lecturer.ex:114
 #, elixir-autogen, elixir-format
 msgid "Assign"
 msgstr ""
 
-#: lib/lukas_web/live/operators/courses/operator_course_assign_lecturer.ex:70
+#: lib/lukas_web/live/operators/courses/operator_course_assign_lecturer.ex:72
 #, elixir-autogen, elixir-format
 msgid "Assigned"
 msgstr ""
 
-#: lib/lukas_web/live/operators/courses/operator_course_assign_lecturer.ex:94
+#: lib/lukas_web/live/operators/courses/operator_course_assign_lecturer.ex:96
 #, elixir-autogen, elixir-format
 msgid "Available"
 msgstr ""
@@ -175,11 +175,12 @@ msgid "Edit"
 msgstr ""
 
 #: lib/lukas_web/live/operators/courses/operator_lesson_live.ex:57
+#: lib/lukas_web/live/operators/invites_live.ex:64
 #, elixir-autogen, elixir-format
 msgid "Kind"
 msgstr ""
 
-#: lib/lukas_web/live/operators/courses/operator_course_assign_lecturer.ex:89
+#: lib/lukas_web/live/operators/courses/operator_course_assign_lecturer.ex:91
 #, elixir-autogen, elixir-format
 msgid "Remove"
 msgstr ""
@@ -220,6 +221,7 @@ msgstr ""
 #: lib/lukas_web/live/operators/courses/operator_course_live.ex:33
 #: lib/lukas_web/live/operators/courses/operator_course_settings.ex:73
 #: lib/lukas_web/live/operators/courses/operator_courses_live.ex:80
+#: lib/lukas_web/live/operators/invites_live.ex:38
 #: lib/lukas_web/live/students/courses/student_available_courses_live.ex:48
 #: lib/lukas_web/live/students/courses/student_course_live.ex:85
 #: lib/lukas_web/live/students/courses/student_course_live.ex:93
@@ -362,4 +364,34 @@ msgstr ""
 #: lib/lukas_web/live/operators/courses/operator_courses_live.ex:157
 #, elixir-autogen, elixir-format
 msgid "Editing %{course_name}"
+msgstr ""
+
+#: lib/lukas_web/live/operators/invites_live.ex:61
+#, elixir-autogen, elixir-format
+msgid "Code"
+msgstr ""
+
+#: lib/lukas_web/live/operators/invites_live.ex:51
+#, elixir-autogen, elixir-format
+msgid "Create lecturer invite"
+msgstr ""
+
+#: lib/lukas_web/live/operators/invites_live.ex:55
+#, elixir-autogen, elixir-format
+msgid "Create operator invite"
+msgstr ""
+
+#: lib/lukas_web/live/operators/invites_live.ex:39
+#, elixir-autogen, elixir-format
+msgid "invites"
+msgstr ""
+
+#: lib/lukas_web/live/operators/invites_live.ex:114
+#, elixir-autogen, elixir-format, fuzzy
+msgid "lecturer"
+msgstr ""
+
+#: lib/lukas_web/live/operators/invites_live.ex:115
+#, elixir-autogen, elixir-format, fuzzy
+msgid "operator"
 msgstr ""
