@@ -48,13 +48,13 @@ defmodule LukasWeb.Lecturer.CourseLive do
 
       <.link navigate={~p"/tutor/my-courses/#{@course.id}/lessons"}>
         <CommonComponents.transparent_button>
-          <.icon name="hero-book-open" class="mr-2" /> Lessons
+          <.icon name="hero-book-open" class="me-2" /> Lessons
         </CommonComponents.transparent_button>
       </.link>
 
       <.link navigate={~p"/tutor/my-courses/#{@course.id}/settings"}>
         <CommonComponents.transparent_button>
-          <.icon name="hero-cog-6-tooth" class="mr-2" /> settings
+          <.icon name="hero-cog-6-tooth" class="me-2" /> settings
         </CommonComponents.transparent_button>
       </.link>
 

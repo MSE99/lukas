@@ -77,7 +77,7 @@ defmodule LukasWeb.Lecturer.CourseLessonsLive do
 
       <div class="flex justify-end">
         <.button id="new-button" phx-click="prep-create" class="px-5 flex items-center">
-          Add lesson <.icon name="hero-plus-circle-solid ml-2" />
+          Add lesson <.icon name="hero-plus-circle-solid ms-2" />
         </.button>
       </div>
 
@@ -95,7 +95,7 @@ defmodule LukasWeb.Lecturer.CourseLessonsLive do
               JS.push("prep-edit", value: %{id: lesson.id}, page_loading: true)
               |> show_modal("form-modal")
             }
-            class="ml-auto hover:cursor-pointer"
+            class="ms-auto hover:cursor-pointer"
           >
             <.icon name="hero-pencil-solid text-secondary hover:text-blue-300" />
           </span>

@@ -14,12 +14,12 @@ defmodule LukasWeb.Lecturer.HomeLive do
     <ul class="flex flex-col gap-2 mt-5">
       <li>
         <.link class="bg-white shadow p-5 block max-w-xs" navigate={~p"/tutor/my-courses"}>
-          <.icon name="hero-academic-cap-solid" class="mr-5" />My courses
+          <.icon name="hero-academic-cap-solid" class="me-5" />My courses
         </.link>
       </li>
       <li>
         <.link class="bg-white shadow p-5 block max-w-xs" href={~p"/users/settings"}>
-          <.icon name="hero-cog-6-tooth-solid" class="mr-5" />settings
+          <.icon name="hero-cog-6-tooth-solid" class="me-5" />settings
         </.link>
       </li>
     </ul>
@@ -28,6 +28,10 @@ defmodule LukasWeb.Lecturer.HomeLive do
       <.danger_button>
         Logout
       </.danger_button>
+    </.link>
+
+    <.link href={~p"/locale"} method="patch">
+      Switch locale :D
     </.link>
     """
   end

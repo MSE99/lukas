@@ -70,14 +70,21 @@ defmodule LukasWeb.Lecturer.CoursesLive do
       {~p"/tutor/my-courses", "my courses"}
     ]} />
 
-    <.link patch={~p"/tutor/my-courses/new"}>
-      <.button class="flex items-center px-4 ml-auto">
-        <.icon name="hero-plus-circle-solid" class="mr-3" /> New Course
-      </.button>
-    </.link>
+    <div class="flex justify-end">
+      <.link patch={~p"/tutor/my-courses/new"}>
+        <.button class="px-4">
+          <span class="flex items-center justify-center">
+            <.icon name="hero-plus-circle-solid" class="me-3" /> New Course
+          </span>
+        </.button>
+      </.link>
+    </div>
 
     <.async_result assign={@loading}>
-      <:loading>Loading...</:loading>
+      <:loading>
+        <.loading_spinner />
+      </:loading>
+
       <:failed>failed...</:failed>
 
       <ul id="courses" phx-update="stream" class="mt-5">
@@ -88,11 +95,11 @@ defmodule LukasWeb.Lecturer.CoursesLive do
         >
           <img src={~p"/images/#{course.banner_image}"} width={80} height={80} class="rounded" />
 
-          <.link navigate={~p"/tutor/my-courses/#{course.id}"} class="ml-5 hover:underline">
+          <.link navigate={~p"/tutor/my-courses/#{course.id}"} class="ms-5 hover:underline">
             <%= course.name %>
           </.link>
 
-          <.link class="ml-auto" patch={~p"/tutor/my-courses/#{course.id}/edit"}>
+          <.link class="ms-auto" patch={~p"/tutor/my-courses/#{course.id}/edit"}>
             <.icon name="hero-pencil-solid" />
           </.link>
         </li>
