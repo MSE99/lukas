@@ -41,7 +41,7 @@ defmodule LukasWeb.CommonComponents do
 
   defp rendered_username(assigns) do
     ~H"""
-    <span class="mr-auto text-secondary">
+    <span class="me-auto text-secondary">
       <%= @user.name %>
     </span>
     """
