@@ -437,3 +437,38 @@ msgstr "تم تعديل الوسم بنجاح"
 #, elixir-autogen, elixir-format, fuzzy
 msgid "save"
 msgstr "حفظ"
+
+#: lib/lukas_web/live/shared/user_login_live.ex:14
+#, elixir-autogen, elixir-format
+msgid "Login"
+msgstr "تسجيل دخول"
+
+#: lib/lukas_web/live/shared/user_login_live.ex:27
+#, elixir-autogen, elixir-format
+msgid "Password"
+msgstr "كلمة السر"
+
+#: lib/lukas_web/live/shared/user_login_live.ex:23
+#, elixir-autogen, elixir-format
+msgid "Phone number"
+msgstr "رقم الهاتف"
+
+#: lib/lukas_web/live/shared/user_login_live.ex:17
+#, elixir-autogen, elixir-format
+msgid "Please enter your phone number and password"
+msgstr "ارجوك ادخل رقم الهاتف وكلمة السر"
+
+#: lib/lukas_web/live/shared/user_login_live.ex:37
+#, elixir-autogen, elixir-format
+msgid "Register a new account"
+msgstr "سجل حساب جديد"
+
+#: lib/lukas_web/live/shared/user_login_live.ex:31
+#, elixir-autogen, elixir-format
+msgid "Sign in"
+msgstr "تسجيل دخول"
+
+#: lib/lukas_web/live/shared/user_login_live.ex:30
+#, elixir-autogen, elixir-format
+msgid "Signing in..."
+msgstr "يتم الدخول..."
