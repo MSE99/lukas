@@ -9,8 +9,10 @@ config :bcrypt_elixir, :log_rounds, 1
 # to provide built-in test partitioning in CI environment.
 # Run `mix help test` for more information.
 config :lukas, Lukas.Repo,
-  database: Path.expand("../lukas_test.db", Path.dirname(__ENV__.file)),
-  pool_size: 5,
+  database: "ecto_test",
+  username: "ecto_test",
+  password: "ecto_test",
+  hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 
 # We don't run a server during test. If one is required,

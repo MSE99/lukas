@@ -2,10 +2,10 @@ import Config
 
 # Configure your database
 config :lukas, Lukas.Repo,
-  database: Path.expand("../lukas_dev.db", Path.dirname(__ENV__.file)),
-  pool_size: 5,
-  stacktrace: true,
-  show_sensitive_data_on_connection_error: true
+  database: "ecto_dev",
+  username: "ecto_dev",
+  password: "ecto_dev",
+  hostname: "localhost"
 
 # For development, we disable any cache and enable
 # debugging and code reloading.

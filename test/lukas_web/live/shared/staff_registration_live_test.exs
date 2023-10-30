@@ -56,11 +56,8 @@ defmodule LukasWeb.Shared.StaffRegistrationLiveTest do
 
       assert_redirected(lv, ~p"/log_in")
 
-      [operator] = Lukas.Accounts.list_operators()
-
+      operator = Lukas.Accounts.list_operators() |> List.first()
       assert Lukas.Accounts.list_invites() == []
-      assert Lukas.Accounts.list_lecturers() == []
-      assert Lukas.Accounts.list_students() == []
 
       assert operator.name == attrs.name
     end

@@ -47,7 +47,6 @@ defmodule Lukas.Money.TxLog do
     from(
       log in __MODULE__,
       where: log.student_id == ^student_id,
-      order_by: [desc: :inserted_at],
       select: max(log.count)
     )
   end
