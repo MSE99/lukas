@@ -22,6 +22,10 @@ defmodule LukasWeb.Router do
     pipe_through([:browser, :redirect_if_user_is_authenticated])
 
     get("/", PageController, :home)
+
+    live_session :public, on_mount: [{LukasWeb.UserAuth, :redirect_if_user_is_authenticated}] do
+      live "/courses/:id", Shared.CourseLive
+    end
   end
 
   scope "/controls", LukasWeb do
