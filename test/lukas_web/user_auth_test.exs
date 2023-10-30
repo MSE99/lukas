@@ -1,5 +1,5 @@
 defmodule LukasWeb.UserAuthTest do
-  use LukasWeb.ConnCase
+  use LukasWeb.ConnCase, async: true
 
   alias Phoenix.LiveView
   alias Lukas.Accounts

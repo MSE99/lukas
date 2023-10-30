@@ -1,5 +1,5 @@
 defmodule LukasWeb.UserSessionControllerTest do
-  use LukasWeb.ConnCase
+  use LukasWeb.ConnCase, async: true
 
   import Lukas.AccountsFixtures
 

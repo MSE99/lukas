@@ -1,5 +1,5 @@
 defmodule LukasWeb.Operator.CourseSettingsLiveTest do
-  use LukasWeb.ConnCase
+  use LukasWeb.ConnCase, async: true
 
   alias Lukas.Learning
 

@@ -1,5 +1,5 @@
 defmodule Lukas.AccountsTest do
-  use Lukas.DataCase
+  use Lukas.DataCase, async: true
 
   alias Lukas.Accounts
 

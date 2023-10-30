@@ -1,5 +1,5 @@
 defmodule Lukas.LearningTest do
-  use Lukas.DataCase
+  use Lukas.DataCase, async: true
 
   alias Lukas.Learning
   alias Lukas.Learning.Course.{Content, Students}

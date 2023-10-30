@@ -1,5 +1,5 @@
 defmodule LukasWeb.Students.StudyLiveTest do
-  use LukasWeb.ConnCase
+  use LukasWeb.ConnCase, async: true
 
   import Lukas.LearningFixtures
   import Lukas.MoneyFixtures

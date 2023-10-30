@@ -1,5 +1,5 @@
 defmodule LukasWeb.PageControllerTest do
-  use LukasWeb.ConnCase
+  use LukasWeb.ConnCase, async: true
 
   test "GET /", %{conn: conn} do
     conn = get(conn, ~p"/")

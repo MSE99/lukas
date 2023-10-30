@@ -1,5 +1,5 @@
 defmodule Lukas.MoneyTest do
-  use Lukas.DataCase
+  use Lukas.DataCase, async: true
 
   import Lukas.AccountsFixtures
   import Lukas.MoneyFixtures

@@ -1,5 +1,5 @@
 defmodule LukasWeb.UserSettingsLiveTest do
-  use LukasWeb.ConnCase
+  use LukasWeb.ConnCase, async: true
 
   alias Lukas.Accounts
   import Phoenix.LiveViewTest

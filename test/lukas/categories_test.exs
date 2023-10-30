@@ -1,5 +1,5 @@
 defmodule Lukas.CategoriesTest do
-  use Lukas.DataCase
+  use Lukas.DataCase, async: true
 
   import Lukas.LearningFixtures
 
