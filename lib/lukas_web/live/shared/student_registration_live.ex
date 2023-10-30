@@ -11,7 +11,7 @@ defmodule LukasWeb.Shared.StudentRegistrationLive do
         <%= gettext("Register for an account") %>
         <:subtitle>
           <%= gettext("Already registered?") %>
-          <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
+          <.link navigate={~p"/log_in"} class="font-semibold text-brand hover:underline">
             <%= gettext("Sign in now") %>
           </.link>
           <%= gettext("to your account.") %>

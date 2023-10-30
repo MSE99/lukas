@@ -25,6 +25,7 @@ defmodule LukasWeb.Router do
 
     live_session :public, on_mount: [{LukasWeb.UserAuth, :redirect_if_user_is_authenticated}] do
       live "/courses/:id", Shared.CourseLive
+      live "/log_in", UserLoginLive
     end
   end
 
@@ -130,7 +131,6 @@ defmodule LukasWeb.Router do
       live("/register/:code", Shared.StaffRegistrationLive)
 
       live("/users/register", Shared.StudentRegistrationLive, :new)
-      live("/users/log_in", UserLoginLive, :new)
       live("/users/reset_password", UserForgotPasswordLive, :new)
       live("/users/reset_password/:token", UserResetPasswordLive, :edit)
     end

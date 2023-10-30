@@ -54,7 +54,7 @@ defmodule LukasWeb.Shared.StaffRegistrationLiveTest do
       })
       |> render_submit()
 
-      assert_redirected(lv, ~p"/users/log_in")
+      assert_redirected(lv, ~p"/log_in")
 
       [operator] = Lukas.Accounts.list_operators()
 
@@ -109,7 +109,7 @@ defmodule LukasWeb.Shared.StaffRegistrationLiveTest do
       })
       |> render_submit()
 
-      assert_redirected(lv, ~p"/users/log_in")
+      assert_redirected(lv, ~p"/log_in")
       assert Lukas.Accounts.list_invites() == []
     end
   end

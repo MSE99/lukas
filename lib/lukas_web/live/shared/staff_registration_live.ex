@@ -47,7 +47,7 @@ defmodule LukasWeb.Shared.StaffRegistrationLive do
   def handle_event("register", %{"user" => params}, socket) do
     case register(params, socket.assigns.invite) do
       {:ok, _} ->
-        {:noreply, redirect(socket, to: ~p"/users/log_in")}
+        {:noreply, redirect(socket, to: ~p"/log_in")}
 
       {:error, cs} ->
         {:noreply, assign(socket, form: to_form(cs))}

@@ -6,14 +6,14 @@ defmodule LukasWeb.UserLoginLiveTest do
 
   describe "Log in page" do
     test "renders log in page", %{conn: conn} do
-      assert {:ok, _lv, _html} = live(conn, ~p"/users/log_in")
+      assert {:ok, _lv, _html} = live(conn, ~p"/log_in")
     end
 
     test "redirects if already logged in", %{conn: conn} do
       result =
         conn
         |> log_in_user(user_fixture())
-        |> live(~p"/users/log_in")
+        |> live(~p"/log_in")
         |> follow_redirect(conn, ~p"/controls")
 
       assert {:ok, _conn} = result
@@ -25,7 +25,7 @@ defmodule LukasWeb.UserLoginLiveTest do
       password = "123456789abcd"
       user = user_fixture(%{password: password})
 
-      {:ok, lv, _html} = live(conn, ~p"/users/log_in")
+      {:ok, lv, _html} = live(conn, ~p"/log_in")
 
       form =
         form(lv, "#login_form",
@@ -40,7 +40,7 @@ defmodule LukasWeb.UserLoginLiveTest do
     test "redirects to login page with a flash error if there are no valid credentials", %{
       conn: conn
     } do
-      {:ok, lv, _html} = live(conn, ~p"/users/log_in")
+      {:ok, lv, _html} = live(conn, ~p"/log_in")
 
       form =
         form(
