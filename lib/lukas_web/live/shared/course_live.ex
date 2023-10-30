@@ -3,6 +3,8 @@ defmodule LukasWeb.Shared.CourseLive do
 
   alias Lukas.Learning
   alias Lukas.Learning.Course.Staff
+
+  alias LukasWeb.CommonComponents
   alias Phoenix.LiveView.AsyncResult
 
   def mount(%{"id" => raw_id}, _, socket) do
@@ -44,27 +46,54 @@ defmodule LukasWeb.Shared.CourseLive do
     ~H"""
     <.async_result assign={@loading}>
       <:loading>
+        <CommonComponents.navigate_breadcrumbs links={[
+          {~p"/", gettext("home")}
+        ]} />
+
         <.loading_spinner />
       </:loading>
 
       <:failed>Failed to load course...</:failed>
 
-      <%= @course.name %>
-      <%= @course.price |> :erlang.float_to_binary(decimals: 1) %> LYD
-      <div phx-update="stream" id="lecturers">
-        <span :for={{id, lect} <- @streams.lecturers} id={id}>
-          <%= lect.name %>
-        </span>
-      </div>
+      <CommonComponents.navigate_breadcrumbs links={[
+        {~p"/", gettext("home")},
+        {~p"/courses/#{@course.id}", @course.name}
+      ]} />
 
-      <div phx-update="stream" id="tags">
-        <span :for={{id, tag} <- @streams.tags} id={id}>
-          <%= tag.name %>
-        </span>
+      <CommonComponents.course_banner image_src={~p"/images/#{@course.banner_image}"} />
+
+      <div class="mt-10 text-secondary px-2 pb-5">
+        <h3 class="font-bold mb-3"><%= @course.name %></h3>
+
+        <p class="mb-3">
+          <%= @course.description %>
+        </p>
+
+        <div class="flex justify-end mt-8 mb-10">
+          <CommonComponents.buy_button
+            id="enroll-button"
+            on_click={JS.navigate(~p"/users/log_in")}
+            price={format_price(@course.price)}
+          />
+        </div>
+
+        <CommonComponents.streamed_users_mini_list
+          id="users-list"
+          title={gettext("Lecturers")}
+          users={@streams.lecturers}
+        />
+
+        <CommonComponents.streamed_tag_list
+          id="tags-list"
+          title={gettext("Tags")}
+          tags={@streams.tags}
+        />
       </div>
     </.async_result>
     """
   end
+
+  defp format_price(amount), do: :erlang.float_to_binary(amount, decimals: 1)
 
   def handle_info({:course, _, :course_updated, next}, socket) do
     {:noreply, assign(socket, :course, next)}
