@@ -19,9 +19,9 @@ jobs:
         image: postgres:12
         ports: ['5432:5432']
         env:
-          POSTGRES_DB: ecto_dev
-          POSTGRES_USER: ecto_dev
-          POSTGRES_PASSWORD: ecto_dev
+          POSTGRES_DB: ecto_test
+          POSTGRES_USER: ecto_test
+          POSTGRES_PASSWORD: ecto_test
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
