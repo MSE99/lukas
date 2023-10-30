@@ -60,7 +60,7 @@ defmodule LukasWeb.CommonComponents do
     <header class="px-6 sm:px-8 lg:px-10" dir="ltr">
       <nav class="mx-auto max-w-2xl">
         <h1 :if={assigns[:current_user] == nil} class="text-primary font-bold text-2xl mt-8 mb-16">
-          Lukas
+          <.link href={~p"/"}> Lukas</.link>
         </h1>
 
         <ul :if={assigns[:current_user]} class="flex items-center">

@@ -8,13 +8,13 @@ defmodule LukasWeb.Shared.StudentRegistrationLive do
     ~H"""
     <div class="mx-auto max-w-sm">
       <.header class="text-center">
-        Register for an account
+        <%= gettext("Register for an account") %>
         <:subtitle>
-          Already registered?
+          <%= gettext("Already registered?") %>
           <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
-            Sign in
+            <%= gettext("Sign in now") %>
           </.link>
-          to your account now.
+          <%= gettext("to your account.") %>
         </:subtitle>
       </.header>
 
@@ -31,13 +31,15 @@ defmodule LukasWeb.Shared.StudentRegistrationLive do
           Oops, something went wrong! Please check the errors below.
         </.error>
 
-        <.input field={@form[:phone_number]} type="tel" label="Phone number" required />
-        <.input field={@form[:name]} type="text" label="Name" required />
-        <.input field={@form[:email]} type="email" label="Email" required />
-        <.input field={@form[:password]} type="password" label="Password" required />
+        <.input field={@form[:phone_number]} type="tel" label={gettext("Phone number")} required />
+        <.input field={@form[:name]} type="text" label={gettext("Name")} required />
+        <.input field={@form[:email]} type="email" label={gettext("Email")} required />
+        <.input field={@form[:password]} type="password" label={gettext("Password")} required />
 
         <:actions>
-          <.button phx-disable-with="Creating account..." class="w-full">Create an account</.button>
+          <.button phx-disable-with={gettext("Creating account...")} class="w-full">
+            <%= gettext("Create an account") %>
+          </.button>
         </:actions>
       </.simple_form>
     </div>

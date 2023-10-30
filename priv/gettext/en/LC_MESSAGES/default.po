@@ -104,6 +104,7 @@ msgstr ""
 
 #: lib/lukas_web/live/operators/courses/operator_courses_live.ex:166
 #: lib/lukas_web/live/operators/tags/form_component.ex:21
+#: lib/lukas_web/live/shared/student_registration_live.ex:35
 #, elixir-autogen, elixir-format
 msgid "Name"
 msgstr ""
@@ -358,6 +359,7 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
+#: lib/lukas_web/live/shared/student_registration_live.ex:36
 #: lib/lukas_web/live/shared/user_settings_live.ex:63
 #, elixir-autogen, elixir-format
 msgid "Email"
@@ -443,11 +445,13 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
+#: lib/lukas_web/live/shared/student_registration_live.ex:37
 #: lib/lukas_web/live/shared/user_login_live.ex:27
 #, elixir-autogen, elixir-format
 msgid "Password"
 msgstr ""
 
+#: lib/lukas_web/live/shared/student_registration_live.ex:34
 #: lib/lukas_web/live/shared/user_login_live.ex:23
 #, elixir-autogen, elixir-format
 msgid "Phone number"
@@ -471,4 +475,34 @@ msgstr ""
 #: lib/lukas_web/live/shared/user_login_live.ex:30
 #, elixir-autogen, elixir-format
 msgid "Signing in..."
+msgstr ""
+
+#: lib/lukas_web/live/shared/student_registration_live.ex:13
+#, elixir-autogen, elixir-format
+msgid "Already registered?"
+msgstr ""
+
+#: lib/lukas_web/live/shared/student_registration_live.ex:41
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Create an account"
+msgstr ""
+
+#: lib/lukas_web/live/shared/student_registration_live.ex:40
+#, elixir-autogen, elixir-format
+msgid "Creating account..."
+msgstr ""
+
+#: lib/lukas_web/live/shared/student_registration_live.ex:11
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Register for an account"
+msgstr ""
+
+#: lib/lukas_web/live/shared/student_registration_live.ex:15
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Sign in now"
+msgstr ""
+
+#: lib/lukas_web/live/shared/student_registration_live.ex:17
+#, elixir-autogen, elixir-format, fuzzy
+msgid "to your account."
 msgstr ""
