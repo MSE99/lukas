@@ -59,7 +59,7 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-config :lukas, LukasWeb.Gettext, default_locale: "en", locales: ~w(en ar)
+config :lukas, LukasWeb.Gettext, default_locale: "ar", locales: ~w(en ar)
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

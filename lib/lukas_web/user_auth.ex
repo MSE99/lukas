@@ -64,12 +64,12 @@ defmodule LukasWeb.UserAuth do
       |> assign(:locale, locale)
       |> put_session(:locale, locale)
     else
-      Gettext.put_locale(LukasWeb.Gettext, "en")
+      locale = Gettext.get_locale(LukasWeb.Gettext)
 
       conn
-      |> assign(:locale, "en")
-      |> put_resp_cookie("locale", "en", max_age: 10 * 24 * 60 * 60)
-      |> put_session(:locale, "en")
+      |> assign(:locale, locale)
+      |> put_resp_cookie("locale", locale, max_age: 10 * 24 * 60 * 60)
+      |> put_session(:locale, locale)
     end
   end
 

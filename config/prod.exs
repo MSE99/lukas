@@ -14,6 +14,8 @@ config :lukas, LukasWeb.Endpoint, cache_static_manifest: "priv/static/cache_mani
 # Configures Swoosh API Client
 config :swoosh, api_client: Swoosh.ApiClient.Finch, finch_name: Lukas.Finch
 
+config :lukas, LukasWeb.Gettext, default_locale: "ar", locales: ~w(en ar)
+
 # Do not print debug messages in production
 config :logger, level: :info
 
