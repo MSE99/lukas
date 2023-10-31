@@ -4,14 +4,17 @@ defmodule LukasWeb.Operator.LessonLive do
   alias Lukas.Learning
   alias Lukas.Learning.Course.Content
 
+  alias LukasWeb.CommonComponents
+
   def mount(%{"id" => raw_course_id, "lesson_id" => raw_lesson_id}, _session, socket) do
     with {course_id, _} <- Integer.parse(raw_course_id),
          {lesson_id, _} <- Integer.parse(raw_lesson_id),
          {lesson, topics} when lesson != nil <-
-           Content.get_lesson_and_topic_names(course_id, lesson_id) do
+           Content.get_lesson_and_topic_names(course_id, lesson_id),
+         course = Learning.get_course(course_id) do
       Learning.watch_course(course_id)
 
-      {:ok, socket |> assign(lesson: lesson) |> stream(:topics, topics)}
+      {:ok, socket |> assign(lesson: lesson) |> stream(:topics, topics) |> assign(course: course)}
     else
       _ -> {:ok, redirect(socket, to: ~p"/")}
     end
@@ -39,6 +42,47 @@ defmodule LukasWeb.Operator.LessonLive do
 
   def render(assigns) do
     ~H"""
+    <CommonComponents.navigate_breadcrumbs links={[
+      {~p"/controls", "home"},
+      {~p"/controls/courses/#{@course.id}", @course.name},
+      {~p"/controls/courses/#{@course.id}/lessons", "lessons"}
+    ]} />
+
+    <h1 class="text-primary text-2xl font-bold mb-8">Lesson <%= @lesson.title %></h1>
+
+    <p class="text-md text-secondary mb-5"><%= @lesson.description %></p>
+
+    <div class="flex justify-end">
+      <.link patch={~p"/controls/courses/#{@lesson.course_id}/lessons/#{@lesson.id}/new-topic"}>
+        <.button class="flex items-center gap-3">
+          <%= gettext("New topic") %>
+          <.icon name="hero-plus-circle-solid" />
+        </.button>
+      </.link>
+    </div>
+
+    <ul id="topics" phx-update="stream" class="mt-10">
+      <li
+        :for={{id, topic} <- @streams.topics}
+        id={id}
+        class="font-bold text-black flex items-center gap-3 my-3"
+      >
+        <span class="me-auto"><%= topic.title %></span>
+        <.link patch={
+          ~p"/controls/courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{topic.id}/edit-topic"
+        }>
+          <.icon name="hero-pencil" />
+        </.link>
+
+        <.icon
+          id={"delete-topic-#{topic.id}"}
+          name="hero-trash"
+          phx-click="delete-topic"
+          phx-value-id={topic.id}
+        />
+      </li>
+    </ul>
+
     <.modal
       :if={@live_action in [:edit_topic, :new_topic]}
       id="new-topic-modal"
@@ -81,28 +125,6 @@ defmodule LukasWeb.Operator.LessonLive do
         </div>
       </.form>
     </.modal>
-
-    <h1>Lesson <%= @lesson.title %></h1>
-
-    <p><%= @lesson.description %></p>
-
-    <.link patch={~p"/controls/courses/#{@lesson.course_id}/lessons/#{@lesson.id}/new-topic"}>
-      <.button>New topic</.button>
-    </.link>
-
-    <ul id="topics" phx-update="stream">
-      <li :for={{id, topic} <- @streams.topics} id={id}>
-        <%= topic.title %> |
-        <.link patch={
-          ~p"/controls/courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{topic.id}/edit-topic"
-        }>
-          <.button><%= gettext("Edit") %></.button>
-        </.link>
-        <.button id={"delete-topic-#{topic.id}"} phx-click="delete-topic" phx-value-id={topic.id}>
-          <%= gettext("Delete") %>
-        </.button>
-      </li>
-    </ul>
     """
   end
 
