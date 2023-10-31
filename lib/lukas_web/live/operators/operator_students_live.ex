@@ -17,12 +17,14 @@ defmodule LukasWeb.Operator.StudentsLive do
   def render(assigns) do
     ~H"""
     <CommonComponents.navigate_breadcrumbs links={[
-      {~p"/controls", "home"},
-      {~p"/controls/students", "students"}
+      {~p"/controls", gettext("home")},
+      {~p"/controls/students", gettext("students")}
     ]} />
 
     <form id="search-form" phx-submit="search" class="mb-3">
-      <label for="name" class="text-secondary font-bold px-3">Search</label>
+      <label for="name" class="text-secondary font-bold px-3">
+        <%= gettext("Search") %>
+      </label>
 
       <input
         type="text"
@@ -59,7 +61,7 @@ defmodule LukasWeb.Operator.StudentsLive do
               phx-click="disable-student"
               phx-value-id={student.id}
             >
-              Disable
+              <%= gettext("Disable") %>
             </.button>
 
             <.button
@@ -68,7 +70,7 @@ defmodule LukasWeb.Operator.StudentsLive do
               phx-click="enable-student"
               phx-value-id={student.id}
             >
-              Enable
+              <%= gettext("Enable") %>
             </.button>
           </:action>
         </CommonComponents.user_record>

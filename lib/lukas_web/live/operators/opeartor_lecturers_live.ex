@@ -20,7 +20,9 @@ defmodule LukasWeb.Operator.LecturersLive do
     ]} />
 
     <form id="search-form" phx-submit="search" class="mb-3">
-      <label for="name" class="text-secondary font-bold px-3">Search</label>
+      <label for="name" class="text-secondary font-bold px-3">
+        <%= gettext("Search") %>
+      </label>
 
       <input
         type="text"
