@@ -275,7 +275,7 @@ defmodule Lukas.Learning.Query do
       join: l in Lesson,
       on: l.id == t.lesson_id,
       where: l.course_id == ^course_id,
-      select: t
+      select: count(t.id)
     )
   end
 
