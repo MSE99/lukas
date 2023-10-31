@@ -37,11 +37,11 @@ defmodule Lukas.Learning.Query do
       _ ->
         q =
           from(
-            t in Tagging,
-            join: c in Course,
-            on: c.id == t.course_id,
-            group_by: t.course_id,
+            c in Course,
+            join: t in Tagging,
+            on: t.course_id == c.id,
             where: t.tag_id in ^tag_ids and c.id not in ^excluded,
+            group_by: c.id,
             limit: ^limit,
             offset: ^offset,
             order_by: ^order_by,
