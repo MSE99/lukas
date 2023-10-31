@@ -45,8 +45,8 @@ defmodule LukasWeb.Operator.OperatorsLive do
       <:failed>Failed...</:failed>
 
       <CommonComponents.navigate_breadcrumbs links={[
-        {~p"/controls", "home"},
-        {~p"/controls/operators", "operators"}
+        {~p"/controls", gettext("home")},
+        {~p"/controls/operators", gettext("operators")}
       ]} />
 
       <ul id="operators" phx-update="stream">
@@ -59,7 +59,7 @@ defmodule LukasWeb.Operator.OperatorsLive do
                 phx-click="disable-operator"
                 phx-value-id={operator.id}
               >
-                Disable
+                <%= gettext("Disable") %>
               </.button>
 
               <.button
@@ -68,7 +68,7 @@ defmodule LukasWeb.Operator.OperatorsLive do
                 phx-click="enable-operator"
                 phx-value-id={operator.id}
               >
-                Enable
+                <%= gettext("Enable") %>
               </.button>
             </:action>
           </CommonComponents.user_record>

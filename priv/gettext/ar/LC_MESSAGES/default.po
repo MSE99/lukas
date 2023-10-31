@@ -220,6 +220,7 @@ msgstr "الطلبة"
 #: lib/lukas_web/live/operators/courses/operator_courses_live.ex:80
 #: lib/lukas_web/live/operators/invites_live.ex:38
 #: lib/lukas_web/live/operators/opeartor_lecturers_live.ex:18
+#: lib/lukas_web/live/operators/operator_operators_live.ex:48
 #: lib/lukas_web/live/operators/operator_students_live.ex:20
 #: lib/lukas_web/live/operators/tags/index.html.heex:2
 #: lib/lukas_web/live/shared/course_live.ex:50
@@ -526,11 +527,13 @@ msgstr "نصي"
 msgid "video"
 msgstr "فيديو"
 
+#: lib/lukas_web/live/operators/operator_operators_live.ex:62
 #: lib/lukas_web/live/operators/operator_students_live.ex:64
 #, elixir-autogen, elixir-format
 msgid "Disable"
 msgstr "الغاء التفعيل"
 
+#: lib/lukas_web/live/operators/operator_operators_live.ex:71
 #: lib/lukas_web/live/operators/operator_students_live.ex:73
 #, elixir-autogen, elixir-format
 msgid "Enable"
@@ -540,3 +543,8 @@ msgstr "تفعيل"
 #, elixir-autogen, elixir-format, fuzzy
 msgid "students"
 msgstr "الطلبة"
+
+#: lib/lukas_web/live/operators/operator_operators_live.ex:49
+#, elixir-autogen, elixir-format, fuzzy
+msgid "operators"
+msgstr "ادمنز"
