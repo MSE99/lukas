@@ -84,7 +84,7 @@ defmodule LukasWeb.Operator.LessonLiveTest do
 
       topic = text_topic_fixture(lesson)
 
-      lv |> element("button#delete-topic-#{topic.id}") |> render_click()
+      lv |> element("#delete-topic-#{topic.id}") |> render_click()
 
       refute render(lv) =~ topic.title
     end

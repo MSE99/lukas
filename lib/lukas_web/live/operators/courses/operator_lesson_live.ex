@@ -74,12 +74,9 @@ defmodule LukasWeb.Operator.LessonLive do
           <.icon name="hero-pencil" />
         </.link>
 
-        <.icon
-          id={"delete-topic-#{topic.id}"}
-          name="hero-trash"
-          phx-click="delete-topic"
-          phx-value-id={topic.id}
-        />
+        <span id={"delete-topic-#{topic.id}"} phx-click="delete-topic" phx-value-id={topic.id}>
+          <.icon name="hero-trash" />
+        </span>
       </li>
     </ul>
 

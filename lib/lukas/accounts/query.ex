@@ -68,17 +68,25 @@ defmodule Lukas.Accounts.Query do
     )
   end
 
-  def lecturers(opts) do
+  def lecturers(opts \\ []) do
     limit = Keyword.get(opts, :limit, 50)
     offset = Keyword.get(opts, :offset, 0)
-    order_by = Keyword.get(opts, :order_by, desc: :inserted_at)
+    name = Keyword.get(opts, :name, "")
 
-    from(
-      u in User,
-      where: u.kind == :lecturer,
-      limit: ^limit,
-      offset: ^offset,
-      order_by: ^order_by
-    )
+    q =
+      from(
+        u in User,
+        where: u.kind == :lecturer,
+        limit: ^limit,
+        offset: ^offset,
+        order_by: [asc: :id]
+      )
+
+    if name != "" do
+      like_clause = "%" <> name <> "%"
+      q |> where([u], like(u.name, ^like_clause))
+    else
+      q
+    end
   end
 end

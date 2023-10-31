@@ -15,8 +15,8 @@ defmodule LukasWeb.Operator.LecturersLive do
   def render(assigns) do
     ~H"""
     <CommonComponents.navigate_breadcrumbs links={[
-      {~p"/controls", "home"},
-      {~p"/controls/lecturers", "lecturers"}
+      {~p"/controls", gettext("home")},
+      {~p"/controls/lecturers", gettext("lecturers")}
     ]} />
 
     <form id="search-form" phx-submit="search" class="mb-3">
