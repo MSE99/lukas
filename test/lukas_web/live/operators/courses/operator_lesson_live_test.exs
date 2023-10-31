@@ -159,6 +159,27 @@ defmodule LukasWeb.Operator.LessonLiveTest do
       assert render(lv) =~ "Foo"
     end
 
+    test "should create a new video topic.", %{
+      conn: conn,
+      new_topic_path: new_topic_path,
+      path: path
+    } do
+      {:ok, lv, _html} = live(conn, new_topic_path)
+
+      lv
+      |> form("form", %{
+        "topic" => %{
+          "title" => "Foo",
+          "content" => "Foo is great bar is none.",
+          "kind" => "video"
+        }
+      })
+      |> render_submit()
+
+      assert_patched(lv, path)
+      assert render(lv) =~ "Foo"
+    end
+
     test "should react to topics being removed.", %{
       conn: conn,
       path: path,

@@ -3,7 +3,7 @@ defmodule Lukas.Learning.Lesson.Topic do
 
   import Ecto.Changeset
 
-  @kinds [:text]
+  @kinds [:text, :video]
 
   schema "topics" do
     field(:title, :string)

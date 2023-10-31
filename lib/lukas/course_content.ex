@@ -1,4 +1,6 @@
 defmodule Lukas.Learning.Course.Content do
+  import LukasWeb.Gettext
+
   alias Lukas.Learning.{Course, Lesson, Query}
   alias Lukas.Accounts
   alias Lukas.Repo
@@ -7,7 +9,8 @@ defmodule Lukas.Learning.Course.Content do
 
   def topic_kinds() do
     %{
-      "text" => "text"
+      gettext("text") => "text",
+      gettext("video") => "video"
     }
   end
 

@@ -51,6 +51,7 @@ defmodule LukasWeb.Operator.LessonLive do
         phx-submit={if @live_action == :new_topic, do: "create", else: "update"}
       >
         <.input field={@form[:title]} type="text" label={gettext("Title")} />
+
         <.input
           field={@form[:kind]}
           type="select"
@@ -65,6 +66,7 @@ defmodule LukasWeb.Operator.LessonLive do
           label={gettext("Content")}
           field={@form[:content]}
         />
+
         <.input
           :if={@topic_kind != "text"}
           type="text"
@@ -72,7 +74,11 @@ defmodule LukasWeb.Operator.LessonLive do
           field={@form[:content]}
         />
 
-        <.button>Create</.button>
+        <div class="mt-10 flex justify-end">
+          <.button>
+            <%= gettext("Create") %>
+          </.button>
+        </div>
       </.form>
     </.modal>
 
@@ -127,8 +133,7 @@ defmodule LukasWeb.Operator.LessonLive do
     end
   end
 
-  def handle_event("create", %{"topic" => params}, socket)
-      when socket.assigns.topic_kind == "text" do
+  def handle_event("create", %{"topic" => params}, socket) do
     case Content.create_text_topic(socket.assigns.lesson, params) do
       {:error, cs} ->
         {:noreply, assign(socket, form: to_form(cs))}
@@ -142,7 +147,7 @@ defmodule LukasWeb.Operator.LessonLive do
     end
   end
 
-  def handle_event("update-topic-kind", %{"kind" => kind}, socket) do
+  def handle_event("update-topic-kind", %{"topic" => %{"kind" => kind}}, socket) do
     {:noreply, assign(socket, topic_kind: kind)}
   end
 
