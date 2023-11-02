@@ -72,7 +72,7 @@ defmodule LukasWeb.Shared.CourseLive do
         <div class="flex justify-end mt-8 mb-10">
           <CommonComponents.buy_button
             id="enroll-button"
-            on_click={JS.navigate(~p"/users/log_in")}
+            on_click={JS.navigate(~p"/log_in")}
             price={format_price(@course.price)}
           />
         </div>

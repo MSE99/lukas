@@ -108,10 +108,28 @@ defmodule LukasWeb.Students.StudyLive do
             <%= @topic.title %>
           </.main_title>
 
-          <.paragraph class="mb-10"><%= @topic.content %></.paragraph>
+          <.paragraph :if={@topic.kind == :text} class="mb-10">
+            <%= @topic.content %>
+          </.paragraph>
+
+          <div :if={@topic.kind == :video} class="flex justify-center items-center">
+            <iframe
+              width="1000"
+              height="600"
+              src={@topic.content}
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            >
+            </iframe>
+          </div>
 
           <div class="flex justify-end mt-10">
-            <.button :if={@topic.progressed == false} phx-click="progress-topic" class="px-8 py-2">
+            <.button
+              :if={@topic.progressed == false}
+              phx-click="progress-topic"
+              class="px-8 py-2 mr-3"
+            >
               next
             </.button>
 
