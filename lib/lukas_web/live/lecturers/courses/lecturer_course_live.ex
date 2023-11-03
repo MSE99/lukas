@@ -32,8 +32,8 @@ defmodule LukasWeb.Lecturer.CourseLive do
   def render(assigns) do
     ~H"""
     <CommonComponents.navigate_breadcrumbs links={[
-      {~p"/tutor", "home"},
-      {~p"/tutor/my-courses", "my courses"},
+      {~p"/tutor", gettext("home")},
+      {~p"/tutor/my-courses", gettext("my courses")},
       {~p"/tutor/my-courses/#{@course.id}", @course.name}
     ]} />
 
@@ -48,23 +48,23 @@ defmodule LukasWeb.Lecturer.CourseLive do
 
       <.link navigate={~p"/tutor/my-courses/#{@course.id}/lessons"}>
         <CommonComponents.transparent_button>
-          <.icon name="hero-book-open" class="me-2" /> Lessons
+          <.icon name="hero-book-open" class="me-2" /> <%= gettext("Lessons") %>
         </CommonComponents.transparent_button>
       </.link>
 
       <.link navigate={~p"/tutor/my-courses/#{@course.id}/settings"}>
         <CommonComponents.transparent_button>
-          <.icon name="hero-cog-6-tooth" class="me-2" /> settings
+          <.icon name="hero-cog-6-tooth" class="me-2" /> <%= gettext("settings") %>
         </CommonComponents.transparent_button>
       </.link>
 
       <CommonComponents.streamed_users_mini_list
         id="users-list"
-        title="Lecturers"
+        title={gettext("Lecturers")}
         users={@streams.lecturers}
       />
 
-      <CommonComponents.streamed_tag_list id="tags-list" title="Tags" tags={@streams.tags} />
+      <CommonComponents.streamed_tag_list id="tags-list" title={gettext("Tags")} tags={@streams.tags} />
     </div>
 
     <h3 class="mt-5 pb-5 font-bold text-primary">

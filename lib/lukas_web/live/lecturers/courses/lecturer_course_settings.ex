@@ -67,8 +67,8 @@ defmodule LukasWeb.Lecturer.CourseSettingsLive do
     <.async_result assign={@loading}>
       <:loading>
         <CommonComponents.navigate_breadcrumbs links={[
-          {~p"/tutor", "home"},
-          {~p"/tutor/my-courses", "my courses"}
+          {~p"/tutor", gettext("home")},
+          {~p"/tutor/my-courses", gettext("my courses")}
         ]} />
 
         <.loading_spinner />
@@ -76,22 +76,24 @@ defmodule LukasWeb.Lecturer.CourseSettingsLive do
       <:failed>Failed to load</:failed>
 
       <CommonComponents.navigate_breadcrumbs links={[
-        {~p"/tutor", "home"},
-        {~p"/tutor/my-courses", "my courses"},
+        {~p"/tutor", gettext("home")},
+        {~p"/tutor/my-courses", gettext("my courses")},
         {~p"/tutor/my-courses/#{@course.id}", @course.name},
-        {~p"/tutor/my-courses/#{@course.id}/settings", "settings"}
+        {~p"/tutor/my-courses/#{@course.id}/settings", gettext("settings")}
       ]} />
 
-      <h1 class="mb-5 font-bold text-lg text-primary">Settings</h1>
+      <h1 class="mb-5 font-bold text-lg text-primary"><%= gettext("Settings") %></h1>
 
       <CommonComponents.course_banner image_src={~p"/images/#{@course.banner_image}"} />
 
       <.form for={@form} phx-change="validate" phx-submit="save">
-        <.input field={@form[:name]} type="text" label="Name" />
-        <.input field={@form[:description]} type="textarea" label="Description" />
-        <.input field={@form[:price]} type="number" label="Price" />
+        <.input field={@form[:name]} type="text" label={gettext("Name")} />
+        <.input field={@form[:description]} type="textarea" label={gettext("Description")} />
+        <.input field={@form[:price]} type="number" label={gettext("Price")} />
 
-        <p class="font-semibold mt-5">Tags</p>
+        <p class="font-semibold mt-5">
+          <%= gettext("Tags") %>
+        </p>
         <ul id="tags" phx-update="stream" class="mt-3 flex flex-wrap gap-2">
           <li
             :for={{id, tag} <- @streams.tags}
@@ -112,7 +114,9 @@ defmodule LukasWeb.Lecturer.CourseSettingsLive do
         </ul>
 
         <div class="my-5">
-          <p class="font-bold mb-3">Banner image</p>
+          <p class="font-bold mb-3">
+            <%= gettext("Banner image") %>
+          </p>
           <.live_file_input upload={@uploads.banner_image} />
         </div>
 
@@ -127,7 +131,9 @@ defmodule LukasWeb.Lecturer.CourseSettingsLive do
         <% end %>
 
         <div class="flex justify-end pb-5">
-          <.button class="px-12">Save</.button>
+          <.button class="px-12">
+            <%= gettext("Save") %>
+          </.button>
         </div>
       </.form>
     </.async_result>
