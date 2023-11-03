@@ -58,7 +58,7 @@ defmodule LukasWeb.CommonComponents do
   def navbar(assigns) do
     ~H"""
     <header class="px-6 sm:px-8 lg:px-10" dir="ltr">
-      <nav class="mx-auto max-w-2xl">
+      <nav class="mx-auto max-w-3xl">
         <h1 :if={assigns[:current_user] == nil} class="text-primary font-bold text-2xl mt-8 mb-16">
           <.link href={~p"/"}> Lukas</.link>
         </h1>
@@ -241,7 +241,7 @@ defmodule LukasWeb.CommonComponents do
 
   def course_card(assigns) do
     ~H"""
-    <div class="flex h-[104px] bg-white shadow rounded text-secondary">
+    <div class="flex h-[104px] bg-white shadow rounded text-secondary max-w-md mx-auto">
       <img
         src={~p"/images/#{@course.banner_image}"}
         width={110}

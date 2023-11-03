@@ -1,8 +1,10 @@
 defmodule LukasWeb.Shared.HomeLive do
   use LukasWeb, :live_view
 
-  alias Phoenix.LiveView.AsyncResult
   alias Lukas.Learning
+
+  alias Phoenix.LiveView.AsyncResult
+  alias LukasWeb.CommonComponents
 
   def mount(_params, _session, socket) do
     next_socket =
@@ -37,15 +39,49 @@ defmodule LukasWeb.Shared.HomeLive do
       <:loading><.loading_spinner /></:loading>
       <:failed>Failed...</:failed>
 
-      <ul id="paid-courses" phx-update="stream">
+      <h1 class="text-xl md:text-3xl font-bold mb-5">
+        <%= gettext("Learn from the best teachers in Libya") %>
+      </h1>
+
+      <p class="mb-6 text-secondary">
+        <%= gettext(
+          "Lukas is an online platform for both educators to offer their content and students to learn."
+        ) %>
+      </p>
+
+      <div class="mb-10 flex">
+        <CommonComponents.transparent_button>
+          <.link navigate={~p"/log_in"}>
+            <u><%= gettext("Sign in") %></u>
+          </.link>
+        </CommonComponents.transparent_button>
+
+        <CommonComponents.transparent_button>
+          <.link href={~p"/users/register"}><u><%= gettext("Register") %></u></.link>
+        </CommonComponents.transparent_button>
+      </div>
+
+      <h3 class="font-bold text-secondary text-xl mb-5 mt-3 text-center">
+        <%= gettext("Latest courses") %>
+      </h3>
+
+      <ul id="paid-courses" phx-update="stream" class="flex flex-col gap-2">
         <li :for={{id, course} <- @streams.latest_courses} id={id}>
-          <%= course.name %>
+          <.link navigate={~p"/courses/#{course.id}"}>
+            <CommonComponents.course_card course={course} />
+          </.link>
         </li>
       </ul>
 
-      <ul id="free-courses" phx-update="stream">
+      <h3 class="font-bold text-secondary text-xl mb-5 mt-10 text-center">
+        <%= gettext("Free courses") %>
+      </h3>
+
+      <ul id="free-courses" phx-update="stream" class="flex flex-col gap-2">
         <li :for={{id, course} <- @streams.free_courses} id={id}>
-          <%= course.name %>
+          <.link navigate={~p"/courses/#{course.id}"}>
+            <CommonComponents.course_card course={course} />
+          </.link>
         </li>
       </ul>
     </.async_result>
