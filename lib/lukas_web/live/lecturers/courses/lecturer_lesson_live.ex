@@ -4,6 +4,8 @@ defmodule LukasWeb.Lecturer.LessonLive do
   alias Lukas.Learning
   alias Lukas.Learning.Course.Content
 
+  alias LukasWeb.CommonComponents
+
   def mount(%{"id" => raw_course_id, "lesson_id" => raw_lesson_id}, _session, socket) do
     with {course_id, _} <- Integer.parse(raw_course_id),
          {lesson_id, _} <- Integer.parse(raw_lesson_id),
@@ -11,7 +13,8 @@ defmodule LukasWeb.Lecturer.LessonLive do
            Content.get_lesson_and_topic_names(course_id, lesson_id) do
       Learning.watch_course(course_id)
 
-      {:ok, socket |> assign(lesson: lesson) |> stream(:topics, topics)}
+      course = Learning.get_course(course_id)
+      {:ok, socket |> assign(lesson: lesson) |> stream(:topics, topics) |> assign(course: course)}
     else
       _ -> {:ok, redirect(socket, to: ~p"/")}
     end
@@ -39,6 +42,47 @@ defmodule LukasWeb.Lecturer.LessonLive do
 
   def render(assigns) do
     ~H"""
+    <CommonComponents.navigate_breadcrumbs links={[
+      {~p"/controls", gettext("home")},
+      {~p"/controls/courses/#{@course.id}", @course.name},
+      {~p"/controls/courses/#{@course.id}/lessons", gettext("lessons")}
+    ]} />
+
+    <h1 class="text-primary text-2xl font-bold mb-8">
+      <%= gettext("Lesson") %>
+      <%= @lesson.title %>
+    </h1>
+
+    <p class="text-md text-secondary mb-5"><%= @lesson.description %></p>
+
+    <div class="flex justify-end">
+      <.link patch={~p"/tutor/my-courses/#{@lesson.course_id}/lessons/#{@lesson.id}/new-topic"}>
+        <.button class="flex items-center gap-3">
+          <%= gettext("New topic") %>
+          <.icon name="hero-plus-circle-solid" />
+        </.button>
+      </.link>
+    </div>
+
+    <ul id="topics" phx-update="stream" class="mt-10">
+      <li
+        :for={{id, topic} <- @streams.topics}
+        id={id}
+        class="font-bold text-black flex items-center gap-3 my-3"
+      >
+        <span class="me-auto"><%= topic.title %></span>
+        <.link patch={
+          ~p"/tutor/my-courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{topic.id}/edit-topic"
+        }>
+          <.icon name="hero-pencil" />
+        </.link>
+
+        <span id={"delete-topic-#{topic.id}"} phx-click="delete-topic" phx-value-id={topic.id}>
+          <.icon name="hero-trash" />
+        </span>
+      </li>
+    </ul>
+
     <.modal
       :if={@live_action in [:edit_topic, :new_topic]}
       id="new-topic-modal"
@@ -50,43 +94,37 @@ defmodule LukasWeb.Lecturer.LessonLive do
         phx-change="validate"
         phx-submit={if @live_action == :new_topic, do: "create", else: "update"}
       >
-        <.input field={@form[:title]} type="text" label="Title" />
+        <.input field={@form[:title]} type="text" label={gettext("Title")} />
+
         <.input
           field={@form[:kind]}
           type="select"
-          label="Kind"
+          label={gettext("Kind")}
           options={Content.topic_kinds()}
           phx-change="update-topic-kind"
         />
 
-        <.input :if={@topic_kind == "text"} type="textarea" label="Content" field={@form[:content]} />
-        <.input :if={@topic_kind != "text"} type="text" label="Content" field={@form[:content]} />
+        <.input
+          :if={@topic_kind == "text"}
+          type="textarea"
+          label={gettext("Content")}
+          field={@form[:content]}
+        />
 
-        <.button>Create</.button>
+        <.input
+          :if={@topic_kind != "text"}
+          type="text"
+          label={gettext("Content")}
+          field={@form[:content]}
+        />
+
+        <div class="mt-10 flex justify-end">
+          <.button>
+            <%= gettext("Create") %>
+          </.button>
+        </div>
       </.form>
     </.modal>
-
-    <h1>Lesson <%= @lesson.title %></h1>
-
-    <p><%= @lesson.description %></p>
-
-    <.link patch={~p"/tutor/my-courses/#{@lesson.course_id}/lessons/#{@lesson.id}/new-topic"}>
-      <.button>New topic</.button>
-    </.link>
-
-    <ul id="topics" phx-update="stream">
-      <li :for={{id, topic} <- @streams.topics} id={id}>
-        <%= topic.title %> |
-        <.link patch={
-          ~p"/tutor/my-courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{topic.id}/edit-topic"
-        }>
-          <.button>Edit</.button>
-        </.link>
-        <.button id={"delete-topic-#{topic.id}"} phx-click="delete-topic" phx-value-id={topic.id}>
-          Delete
-        </.button>
-      </li>
-    </ul>
     """
   end
 
@@ -115,6 +153,10 @@ defmodule LukasWeb.Lecturer.LessonLive do
              ~p"/tutor/my-courses/#{socket.assigns.lesson.course_id}/lessons/#{socket.assigns.lesson.id}"
          )}
     end
+  end
+
+  def handle_event("update-topic-kind", %{"topic" => %{"kind" => kind}}, socket) do
+    {:noreply, assign(socket, topic_kind: kind)}
   end
 
   def handle_event("create", %{"topic" => params}, socket)
