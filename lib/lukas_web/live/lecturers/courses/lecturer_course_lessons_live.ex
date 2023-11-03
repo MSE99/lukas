@@ -69,15 +69,16 @@ defmodule LukasWeb.Lecturer.CourseLessonsLive do
       <:failed>Failed...</:failed>
 
       <CommonComponents.navigate_breadcrumbs links={[
-        {~p"/tutor", "home"},
-        {~p"/tutor/my-courses", "my courses"},
+        {~p"/tutor", gettext("home")},
+        {~p"/tutor/my-courses", gettext("my courses")},
         {~p"/tutor/my-courses/#{@course.id}", @course.name},
-        {~p"/tutor/my-courses/#{@course.id}/lessons", "lessons"}
+        {~p"/tutor/my-courses/#{@course.id}/lessons", gettext("lessons")}
       ]} />
 
       <div class="flex justify-end">
         <.button id="new-button" phx-click="prep-create" class="px-5 flex items-center">
-          Add lesson <.icon name="hero-plus-circle-solid ms-2" />
+          <%= gettext("Add lesson") %>
+          <.icon name="hero-plus-circle-solid ms-2" />
         </.button>
       </div>
 
@@ -108,11 +109,13 @@ defmodule LukasWeb.Lecturer.CourseLessonsLive do
 
       <.modal :if={@show_form_modal} id="form-modal" on_cancel={JS.push("clear")} show>
         <.form for={@form} phx-change="validate" phx-submit={if @lesson, do: "edit", else: "create"}>
-          <.input type="text" label="Title" field={@form[:title]} />
-          <.input type="textarea" label="Description" field={@form[:description]} />
+          <.input type="text" label={gettext("Title")} field={@form[:title]} />
+          <.input type="textarea" label={gettext("Description")} field={@form[:description]} />
 
           <div class="mt-5 flex justify-end">
-            <.button class="px-8">Create</.button>
+            <.button class="px-8">
+              <%= gettext("Create") %>
+            </.button>
           </div>
         </.form>
       </.modal>

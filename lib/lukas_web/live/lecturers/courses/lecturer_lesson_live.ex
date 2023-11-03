@@ -43,9 +43,11 @@ defmodule LukasWeb.Lecturer.LessonLive do
   def render(assigns) do
     ~H"""
     <CommonComponents.navigate_breadcrumbs links={[
-      {~p"/controls", gettext("home")},
-      {~p"/controls/courses/#{@course.id}", @course.name},
-      {~p"/controls/courses/#{@course.id}/lessons", gettext("lessons")}
+      {~p"/tutor", gettext("home")},
+      {~p"/tutor/my-courses", gettext("my courses")},
+      {~p"/tutor/my-courses/#{@course.id}", @course.name},
+      {~p"/tutor/my-courses/#{@course.id}/lessons", gettext("lessons")},
+      {~p"/tutor/my-courses/#{@course.id}/lessons/#{@lesson.id}", @lesson.title}
     ]} />
 
     <h1 class="text-primary text-2xl font-bold mb-8">
