@@ -135,7 +135,10 @@ defmodule LukasWeb.CommonComponents do
   def course_banner(assigns) do
     ~H"""
     <div class="my-5">
-      <img src={@image_src} class="w-full h-auto max-h-52 md:max-h-96 rounded-lg shadow" />
+      <img
+        src={@image_src}
+        class="w-full max-w-2xl mx-auto h-auto max-h-52 md:max-h-96 rounded-lg shadow"
+      />
     </div>
     """
   end

@@ -467,6 +467,7 @@ msgstr "ارجوك ادخل رقم الهاتف وكلمة السر"
 msgid "Register a new account"
 msgstr "سجل حساب جديد"
 
+#: lib/lukas_web/live/shared/home_live.ex:55
 #: lib/lukas_web/live/shared/user_login_live.ex:31
 #, elixir-autogen, elixir-format
 msgid "Sign in"
@@ -548,3 +549,28 @@ msgstr "الطلبة"
 #, elixir-autogen, elixir-format, fuzzy
 msgid "operators"
 msgstr "ادمنز"
+
+#: lib/lukas_web/live/shared/home_live.ex:77
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Free courses"
+msgstr "كورسات مجانية"
+
+#: lib/lukas_web/live/shared/home_live.ex:65
+#, elixir-autogen, elixir-format
+msgid "Latest courses"
+msgstr "الكورسات الاخيرة"
+
+#: lib/lukas_web/live/shared/home_live.ex:43
+#, elixir-autogen, elixir-format
+msgid "Learn from the best teachers in Libya"
+msgstr "تعلم من افضل المدرسين في ليبيا"
+
+#: lib/lukas_web/live/shared/home_live.ex:47
+#, elixir-autogen, elixir-format
+msgid "Lukas is an online platform for both educators to offer their content and students to learn."
+msgstr "لوكاس هو منصة تعليم اونلاين مصممة لربط المدرسين بالطلبة"
+
+#: lib/lukas_web/live/shared/home_live.ex:60
+#, elixir-autogen, elixir-format
+msgid "Register"
+msgstr "تسجيل"

@@ -467,6 +467,7 @@ msgstr ""
 msgid "Register a new account"
 msgstr ""
 
+#: lib/lukas_web/live/shared/home_live.ex:55
 #: lib/lukas_web/live/shared/user_login_live.ex:31
 #, elixir-autogen, elixir-format
 msgid "Sign in"
@@ -547,4 +548,29 @@ msgstr ""
 #: lib/lukas_web/live/operators/operator_operators_live.ex:49
 #, elixir-autogen, elixir-format
 msgid "operators"
+msgstr ""
+
+#: lib/lukas_web/live/shared/home_live.ex:77
+#, elixir-autogen, elixir-format
+msgid "Free courses"
+msgstr ""
+
+#: lib/lukas_web/live/shared/home_live.ex:65
+#, elixir-autogen, elixir-format
+msgid "Latest courses"
+msgstr ""
+
+#: lib/lukas_web/live/shared/home_live.ex:43
+#, elixir-autogen, elixir-format
+msgid "Learn from the best teachers in Libya"
+msgstr ""
+
+#: lib/lukas_web/live/shared/home_live.ex:47
+#, elixir-autogen, elixir-format
+msgid "Lukas is an online platform for both educators to offer their content and students to learn."
+msgstr ""
+
+#: lib/lukas_web/live/shared/home_live.ex:60
+#, elixir-autogen, elixir-format
+msgid "Register"
 msgstr ""
