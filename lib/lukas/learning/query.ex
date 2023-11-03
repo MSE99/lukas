@@ -13,20 +13,32 @@ defmodule Lukas.Learning.Query do
     name = Keyword.get(opts, :name, "")
     tag_ids = Keyword.get(opts, :tags, [])
     excluded = Keyword.get(opts, :excluded, [])
+    free = Keyword.get(opts, :free, false)
 
     like_clause = "%" <> name <> "%"
 
     case tag_ids do
       [] ->
         q =
-          from(
-            c in Course,
-            limit: ^limit,
-            offset: ^offset,
-            preload: [:tags],
-            order_by: ^order_by,
-            where: c.id not in ^excluded
-          )
+          if free do
+            from(
+              c in Course,
+              limit: ^limit,
+              offset: ^offset,
+              preload: [:tags],
+              order_by: ^order_by,
+              where: c.id not in ^excluded and c.price == 0.0
+            )
+          else
+            from(
+              c in Course,
+              limit: ^limit,
+              offset: ^offset,
+              preload: [:tags],
+              order_by: ^order_by,
+              where: c.id not in ^excluded
+            )
+          end
 
         if name == "" do
           q
@@ -36,17 +48,31 @@ defmodule Lukas.Learning.Query do
 
       _ ->
         q =
-          from(
-            c in Course,
-            join: t in Tagging,
-            on: t.course_id == c.id,
-            where: t.tag_id in ^tag_ids and c.id not in ^excluded,
-            group_by: c.id,
-            limit: ^limit,
-            offset: ^offset,
-            order_by: ^order_by,
-            select: c
-          )
+          if free do
+            from(
+              c in Course,
+              join: t in Tagging,
+              on: t.course_id == c.id,
+              where: t.tag_id in ^tag_ids and c.id not in ^excluded and c.price == 0.0,
+              group_by: c.id,
+              limit: ^limit,
+              offset: ^offset,
+              order_by: ^order_by,
+              select: c
+            )
+          else
+            from(
+              c in Course,
+              join: t in Tagging,
+              on: t.course_id == c.id,
+              where: t.tag_id in ^tag_ids and c.id not in ^excluded,
+              group_by: c.id,
+              limit: ^limit,
+              offset: ^offset,
+              order_by: ^order_by,
+              select: c
+            )
+          end
 
         if name == "" do
           q
