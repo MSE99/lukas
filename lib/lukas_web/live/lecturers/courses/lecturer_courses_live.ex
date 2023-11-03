@@ -66,15 +66,15 @@ defmodule LukasWeb.Lecturer.CoursesLive do
   def render(assigns) do
     ~H"""
     <CommonComponents.navigate_breadcrumbs links={[
-      {~p"/tutor", "home"},
-      {~p"/tutor/my-courses", "my courses"}
+      {~p"/tutor", gettext("home")},
+      {~p"/tutor/my-courses", gettext("my courses")}
     ]} />
 
     <div class="flex justify-end">
       <.link patch={~p"/tutor/my-courses/new"}>
         <.button class="px-4">
           <span class="flex items-center justify-center">
-            <.icon name="hero-plus-circle-solid" class="me-3" /> New Course
+            <.icon name="hero-plus-circle-solid" class="me-3" /> <%= gettext("New Course") %>
           </span>
         </.button>
       </.link>
@@ -112,18 +112,25 @@ defmodule LukasWeb.Lecturer.CoursesLive do
       on_cancel={JS.patch(~p"/tutor/my-courses")}
       show
     >
-      <h1 class="mb-5 font-bold text-lg text-primary">Create new course</h1>
+      <h1 class="mb-5 font-bold text-lg text-primary">
+        <%= gettext("Create new course") %>
+      </h1>
 
       <.form
         for={@form}
         phx-change="validate"
         phx-submit={if @live_action == :edit, do: "edit", else: "create"}
       >
-        <.input field={@form[:name]} type="text" label="Name" phx-debounce="blur" />
-        <.input field={@form[:price]} type="number" label="Price" phx-debounce="blur" />
-        <.input field={@form[:description]} type="textarea" label="Description" phx-debounce="blur" />
+        <.input field={@form[:name]} type="text" label={gettext("Name")} phx-debounce="blur" />
+        <.input field={@form[:price]} type="number" label={gettext("Price")} phx-debounce="blur" />
+        <.input
+          field={@form[:description]}
+          type="textarea"
+          label={gettext("Description")}
+          phx-debounce="blur"
+        />
 
-        <p class="font-semibold mt-5">Tags</p>
+        <p class="font-semibold mt-5"><%= gettext("Tags") %></p>
         <ul id="tags" phx-update="stream" class="mt-3 flex flex-wrap gap-2">
           <li
             :for={{id, tag} <- @streams.tags}
@@ -144,7 +151,9 @@ defmodule LukasWeb.Lecturer.CoursesLive do
         </ul>
 
         <div class="my-5">
-          <p class="font-bold mb-3">Banner image</p>
+          <p class="font-bold mb-3">
+            <%= gettext("Banner image") %>
+          </p>
           <.live_file_input upload={@uploads.banner_image} />
         </div>
 
@@ -157,15 +166,17 @@ defmodule LukasWeb.Lecturer.CoursesLive do
         <% end %>
 
         <div class="flex justify-end">
-          <.button class="px-10">Create</.button>
+          <.button class="px-10">
+            <%= gettext("Create") %>
+          </.button>
         </div>
       </.form>
     </.modal>
     """
   end
 
-  def error_to_string(:too_large), do: "Too large"
-  def error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
+  def error_to_string(:too_large), do: gettext("Too large")
+  def error_to_string(:not_accepted), do: gettext("You have selected an unacceptable file type")
 
   def handle_event("toggle-tag", %{"id" => raw_id}, socket) do
     id = String.to_integer(raw_id)
