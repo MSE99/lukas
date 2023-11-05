@@ -57,6 +57,7 @@ defmodule LukasWeb.Shared.CourseLive do
 
       <CommonComponents.navigate_breadcrumbs links={[
         {~p"/", gettext("home")},
+        {~p"/courses", gettext("courses")},
         {~p"/courses/#{@course.id}", @course.name}
       ]} />
 
