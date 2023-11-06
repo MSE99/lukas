@@ -41,15 +41,15 @@ jobs:
         run: mix phx.gen.release
 
       - name: Create release
-        run: MIX_ENV=prod mix release iqra
+        run: MIX_ENV=prod mix release lukas
 
       - name: Compress
-        run: tar czf iqra_linux_${{ github.run_id }}.tar.gz priv _build
+        run: tar czf lukas_linux_${{ github.run_id }}.tar.gz priv _build
       
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: iqra_linux_${{ github.run_id }}.tar.gz
+          files: lukas_linux_${{ github.run_id }}.tar.gz
           tag_name: 0.1.0_${{ github.run_id }}
-          name: iqra_linux_${{ github.run_id }}
+          name: lukas_linux_${{ github.run_id }}
           token: ${{ secrets.GITHUB_TOKEN }}
