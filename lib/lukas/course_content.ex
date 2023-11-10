@@ -100,10 +100,23 @@ defmodule Lukas.Learning.Course.Content do
     |> Lesson.changeset(attrs)
   end
 
-  def update_lesson(%Lesson{} = lesson, attrs \\ %{}) do
-    lesson
-    |> Lesson.changeset(attrs)
-    |> Repo.update()
+  def update_lesson(%Lesson{} = lesson, attrs \\ %{}, opts \\ []) do
+    get_image = Keyword.get(opts, :get_image, fn -> Lesson.default_image() end)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:lesson, Lesson.changeset(lesson, attrs))
+    |> Ecto.Multi.run(:lesson_with_image, fn _repo, %{lesson: lesson} ->
+      lesson_with_image =
+        Lesson.update_image_changeset(lesson, %{image: get_image.()})
+        |> Repo.update!()
+
+      {:ok, lesson_with_image}
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{lesson_with_image: lesson}} -> {:ok, lesson}
+      {:error, :lesson, lesson_cs, _} -> {:error, lesson_cs}
+    end
     |> maybe_emit_lesson_updated()
   end
 

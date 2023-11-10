@@ -98,13 +98,19 @@ defmodule LukasWeb.Operator.CourseLessonsLive do
       </ul>
 
       <.modal :if={@show_form_modal} id="form-modal" on_cancel={JS.push("clear")} show>
-        <img :if={@lesson} src={~p"/images/#{@lesson.image}"} />
+        <img :if={@lesson} src={~p"/images/#{@lesson.image}"} class="w-full h-auto rounded-xl mb-3" />
 
         <.form for={@form} phx-change="validate" phx-submit={if @lesson, do: "edit", else: "create"}>
           <.input type="text" label={gettext("Title")} field={@form[:title]} />
           <.input type="textarea" label={gettext("Description")} field={@form[:description]} />
 
-          <.live_file_input upload={@uploads.image} />
+          <div class="my-5">
+            <p class="font-bold mb-3">
+              <%= gettext("image") %>
+            </p>
+
+            <.live_file_input upload={@uploads.image} />
+          </div>
 
           <%= for entry <- @uploads.image.entries do %>
             <progress value={entry.progress} max="100">
@@ -151,7 +157,9 @@ defmodule LukasWeb.Operator.CourseLessonsLive do
   end
 
   def handle_event("edit", %{"lesson" => params}, socket) do
-    case Learning.Course.Content.update_lesson(socket.assigns.lesson, params) do
+    case Learning.Course.Content.update_lesson(socket.assigns.lesson, params,
+           get_image: fn -> consume_image_upload(socket) end
+         ) do
       {:ok, lesson} ->
         next_form =
           Learning.Course.Content.create_lesson_changeset(socket.assigns.course) |> to_form()
