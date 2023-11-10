@@ -42,7 +42,7 @@ msgstr ""
 #: lib/lukas_web/live/operators/courses/operator_course_live.ex:67
 #: lib/lukas_web/live/operators/courses/operator_course_live.ex:73
 #: lib/lukas_web/live/operators/operator_home_live.ex:26
-#: lib/lukas_web/live/shared/course_live.ex:82
+#: lib/lukas_web/live/shared/course_live.ex:83
 #: lib/lukas_web/live/students/courses/student_course_live.ex:132
 #, elixir-autogen, elixir-format
 msgid "Lecturers"
@@ -78,7 +78,7 @@ msgstr ""
 #: lib/lukas_web/live/operators/courses/operator_course_live.ex:79
 #: lib/lukas_web/live/operators/courses/operator_courses_live.ex:175
 #: lib/lukas_web/live/operators/operator_home_live.ex:50
-#: lib/lukas_web/live/shared/course_live.ex:88
+#: lib/lukas_web/live/shared/course_live.ex:89
 #: lib/lukas_web/live/students/courses/student_course_live.ex:138
 #, elixir-autogen, elixir-format
 msgid "Tags"
@@ -91,11 +91,12 @@ msgstr ""
 msgid "Banner image"
 msgstr ""
 
+#: lib/lukas_web/live/lecturers/courses/lecturer_course_lessons_live.ex:117
 #: lib/lukas_web/live/lecturers/courses/lecturer_courses_live.ex:170
-#: lib/lukas_web/live/lecturers/courses/lecturer_lesson_live.ex:123
+#: lib/lukas_web/live/lecturers/courses/lecturer_lesson_live.ex:125
 #: lib/lukas_web/live/operators/courses/operator_course_lessons.ex:106
 #: lib/lukas_web/live/operators/courses/operator_courses_live.ex:215
-#: lib/lukas_web/live/operators/courses/operator_lesson_live.ex:120
+#: lib/lukas_web/live/operators/courses/operator_lesson_live.ex:121
 #, elixir-autogen, elixir-format
 msgid "Create"
 msgstr ""
@@ -111,6 +112,7 @@ msgstr ""
 msgid "Create new course"
 msgstr ""
 
+#: lib/lukas_web/live/lecturers/courses/lecturer_course_lessons_live.ex:113
 #: lib/lukas_web/live/lecturers/courses/lecturer_course_settings.ex:91
 #: lib/lukas_web/live/lecturers/courses/lecturer_courses_live.ex:129
 #: lib/lukas_web/live/operators/courses/operator_course_lessons.ex:102
@@ -139,6 +141,7 @@ msgstr ""
 #: lib/lukas_web/live/operators/courses/operator_courses_live.ex:94
 #: lib/lukas_web/live/operators/opeartor_lecturers_live.ex:24
 #: lib/lukas_web/live/operators/operator_students_live.ex:26
+#: lib/lukas_web/live/shared/courses_live.ex:61
 #: lib/lukas_web/live/students/courses/student_available_courses_live.ex:55
 #, elixir-autogen, elixir-format
 msgid "Search"
@@ -147,6 +150,7 @@ msgstr ""
 #: lib/lukas_web/live/lecturers/courses/lecturer_courses_live.ex:178
 #: lib/lukas_web/live/operators/courses/operator_course_settings.ex:133
 #: lib/lukas_web/live/operators/courses/operator_courses_live.ex:223
+#: lib/lukas_web/live/shared/courses_live.ex:111
 #: lib/lukas_web/live/shared/user_settings_live.ex:169
 #, elixir-autogen, elixir-format
 msgid "Too large"
@@ -155,6 +159,7 @@ msgstr ""
 #: lib/lukas_web/live/lecturers/courses/lecturer_courses_live.ex:179
 #: lib/lukas_web/live/operators/courses/operator_course_settings.ex:134
 #: lib/lukas_web/live/operators/courses/operator_courses_live.ex:224
+#: lib/lukas_web/live/shared/courses_live.ex:112
 #: lib/lukas_web/live/shared/user_settings_live.ex:170
 #, elixir-autogen, elixir-format
 msgid "You have selected an unacceptable file type"
@@ -165,6 +170,7 @@ msgstr ""
 msgid "Add lecturer to"
 msgstr ""
 
+#: lib/lukas_web/live/lecturers/courses/lecturer_course_lessons_live.ex:80
 #: lib/lukas_web/live/operators/courses/operator_course_lessons.ex:70
 #, elixir-autogen, elixir-format
 msgid "Add lesson"
@@ -185,16 +191,16 @@ msgstr ""
 msgid "Available"
 msgstr ""
 
-#: lib/lukas_web/live/lecturers/courses/lecturer_lesson_live.ex:110
-#: lib/lukas_web/live/lecturers/courses/lecturer_lesson_live.ex:117
-#: lib/lukas_web/live/operators/courses/operator_lesson_live.ex:107
-#: lib/lukas_web/live/operators/courses/operator_lesson_live.ex:114
+#: lib/lukas_web/live/lecturers/courses/lecturer_lesson_live.ex:112
+#: lib/lukas_web/live/lecturers/courses/lecturer_lesson_live.ex:119
+#: lib/lukas_web/live/operators/courses/operator_lesson_live.ex:108
+#: lib/lukas_web/live/operators/courses/operator_lesson_live.ex:115
 #, elixir-autogen, elixir-format
 msgid "Content"
 msgstr ""
 
-#: lib/lukas_web/live/lecturers/courses/lecturer_lesson_live.ex:102
-#: lib/lukas_web/live/operators/courses/operator_lesson_live.ex:99
+#: lib/lukas_web/live/lecturers/courses/lecturer_lesson_live.ex:104
+#: lib/lukas_web/live/operators/courses/operator_lesson_live.ex:100
 #: lib/lukas_web/live/operators/invites_live.ex:64
 #, elixir-autogen, elixir-format
 msgid "Kind"
@@ -205,9 +211,10 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: lib/lukas_web/live/lecturers/courses/lecturer_lesson_live.ex:97
+#: lib/lukas_web/live/lecturers/courses/lecturer_course_lessons_live.ex:112
+#: lib/lukas_web/live/lecturers/courses/lecturer_lesson_live.ex:99
 #: lib/lukas_web/live/operators/courses/operator_course_lessons.ex:101
-#: lib/lukas_web/live/operators/courses/operator_lesson_live.ex:94
+#: lib/lukas_web/live/operators/courses/operator_lesson_live.ex:95
 #, elixir-autogen, elixir-format
 msgid "Title"
 msgstr ""
@@ -224,6 +231,9 @@ msgstr ""
 #: lib/lukas_web/live/operators/courses/operator_course_live.ex:34
 #: lib/lukas_web/live/operators/courses/operator_course_settings.ex:74
 #: lib/lukas_web/live/operators/courses/operator_courses_live.ex:81
+#: lib/lukas_web/live/operators/courses/operator_lesson_live.ex:47
+#: lib/lukas_web/live/shared/course_live.ex:60
+#: lib/lukas_web/live/shared/courses_live.ex:56
 #: lib/lukas_web/live/students/courses/student_course_live.ex:96
 #, elixir-autogen, elixir-format, fuzzy
 msgid "courses"
@@ -235,6 +245,7 @@ msgstr ""
 msgid "enrollments"
 msgstr ""
 
+#: lib/lukas_web/live/lecturers/courses/lecturer_course_lessons_live.ex:72
 #: lib/lukas_web/live/lecturers/courses/lecturer_course_live.ex:35
 #: lib/lukas_web/live/lecturers/courses/lecturer_course_settings.ex:70
 #: lib/lukas_web/live/lecturers/courses/lecturer_course_settings.ex:79
@@ -254,6 +265,7 @@ msgstr ""
 #: lib/lukas_web/live/operators/tags/index.html.heex:2
 #: lib/lukas_web/live/shared/course_live.ex:50
 #: lib/lukas_web/live/shared/course_live.ex:59
+#: lib/lukas_web/live/shared/courses_live.ex:55
 #: lib/lukas_web/live/students/courses/student_available_courses_live.ex:48
 #: lib/lukas_web/live/students/courses/student_course_live.ex:85
 #: lib/lukas_web/live/students/courses/student_course_live.ex:93
@@ -263,7 +275,8 @@ msgstr ""
 msgid "home"
 msgstr ""
 
-#: lib/lukas_web/live/lecturers/courses/lecturer_lesson_live.ex:48
+#: lib/lukas_web/live/lecturers/courses/lecturer_course_lessons_live.ex:75
+#: lib/lukas_web/live/lecturers/courses/lecturer_lesson_live.ex:49
 #: lib/lukas_web/live/operators/courses/operator_course_lessons.ex:65
 #, elixir-autogen, elixir-format
 msgid "lessons"
@@ -301,10 +314,12 @@ msgstr ""
 msgid "Other courses"
 msgstr ""
 
+#: lib/lukas_web/live/lecturers/courses/lecturer_course_lessons_live.ex:73
 #: lib/lukas_web/live/lecturers/courses/lecturer_course_live.ex:36
 #: lib/lukas_web/live/lecturers/courses/lecturer_course_settings.ex:71
 #: lib/lukas_web/live/lecturers/courses/lecturer_course_settings.ex:80
 #: lib/lukas_web/live/lecturers/courses/lecturer_courses_live.ex:70
+#: lib/lukas_web/live/lecturers/courses/lecturer_lesson_live.ex:47
 #: lib/lukas_web/live/students/courses/student_courses_live.ex:37
 #, elixir-autogen, elixir-format, fuzzy
 msgid "my courses"
@@ -548,8 +563,8 @@ msgstr ""
 msgid "to your account."
 msgstr ""
 
-#: lib/lukas_web/live/lecturers/courses/lecturer_lesson_live.ex:61
-#: lib/lukas_web/live/operators/courses/operator_lesson_live.ex:58
+#: lib/lukas_web/live/lecturers/courses/lecturer_lesson_live.ex:63
+#: lib/lukas_web/live/operators/courses/operator_lesson_live.ex:59
 #, elixir-autogen, elixir-format
 msgid "New topic"
 msgstr ""
@@ -616,7 +631,7 @@ msgstr ""
 msgid "Register"
 msgstr ""
 
-#: lib/lukas_web/live/lecturers/courses/lecturer_lesson_live.ex:52
+#: lib/lukas_web/live/lecturers/courses/lecturer_lesson_live.ex:54
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Lesson"
 msgstr ""
@@ -624,4 +639,9 @@ msgstr ""
 #: lib/lukas_web/live/lecturers/courses/lecturer_courses_live.ex:77
 #, elixir-autogen, elixir-format
 msgid "New Course"
+msgstr ""
+
+#: lib/lukas_web/components/common_components.ex:234
+#, elixir-autogen, elixir-format
+msgid "Enlist for free"
 msgstr ""

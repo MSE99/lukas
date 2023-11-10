@@ -210,18 +210,29 @@ defmodule LukasWeb.CommonComponents do
 
   def buy_button(assigns) do
     ~H"""
-    <div class="flex">
+    <div :if={@price != "0.0"} class="flex">
       <button
         phx-click={@on_click}
         phx-throttle
-        {@rest}
         class="shadow px-4 py-2 bg-primary font-bold text-white rounded-ts-lg rounded-bs-lg hover:bg-green-500 transition-all"
+        {@rest}
       >
         <%= gettext("Buy now") %>
       </button>
       <label class="shadow p-2 bg-white rounded-te-lg rounded-be-lg font-bold">
         <%= @price %> LYD
       </label>
+    </div>
+
+    <div :if={@price == "0.0"} class="flex">
+      <button
+        phx-click={@on_click}
+        phx-throttle
+        class="shadow px-4 py-2 bg-primary font-bold text-white rounded-lg hover:bg-green-500 transition-all"
+        {@rest}
+      >
+        <%= gettext("Enlist for free") %>
+      </button>
     </div>
     """
   end
