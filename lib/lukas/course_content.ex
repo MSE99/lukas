@@ -129,10 +129,30 @@ defmodule Lukas.Learning.Course.Content do
     |> maybe_emit_lesson_deleted()
   end
 
-  def create_text_topic(%Lesson{id: lesson_id} = lesson, attrs) do
-    %Lesson.Topic{lesson_id: lesson_id, kind: :text}
-    |> Lesson.Topic.changeset(attrs)
-    |> Repo.insert()
+  def create_text_topic(%Lesson{id: lesson_id} = lesson, attrs, opts \\ []) do
+    get_image = Keyword.get(opts, :get_image, fn -> lesson.image end)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(
+      :topic,
+      Lesson.Topic.changeset(%Lesson.Topic{lesson_id: lesson_id, kind: :text}, attrs)
+    )
+    |> Ecto.Multi.run(:topic_with_image, fn _, %{topic: topic} ->
+      topic_with_image =
+        topic
+        |> Lesson.Topic.update_changeset(%{image: get_image.()})
+        |> Repo.update!()
+
+      {:ok, topic_with_image}
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{topic_with_image: topic}} ->
+        {:ok, topic}
+
+      {:error, :topic, topic_cs, _} ->
+        {:error, topic_cs}
+    end
     |> maybe_emit_topic_added(lesson)
   end
 
@@ -169,12 +189,29 @@ defmodule Lukas.Learning.Course.Content do
     |> maybe_emit_topic_removed(topic_with_lesson.lesson)
   end
 
-  def update_topic(%Lesson.Topic{} = topic, attrs) do
+  def update_topic(%Lesson.Topic{} = topic, attrs, opts \\ []) do
+    get_image = Keyword.get(opts, :get_image, fn -> topic.image end)
     topic_with_lesson = Repo.preload(topic, :lesson)
 
-    topic_with_lesson
-    |> Lesson.Topic.update_changeset(attrs)
-    |> Repo.update()
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(
+      :topic,
+      Lesson.Topic.update_changeset(topic_with_lesson, attrs)
+    )
+    |> Ecto.Multi.run(
+      :topic_with_image,
+      fn _, %{topic: topic} ->
+        next_topic =
+          Lesson.Topic.update_changeset(topic, %{image: get_image.()}) |> Repo.update!()
+
+        {:ok, next_topic}
+      end
+    )
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{topic_with_image: topic}} -> {:ok, topic}
+      {:error, :topic, topic_cs, _} -> {:error, topic_cs}
+    end
     |> maybe_emit_topic_updated(topic_with_lesson.lesson)
   end
 

@@ -26,8 +26,8 @@ defmodule Lukas.Learning.Lesson.Topic do
 
   def update_changeset(text_topic, attrs) do
     text_topic
-    |> cast(attrs, [:title, :content, :kind])
-    |> validate_required([:title, :content, :kind])
+    |> cast(attrs, [:title, :content, :kind, :image])
+    |> validate_required([:title, :content, :kind, :image])
   end
 
   def default_image(), do: @default_image
