@@ -6,6 +6,8 @@ defmodule Lukas.Repo.Migrations.CreateTextTopics do
       add(:title, :string)
       add(:kind, :string)
       add(:content, :string)
+      add(:image, :string)
+
       add(:lesson_id, references(:lessons, on_delete: :delete_all, on_update: :update_all))
 
       timestamps()

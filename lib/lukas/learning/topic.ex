@@ -5,10 +5,13 @@ defmodule Lukas.Learning.Lesson.Topic do
 
   @kinds [:text, :video]
 
+  @default_image "default-profile.png"
+
   schema "topics" do
     field(:title, :string)
     field(:kind, Ecto.Enum, values: @kinds)
     field(:content, :string)
+    field(:image, :string, default: @default_image)
 
     belongs_to(:lesson, Lukas.Learning.Lesson)
 
@@ -26,4 +29,6 @@ defmodule Lukas.Learning.Lesson.Topic do
     |> cast(attrs, [:title, :content, :kind])
     |> validate_required([:title, :content, :kind])
   end
+
+  def default_image(), do: @default_image
 end
