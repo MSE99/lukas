@@ -14,7 +14,13 @@ defmodule LukasWeb.Lecturer.LessonLive do
       Learning.watch_course(course_id)
 
       course = Learning.get_course(course_id)
-      {:ok, socket |> assign(lesson: lesson) |> stream(:topics, topics) |> assign(course: course)}
+
+      {:ok,
+       socket
+       |> assign(lesson: lesson)
+       |> stream(:topics, topics)
+       |> assign(course: course)
+       |> allow_upload(:image, max_entries: 1, accept: ~w(.jpg .jpeg .png))}
     else
       _ -> {:ok, redirect(socket, to: ~p"/")}
     end
@@ -91,6 +97,12 @@ defmodule LukasWeb.Lecturer.LessonLive do
       on_cancel={JS.patch(~p"/tutor/my-courses/#{@lesson.course_id}/lessons/#{@lesson.id}")}
       show
     >
+      <img
+        :if={@live_action == :edit_topic}
+        src={~p"/images/#{@topic.image}"}
+        class="w-full h-auto rounded-xl mb-3"
+      />
+
       <.form
         for={@form}
         phx-change="validate"
@@ -120,6 +132,24 @@ defmodule LukasWeb.Lecturer.LessonLive do
           field={@form[:content]}
         />
 
+        <div :if={@topic_kind == :text} class="my-5">
+          <p class="font-bold mb-3">
+            <%= gettext("image") %>
+          </p>
+
+          <.live_file_input upload={@uploads.image} />
+        </div>
+
+        <%= for entry <- @uploads.image.entries do %>
+          <progress value={entry.progress} max="100">
+            <%= entry.progress %>%
+          </progress>
+
+          <%= for err <- upload_errors(@uploads.image, entry) do %>
+            <p class="alert alert-danger"><%= error_to_string(err) %></p>
+          <% end %>
+        <% end %>
+
         <div class="mt-10 flex justify-end">
           <.button>
             <%= gettext("Create") %>
@@ -129,6 +159,9 @@ defmodule LukasWeb.Lecturer.LessonLive do
     </.modal>
     """
   end
+
+  def error_to_string(:too_large), do: gettext("Too large")
+  def error_to_string(:not_accepted), do: gettext("You have selected an unacceptable file type")
 
   def handle_event("delete-topic", %{"id" => raw_topic_id}, socket) do
     {id, _} = Integer.parse(raw_topic_id)
@@ -143,8 +176,14 @@ defmodule LukasWeb.Lecturer.LessonLive do
     {:noreply, assign(socket, form: form)}
   end
 
+  def handle_event("update-topic-kind", %{"topic" => %{"kind" => kind}}, socket) do
+    {:noreply, assign(socket, topic_kind: kind)}
+  end
+
   def handle_event("update", %{"topic" => params}, socket) do
-    case Content.update_topic(socket.assigns.topic, params) do
+    case Content.update_topic(socket.assigns.topic, params,
+           get_image: fn -> consume_image_upload(socket) end
+         ) do
       {:error, cs} ->
         {:noreply, assign(socket, form: to_form(cs))}
 
@@ -157,13 +196,10 @@ defmodule LukasWeb.Lecturer.LessonLive do
     end
   end
 
-  def handle_event("update-topic-kind", %{"topic" => %{"kind" => kind}}, socket) do
-    {:noreply, assign(socket, topic_kind: kind)}
-  end
-
-  def handle_event("create", %{"topic" => params}, socket)
-      when socket.assigns.topic_kind == "text" do
-    case Content.create_text_topic(socket.assigns.lesson, params) do
+  def handle_event("create", %{"topic" => params}, socket) do
+    case Content.create_text_topic(socket.assigns.lesson, params,
+           get_image: fn -> consume_image_upload(socket) end
+         ) do
       {:error, cs} ->
         {:noreply, assign(socket, form: to_form(cs))}
 
@@ -204,5 +240,30 @@ defmodule LukasWeb.Lecturer.LessonLive do
 
   def handle_info({:course, _, _, _}, socket) do
     {:noreply, socket}
+  end
+
+  defp consume_image_upload(socket) do
+    uploaded_images =
+      consume_uploaded_entries(socket, :image, fn %{path: path}, entry ->
+        filename = "#{entry.uuid}.#{ext(entry)}"
+        dist = Path.join([:code.priv_dir(:lukas), "static", "images", filename])
+
+        File.cp!(path, dist)
+
+        {:ok, filename}
+      end)
+
+    default_image =
+      case socket.assigns.live_action do
+        :edit -> socket.assigns.topic.image
+        _ -> Learning.Lesson.Topic.default_image()
+      end
+
+    List.first(uploaded_images, default_image)
+  end
+
+  defp ext(upload_entry) do
+    [ext | _] = MIME.extensions(upload_entry.client_type)
+    ext
   end
 end
