@@ -6,6 +6,7 @@ defmodule Lukas.Repo.Migrations.CreateLessons do
       add :title, :string
       add :description, :string
       add :course_id, references(:courses)
+      add :image, :string
 
       timestamps()
     end

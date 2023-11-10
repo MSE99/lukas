@@ -3,10 +3,13 @@ defmodule Lukas.Learning.Lesson do
 
   import Ecto.Changeset
 
+  @default_image "default-profile.png"
+
   schema "lessons" do
     field(:title, :string)
     field(:description, :string)
     field(:course_id, :id)
+    field(:image, :string, default: @default_image)
 
     timestamps()
   end
