@@ -273,4 +273,23 @@ defmodule LukasWeb.CommonComponents do
     </div>
     """
   end
+
+  attr :course, Lukas.Learning.Course, required: true
+
+  def course_info(assigns) do
+    ~H"""
+    <div class="group">
+      <img
+        src={~p"/images/#{@course.banner_image}"}
+        height="120"
+        width="120"
+        class="max-w-[120px] max-h-[120px] rounded-xl"
+      />
+
+      <p class="block font-bold group-hover:underline text-center text-secondary mt-2">
+        <%= @course.name %>
+      </p>
+    </div>
+    """
+  end
 end

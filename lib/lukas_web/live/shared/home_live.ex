@@ -61,26 +61,34 @@ defmodule LukasWeb.Shared.HomeLive do
         </CommonComponents.transparent_button>
       </div>
 
-      <h3 class="font-bold text-secondary text-xl mb-5 mt-3 text-center">
+      <h3 class="font-bold text-secondary text-xl mb-10 mt-3 text-center">
         <%= gettext("Latest courses") %>
       </h3>
 
-      <ul id="paid-courses" phx-update="stream" class="flex flex-col gap-2">
+      <ul
+        id="paid-courses"
+        phx-update="stream"
+        class="flex flex-wrap gap-5 justify-center md:justify-start"
+      >
         <li :for={{id, course} <- @streams.latest_courses} id={id}>
-          <.link navigate={~p"/courses/#{course.id}"}>
-            <CommonComponents.course_card course={course} />
+          <.link class="hover:bg-gray-300" navigate={~p"/courses/#{course.id}"}>
+            <CommonComponents.course_info course={course} />
           </.link>
         </li>
       </ul>
 
-      <h3 class="font-bold text-secondary text-xl mb-5 mt-10 text-center">
+      <h3 class="font-bold text-secondary text-xl mb-10 mt-10 text-center">
         <%= gettext("Free courses") %>
       </h3>
 
-      <ul id="free-courses" phx-update="stream" class="flex flex-col gap-2">
+      <ul
+        id="free-courses"
+        phx-update="stream"
+        class="flex flex-wrap gap-5 justify-center md:justify-start"
+      >
         <li :for={{id, course} <- @streams.free_courses} id={id}>
-          <.link navigate={~p"/courses/#{course.id}"}>
-            <CommonComponents.course_card course={course} />
+          <.link class="hover:bg-gray-300" navigate={~p"/courses/#{course.id}"}>
+            <CommonComponents.course_info course={course} />
           </.link>
         </li>
       </ul>
