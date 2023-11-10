@@ -62,12 +62,24 @@ defmodule Lukas.Learning.Course.Content do
     end
   end
 
-  def create_lesson(%Course{} = course, attrs \\ %{}) do
+  def create_lesson(%Course{} = course, attrs \\ %{}, opts \\ []) do
+    get_image = Keyword.get(opts, :get_image, fn -> Lesson.default_image() end)
     attrs_with_course = Map.merge(attrs, %{"course_id" => course.id})
 
-    %Lesson{}
-    |> Lesson.changeset(attrs_with_course)
-    |> Repo.insert()
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:lesson, Lesson.changeset(%Lesson{}, attrs_with_course))
+    |> Ecto.Multi.run(:lesson_with_image, fn _repo, %{lesson: lesson} ->
+      lesson_with_image =
+        Lesson.update_image_changeset(lesson, %{image: get_image.()})
+        |> Repo.update!()
+
+      {:ok, lesson_with_image}
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{lesson_with_image: lesson}} -> {:ok, lesson}
+      {:error, :lesson, lesson_cs, _} -> {:error, lesson_cs}
+    end
     |> maybe_emit_lesson_added()
   end
 

@@ -12,7 +12,8 @@ defmodule LukasWeb.Operator.CourseLessonsLive do
      |> stream_configure(:lessons, [])
      |> assign(:loading, AsyncResult.loading())
      |> start_async(:loading, fn -> load_course_with_lessons(params) end)
-     |> assign(:show_form_modal, false)}
+     |> assign(:show_form_modal, false)
+     |> allow_upload(:image, max_entries: 1, accept: ~w(.jpg .jpeg .png))}
   end
 
   defp load_course_with_lessons(%{"id" => raw_id}) do
@@ -97,9 +98,23 @@ defmodule LukasWeb.Operator.CourseLessonsLive do
       </ul>
 
       <.modal :if={@show_form_modal} id="form-modal" on_cancel={JS.push("clear")} show>
+        <img :if={@lesson} src={~p"/images/#{@lesson.image}"} />
+
         <.form for={@form} phx-change="validate" phx-submit={if @lesson, do: "edit", else: "create"}>
           <.input type="text" label={gettext("Title")} field={@form[:title]} />
           <.input type="textarea" label={gettext("Description")} field={@form[:description]} />
+
+          <.live_file_input upload={@uploads.image} />
+
+          <%= for entry <- @uploads.image.entries do %>
+            <progress value={entry.progress} max="100">
+              <%= entry.progress %>%
+            </progress>
+
+            <%= for err <- upload_errors(@uploads.image, entry) do %>
+              <p class="alert alert-danger"><%= error_to_string(err) %></p>
+            <% end %>
+          <% end %>
 
           <div class="mt-5 flex justify-end">
             <.button class="px-8">
@@ -111,6 +126,9 @@ defmodule LukasWeb.Operator.CourseLessonsLive do
     </.async_result>
     """
   end
+
+  def error_to_string(:too_large), do: gettext("Too large")
+  def error_to_string(:not_accepted), do: gettext("You have selected an unacceptable file type")
 
   def handle_event("clear", _, socket) do
     form = Learning.Course.Content.create_lesson_changeset(socket.assigns.course) |> to_form()
@@ -151,7 +169,9 @@ defmodule LukasWeb.Operator.CourseLessonsLive do
   end
 
   def handle_event("create", %{"lesson" => params}, socket) do
-    case Learning.Course.Content.create_lesson(socket.assigns.course, params) do
+    case Learning.Course.Content.create_lesson(socket.assigns.course, params,
+           get_image: fn -> consume_image_upload(socket) end
+         ) do
       {:ok, lesson} ->
         next_form =
           Learning.Course.Content.create_lesson_changeset(socket.assigns.course) |> to_form()
@@ -180,6 +200,31 @@ defmodule LukasWeb.Operator.CourseLessonsLive do
     |> Learning.Course.Content.remove_lesson()
 
     {:noreply, socket |> stream_delete_by_dom_id(:lessons, "lessons-#{raw_id}")}
+  end
+
+  defp consume_image_upload(socket) do
+    uploaded_images =
+      consume_uploaded_entries(socket, :image, fn %{path: path}, entry ->
+        filename = "#{entry.uuid}.#{ext(entry)}"
+        dist = Path.join([:code.priv_dir(:lukas), "static", "images", filename])
+
+        File.cp!(path, dist)
+
+        {:ok, filename}
+      end)
+
+    default_image =
+      case socket.assigns.live_action do
+        :edit -> socket.assigns.lesson.image
+        _ -> Learning.Lesson.default_image()
+      end
+
+    List.first(uploaded_images, default_image)
+  end
+
+  defp ext(upload_entry) do
+    [ext | _] = MIME.extensions(upload_entry.client_type)
+    ext
   end
 
   def handle_info({:course, _, :lesson_added, lesson}, socket) do
