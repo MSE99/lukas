@@ -4,6 +4,8 @@ defmodule LukasWeb.Students.StudyLive do
   alias Lukas.Learning
   alias Lukas.Learning.Course.Students
 
+  alias LukasWeb.CommonComponents
+
   def mount(%{"id" => raw_course_id}, _, socket) do
     student = socket.assigns.current_user
     course_id = String.to_integer(raw_course_id)
@@ -86,8 +88,10 @@ defmodule LukasWeb.Students.StudyLive do
   def render(assigns) do
     ~H"""
     <div class="w-full min-h-screen flex">
-      <div class="w-full pt-10">
-        <div :if={@lesson} class="max-w-3xl mx-auto">
+      <div class="w-full pt-10 px-5">
+        <div :if={@lesson} class="max-w-2xl mx-auto">
+          <CommonComponents.course_banner image_src={~p"/images/#{@lesson.image}"} />
+
           <.main_title>
             <%= @lesson.title %>
           </.main_title>
@@ -95,7 +99,11 @@ defmodule LukasWeb.Students.StudyLive do
           <.paragraph class="mb-10"><%= @lesson.description %></.paragraph>
 
           <div class="flex justify-end mt-10">
-            <.button :if={@lesson.progressed == false} phx-click="progress-lesson" class="px-8 py-2">
+            <.button
+              :if={@lesson.progressed == false}
+              phx-click="progress-lesson"
+              class="px-8 py-2 me-1"
+            >
               next
             </.button>
 
@@ -103,7 +111,9 @@ defmodule LukasWeb.Students.StudyLive do
           </div>
         </div>
 
-        <div :if={@topic} class="max-w-3xl mx-auto">
+        <div :if={@topic} class="max-w-2xl mx-auto">
+          <CommonComponents.course_banner image_src={~p"/images/#{@topic.image}"} />
+
           <.main_title>
             <%= @topic.title %>
           </.main_title>
@@ -138,7 +148,20 @@ defmodule LukasWeb.Students.StudyLive do
         </div>
 
         <div :if={@topic == nil && @lesson == nil}>
-          <.button phx-click={show_modal("lessons-modal")}>Open lessons</.button>
+          <CommonComponents.course_banner image_src={~p"/images/#{@course.banner_image}"} />
+
+          <div class="mt-10 text-secondary px-2 pb-5 max-w-2xl mx-auto">
+            <CommonComponents.navigate_breadcrumbs links={[
+              {~p"/home", gettext("home")},
+              {~p"/home/courses", gettext("courses")},
+              {~p"/home/courses/#{@course.id}", @course.name},
+              {~p"/home/courses/#{@course.id}/study", gettext("study")}
+            ]} />
+
+            <div class="flex justify-end">
+              <.button phx-click={show_modal("lessons-modal")}>Open lessons</.button>
+            </div>
+          </div>
         </div>
       </div>
 
