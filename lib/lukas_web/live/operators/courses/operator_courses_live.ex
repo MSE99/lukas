@@ -110,7 +110,7 @@ defmodule LukasWeb.Operator.AllCoursesLive do
           phx-value-id={tag.id}
           phx-throttle={500}
           class={[
-            "hover:bg-green-600 hover:text-white transition-all hover:cursor-pointer font-bold px-6 py-2 rounded-full",
+            "md:hover:bg-green-600 md:hover:text-white transition-all hover:cursor-pointer font-bold px-6 py-2 rounded-full",
             if(
               tag.id in @picked_search_tags,
               do: "bg-primary text-white",
@@ -180,7 +180,7 @@ defmodule LukasWeb.Operator.AllCoursesLive do
             phx-click="toggle-tag"
             phx-value-id={tag.id}
             class={[
-              "hover:bg-green-600 hover:text-white transition-all hover:cursor-pointer font-bold text-sm px-4 py-1 rounded-full",
+              "md:hover:bg-green-600 md:hover:text-white transition-all hover:cursor-pointer font-bold text-sm px-4 py-1 rounded-full",
               if(
                 tag.id in @tag_ids,
                 do: "bg-primary text-white",
