@@ -53,7 +53,7 @@ defmodule LukasWeb.UserLoginLiveTest do
 
       assert Phoenix.Flash.get(conn.assigns.flash, :error) == "Invalid phone number or password"
 
-      assert redirected_to(conn) == "/users/log_in"
+      assert redirected_to(conn) == ~p"/log_in"
     end
   end
 end

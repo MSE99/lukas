@@ -30,7 +30,7 @@ defmodule LukasWeb.UserSessionController do
       conn
       |> put_flash(:error, "Invalid phone number or password")
       |> put_flash(:phone_number, String.slice(phone_number, 0, 160))
-      |> redirect(to: ~p"/users/log_in")
+      |> redirect(to: ~p"/log_in")
     end
   end
 
