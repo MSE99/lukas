@@ -19,7 +19,8 @@ defmodule Lukas.Learning.Course.Students do
   end
 
   def list_student_courses(%Accounts.User{} = student) when must_be_student(student) do
-    Query.student_courses(student.id)
+    student.id
+    |> Query.student_courses()
     |> Repo.all()
   end
 
@@ -92,24 +93,19 @@ defmodule Lukas.Learning.Course.Students do
 
   ## TODO: needs refactoring :3
   def get_next_lesson_or_topic(lessons) do
-    Enum.reduce(lessons, :course_home, fn
-      lesson, acc ->
-        if acc != :course_home do
-          acc
-        else
-          if !lesson.progressed do
-            {:lesson, lesson}
-          else
-            topic = Enum.find(lesson.topics, fn t -> t.progressed == false end)
+    first =
+      lessons
+      |> Enum.map(fn l -> [l, l.topics] end)
+      |> Enum.to_list()
+      |> List.flatten()
+      |> Enum.filter(fn lot -> lot.progressed == false end)
+      |> List.first()
 
-            if topic != nil do
-              {:topic, topic}
-            else
-              acc
-            end
-          end
-        end
-    end)
+    case first do
+      nil -> :course_home
+      %{topics: t} when is_list(t) -> {:lesson, first}
+      _ -> {:topic, first}
+    end
   end
 
   def watch_progress(student, course_id), do: progress_topic(student.id, course_id) |> watch()
