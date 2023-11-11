@@ -234,5 +234,32 @@ defmodule LukasWeb.Students.StudyLiveTest do
 
       refute lv |> element("button", "next") |> has_element?()
     end
+
+    test "should render a reset button to reset the progress of a student.", %{
+      conn: conn,
+      course: course,
+      user: student
+    } do
+      lesson1 = lesson_fixture(course)
+      topic1 = text_topic_fixture(lesson1)
+
+      Students.progress_through_lesson(student, lesson1)
+      Students.progress_through_topic(student, topic1)
+
+      {:ok, lv, _} =
+        live(
+          conn,
+          ~p"/home/courses/#{course.id}/study"
+        )
+
+      lv
+      |> element("#reset-button")
+      |> render_click()
+
+      {_, lessons} = Students.get_progress(student, course.id)
+
+      assert {:lesson, lesson} = Students.get_next_lesson_or_topic(lessons)
+      assert lesson.id == lesson1.id
+    end
   end
 end

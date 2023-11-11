@@ -159,6 +159,7 @@ defmodule LukasWeb.Students.StudyLive do
             ]} />
 
             <div class="flex justify-end">
+              <.button id="reset-button" phx-click="reset-progress">reset progress</.button>
               <.button phx-click={show_modal("lessons-modal")}>Open lessons</.button>
             </div>
           </div>
@@ -228,6 +229,11 @@ defmodule LukasWeb.Students.StudyLive do
 
     Students.progress_through_topic(student, topic)
 
+    {:noreply, socket}
+  end
+
+  def handle_event("reset-progress", _, socket) do
+    Students.reset_progress(socket.assigns.course, socket.assigns.current_user)
     {:noreply, socket}
   end
 
