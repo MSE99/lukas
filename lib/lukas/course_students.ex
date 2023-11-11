@@ -8,6 +8,16 @@ defmodule Lukas.Learning.Course.Students do
 
   alias Ecto.Multi
 
+  def reset_progress(%Course{} = course, %Accounts.User{} = student)
+      when must_be_student(student) do
+    Query.progress_by_course_and_student_id(course.id, student.id)
+    |> Repo.delete_all()
+
+    emit_progress_update(student, course.id)
+
+    nil
+  end
+
   def list_student_courses(%Accounts.User{} = student) when must_be_student(student) do
     Query.student_courses(student.id)
     |> Repo.all()

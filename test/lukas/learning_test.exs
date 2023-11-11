@@ -523,5 +523,43 @@ defmodule Lukas.LearningTest do
 
       assert Students.calculate_progress_percentage(lessons) == 100.0
     end
+
+    test "reset_progress/3 should reset the progress of a given student in a given course.", %{
+      student: student
+    } do
+      course = course_fixture()
+      {:ok, _} = Students.enroll_student(course, student)
+
+      lesson1 = lesson_fixture(course)
+      topic1 = text_topic_fixture(lesson1)
+
+      lesson2 = lesson_fixture(course)
+      topic2 = text_topic_fixture(lesson2)
+
+      lesson3 = lesson_fixture(course)
+      topic3 = text_topic_fixture(lesson3)
+
+      lesson4 = lesson_fixture(course)
+      topic4 = text_topic_fixture(lesson4)
+
+      Students.progress_through_lesson(student, lesson1)
+      Students.progress_through_topic(student, topic1)
+
+      Students.progress_through_lesson(student, lesson2)
+      Students.progress_through_topic(student, topic2)
+
+      Students.progress_through_lesson(student, lesson3)
+      Students.progress_through_topic(student, topic3)
+
+      Students.progress_through_lesson(student, lesson4)
+      Students.progress_through_topic(student, topic4)
+
+      Students.reset_progress(course, student)
+
+      {_, lessons} = Students.get_progress(student, course.id)
+      {:lesson, next_lesson} = Students.get_next_lesson_or_topic(lessons)
+
+      assert lesson1.id == next_lesson.id
+    end
   end
 end
