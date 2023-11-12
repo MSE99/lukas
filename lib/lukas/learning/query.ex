@@ -36,7 +36,7 @@ defmodule Lukas.Learning.Query do
               offset: ^offset,
               preload: [:tags],
               order_by: ^order_by,
-              where: c.id not in ^excluded
+              where: c.id not in ^excluded and c.price > 0.0
             )
           end
 

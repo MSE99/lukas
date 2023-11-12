@@ -35,15 +35,17 @@ defmodule LukasWeb.Students.HomeLive do
       </li>
     </ul>
 
-    <.link method="DELETE" href={~p"/users/log_out"}>
-      <.button>
-        <%= gettext("Logout") %>
-      </.button>
-    </.link>
+    <div class="flex flex-col gap-10 mt-5">
+      <.link method="DELETE" href={~p"/users/log_out"}>
+        <.button>
+          <%= gettext("Logout") %>
+        </.button>
+      </.link>
 
-    <.link method="patch" href={~p"/locale"}>
-      Switch locale
-    </.link>
+      <.link href={~p"/locale"} method="patch">
+        <.icon name="hero-language" />
+      </.link>
+    </div>
     """
   end
 end
