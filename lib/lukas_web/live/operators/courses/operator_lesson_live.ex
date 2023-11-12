@@ -40,7 +40,7 @@ defmodule LukasWeb.Operator.LessonLive do
   def handle_params(_, _, socket) when socket.assigns.live_action == :new_topic do
     cs = Content.create_topic_changeset(socket.assigns.lesson)
     form = to_form(cs)
-    {:noreply, assign(socket, form: form, topic_kind: "text")}
+    {:noreply, assign(socket, form: form, topic_kind: "video")}
   end
 
   def handle_params(_, _, socket), do: {:noreply, socket}
@@ -127,7 +127,7 @@ defmodule LukasWeb.Operator.LessonLive do
           field={@form[:content]}
         />
 
-        <div :if={@topic_kind == :text} class="my-5">
+        <div :if={@topic_kind == "text"} class="my-5">
           <p class="font-bold mb-3">
             <%= gettext("image") %>
           </p>

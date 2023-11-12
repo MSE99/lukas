@@ -138,7 +138,7 @@ defmodule LukasWeb.Students.StudyLive do
             <.button
               :if={@topic.progressed == false}
               phx-click="progress-topic"
-              class="px-8 py-2 mr-3"
+              class="px-8 py-2 me-1"
             >
               next
             </.button>
@@ -159,7 +159,10 @@ defmodule LukasWeb.Students.StudyLive do
             ]} />
 
             <div class="flex justify-end">
-              <.button id="reset-button" phx-click="reset-progress">reset progress</.button>
+              <.button id="reset-button" phx-click="reset-progress" class="me-1">
+                reset progress
+              </.button>
+
               <.button phx-click={show_modal("lessons-modal")}>Open lessons</.button>
             </div>
           </div>
