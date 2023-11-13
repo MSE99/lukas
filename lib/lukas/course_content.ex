@@ -140,7 +140,7 @@ defmodule Lukas.Learning.Course.Content do
     |> Ecto.Multi.run(:topic_with_image, fn _, %{topic: topic} ->
       topic_with_image =
         topic
-        |> Lesson.Topic.update_changeset(%{image: get_media.()})
+        |> Lesson.Topic.update_changeset(%{media: get_media.()})
         |> Repo.update!()
 
       {:ok, topic_with_image}

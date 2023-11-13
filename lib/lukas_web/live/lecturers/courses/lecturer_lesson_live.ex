@@ -20,7 +20,7 @@ defmodule LukasWeb.Lecturer.LessonLive do
        |> assign(lesson: lesson)
        |> stream(:topics, topics)
        |> assign(course: course)
-       |> allow_upload(:image, max_entries: 1, accept: ~w(.jpg .jpeg .png))}
+       |> allow_upload(:image, max_entries: 1, accept: ~w(.jpg .jpeg .png .webp .mp4 .webm), max_file_size: 120_000_000)}
     else
       _ -> {:ok, redirect(socket, to: ~p"/")}
     end
@@ -132,9 +132,9 @@ defmodule LukasWeb.Lecturer.LessonLive do
           field={@form[:content]}
         />
 
-        <div :if={@topic_kind == :text} class="my-5">
+        <div class="my-5">
           <p class="font-bold mb-3">
-            <%= gettext("image") %>
+            <%= gettext("media") %>
           </p>
 
           <.live_file_input upload={@uploads.image} />
