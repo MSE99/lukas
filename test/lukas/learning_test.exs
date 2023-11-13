@@ -69,7 +69,7 @@ defmodule Lukas.LearningTest do
     test "count_courses/1 should return a count of all the courses in the system." do
       assert Learning.count_courses() == 0
 
-      1..100 
+      1..100
       |> Enum.each(fn _ -> course_fixture() end)
 
       assert Learning.count_courses() == 100

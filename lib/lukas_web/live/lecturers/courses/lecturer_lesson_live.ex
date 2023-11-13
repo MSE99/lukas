@@ -20,7 +20,11 @@ defmodule LukasWeb.Lecturer.LessonLive do
        |> assign(lesson: lesson)
        |> stream(:topics, topics)
        |> assign(course: course)
-       |> allow_upload(:image, max_entries: 1, accept: ~w(.jpg .jpeg .png .webp .mp4 .webm), max_file_size: 120_000_000)}
+       |> allow_upload(:image,
+         max_entries: 1,
+         accept: ~w(.jpg .jpeg .png .webp .mp4 .webm),
+         max_file_size: 120_000_000
+       )}
     else
       _ -> {:ok, redirect(socket, to: ~p"/")}
     end

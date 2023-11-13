@@ -112,7 +112,10 @@ defmodule LukasWeb.Students.StudyLive do
         </div>
 
         <div :if={@topic} class="max-w-2xl mx-auto">
-          <CommonComponents.course_banner :if={@topic.kind == :text} image_src={~p"/images/#{@topic.media}"} />
+          <CommonComponents.course_banner
+            :if={@topic.kind == :text}
+            image_src={~p"/images/#{@topic.media}"}
+          />
 
           <.main_title>
             <%= @topic.title %>
