@@ -1,4 +1,4 @@
-defmodule LukasWeb.Shared.CourseLiveTest do
+defmodule LukasWeb.Public.CourseLiveTest do
   use LukasWeb.ConnCase, async: true
 
   alias Lukas.Learning

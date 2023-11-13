@@ -1,4 +1,4 @@
-defmodule LukasWeb.Shared.HomeLive do
+defmodule LukasWeb.Public.HomeLive do
   use LukasWeb, :live_view
 
   alias Lukas.Learning

@@ -1,4 +1,4 @@
-defmodule LukasWeb.Shared.HomeLiveTest do
+defmodule LukasWeb.Public.HomeLiveTest do
   use LukasWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest

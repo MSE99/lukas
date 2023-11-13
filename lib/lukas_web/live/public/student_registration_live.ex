@@ -1,4 +1,4 @@
-defmodule LukasWeb.Shared.StudentRegistrationLive do
+defmodule LukasWeb.Public.StudentRegistrationLive do
   use LukasWeb, :live_view
 
   alias Lukas.Accounts

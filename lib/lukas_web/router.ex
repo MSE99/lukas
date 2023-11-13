@@ -22,12 +22,12 @@ defmodule LukasWeb.Router do
     pipe_through([:browser, :redirect_if_user_is_authenticated])
 
     live_session :public, on_mount: [{LukasWeb.UserAuth, :redirect_if_user_is_authenticated}] do
-      live "/", Shared.HomeLive
+      live "/", Public.HomeLive
 
-      live "/courses", Shared.CoursesLive, :index
-      live "/courses/new", Shared.CoursesLive, :new
+      live "/courses", Public.CoursesLive, :index
+      live "/courses/new", Public.CoursesLive, :new
 
-      live "/courses/:id", Shared.CourseLive
+      live "/courses/:id", Public.CourseLive
       live "/log_in", UserLoginLive
     end
   end
@@ -131,9 +131,9 @@ defmodule LukasWeb.Router do
 
     live_session :redirect_if_user_is_authenticated,
       on_mount: [{LukasWeb.UserAuth, :redirect_if_user_is_authenticated}] do
-      live("/register/:code", Shared.StaffRegistrationLive)
+      live("/register/:code", Public.StaffRegistrationLive)
 
-      live("/users/register", Shared.StudentRegistrationLive, :new)
+      live("/users/register", Public.StudentRegistrationLive, :new)
       live("/users/reset_password", UserForgotPasswordLive, :new)
       live("/users/reset_password/:token", UserResetPasswordLive, :edit)
     end
