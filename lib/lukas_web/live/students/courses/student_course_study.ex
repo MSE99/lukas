@@ -118,6 +118,10 @@ defmodule LukasWeb.Students.StudyLive do
             <%= @topic.title %>
           </.main_title>
 
+          <video :if={@topic.kind == :video} controls class="w-full h-auto mb-5 rounded-lg shadow">
+            <source src={~p"/images/#{@topic.media}"} />
+          </video>
+
           <.paragraph :if={@topic.kind == :text} class="mb-10">
             <%= @topic.content %>
           </.paragraph>
