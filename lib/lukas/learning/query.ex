@@ -6,6 +6,10 @@ defmodule Lukas.Learning.Query do
 
   alias Lukas.Accounts
 
+  def courses_count() do
+    from(c in Course, select: count(c.id))
+  end
+
   def courses_with_taggings(opts \\ []) do
     limit = Keyword.get(opts, :limit, 50)
     offset = Keyword.get(opts, :offset, 0)
