@@ -112,7 +112,7 @@ defmodule LukasWeb.Students.StudyLive do
         </div>
 
         <div :if={@topic} class="max-w-2xl mx-auto">
-          <CommonComponents.course_banner image_src={~p"/images/#{@topic.image}"} />
+          <CommonComponents.course_banner :if={@topic.kind == :text} image_src={~p"/images/#{@topic.media}"} />
 
           <.main_title>
             <%= @topic.title %>
@@ -121,18 +121,6 @@ defmodule LukasWeb.Students.StudyLive do
           <.paragraph :if={@topic.kind == :text} class="mb-10">
             <%= @topic.content %>
           </.paragraph>
-
-          <div :if={@topic.kind == :video} class="flex justify-center items-center">
-            <iframe
-              width="1000"
-              height="600"
-              src={@topic.content}
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen
-            >
-            </iframe>
-          </div>
 
           <div class="flex justify-end mt-10">
             <.button

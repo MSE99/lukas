@@ -11,7 +11,7 @@ defmodule Lukas.Learning.Lesson.Topic do
     field(:title, :string)
     field(:kind, Ecto.Enum, values: @kinds)
     field(:content, :string)
-    field(:image, :string, default: @default_image)
+    field(:media, :string, default: @default_image)
 
     belongs_to(:lesson, Lukas.Learning.Lesson)
 
@@ -26,8 +26,8 @@ defmodule Lukas.Learning.Lesson.Topic do
 
   def update_changeset(text_topic, attrs) do
     text_topic
-    |> cast(attrs, [:title, :content, :kind, :image])
-    |> validate_required([:title, :content, :kind, :image])
+    |> cast(attrs, [:title, :content, :kind, :media])
+    |> validate_required([:title, :content, :kind, :media])
   end
 
   def default_image(), do: @default_image

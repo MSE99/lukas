@@ -130,7 +130,7 @@ defmodule Lukas.Learning.Course.Content do
   end
 
   def create_text_topic(%Lesson{id: lesson_id} = lesson, attrs, opts \\ []) do
-    get_image = Keyword.get(opts, :get_image, fn -> lesson.image end)
+    get_media = Keyword.get(opts, :get_media, fn -> Lesson.Topic.default_image() end)
 
     Ecto.Multi.new()
     |> Ecto.Multi.insert(
@@ -140,7 +140,7 @@ defmodule Lukas.Learning.Course.Content do
     |> Ecto.Multi.run(:topic_with_image, fn _, %{topic: topic} ->
       topic_with_image =
         topic
-        |> Lesson.Topic.update_changeset(%{image: get_image.()})
+        |> Lesson.Topic.update_changeset(%{image: get_media.()})
         |> Repo.update!()
 
       {:ok, topic_with_image}
@@ -190,7 +190,7 @@ defmodule Lukas.Learning.Course.Content do
   end
 
   def update_topic(%Lesson.Topic{} = topic, attrs, opts \\ []) do
-    get_image = Keyword.get(opts, :get_image, fn -> topic.image end)
+    get_media = Keyword.get(opts, :get_media, fn -> topic.media end)
     topic_with_lesson = Repo.preload(topic, :lesson)
 
     Ecto.Multi.new()
@@ -202,7 +202,7 @@ defmodule Lukas.Learning.Course.Content do
       :topic_with_image,
       fn _, %{topic: topic} ->
         next_topic =
-          Lesson.Topic.update_changeset(topic, %{image: get_image.()}) |> Repo.update!()
+          Lesson.Topic.update_changeset(topic, %{media: get_media.()}) |> Repo.update!()
 
         {:ok, next_topic}
       end

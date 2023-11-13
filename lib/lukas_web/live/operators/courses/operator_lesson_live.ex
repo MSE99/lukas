@@ -93,8 +93,8 @@ defmodule LukasWeb.Operator.LessonLive do
       show
     >
       <img
-        :if={@live_action == :edit_topic}
-        src={~p"/images/#{@topic.image}"}
+        :if={@live_action == :edit_topic and @topic.kind == :text}
+        src={~p"/images/#{@topic.media}"}
         class="w-full h-auto rounded-xl mb-3"
       />
 
@@ -173,7 +173,7 @@ defmodule LukasWeb.Operator.LessonLive do
 
   def handle_event("update", %{"topic" => params}, socket) do
     case Content.update_topic(socket.assigns.topic, params,
-           get_image: fn -> consume_image_upload(socket) end
+           get_media: fn -> consume_image_upload(socket) end
          ) do
       {:error, cs} ->
         {:noreply, assign(socket, form: to_form(cs))}
@@ -189,7 +189,7 @@ defmodule LukasWeb.Operator.LessonLive do
 
   def handle_event("create", %{"topic" => params}, socket) do
     case Content.create_text_topic(socket.assigns.lesson, params,
-           get_image: fn -> consume_image_upload(socket) end
+           get_media: fn -> consume_image_upload(socket) end
          ) do
       {:error, cs} ->
         {:noreply, assign(socket, form: to_form(cs))}
