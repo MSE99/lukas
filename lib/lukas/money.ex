@@ -9,6 +9,10 @@ defmodule Lukas.Money do
 
   alias Ecto.Multi
 
+  def watch_course(%Course{} = course) do
+    Phoenix.PubSub.subscribe(Lukas.PubSub, "courses/#{course.id}/purchases")
+  end
+
   def tag_from_tx(%CoursePurchase{} = c), do: "tx-purchase-#{c.id}"
   def tag_from_tx(%DirectDepositTx{} = d), do: "tx-deposit-#{d.id}"
 
@@ -79,6 +83,12 @@ defmodule Lukas.Money do
       Lukas.PubSub,
       "user/#{student.id}/transactions",
       {:transactions, student.id, :purchase_made, purchase}
+    )
+
+    Phoenix.PubSub.broadcast(
+      Lukas.PubSub,
+      "courses/#{purchase.course_id}/purchases",
+      {:course_purchases, purchase.course_id, :purchase_made, purchase}
     )
   end
 

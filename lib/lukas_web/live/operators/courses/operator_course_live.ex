@@ -2,6 +2,7 @@ defmodule LukasWeb.Operator.CourseLive do
   use LukasWeb, :live_view
 
   alias Lukas.Learning
+  alias Lukas.Money
   alias Lukas.Learning.Course
 
   alias LukasWeb.CommonComponents
@@ -11,10 +12,14 @@ defmodule LukasWeb.Operator.CourseLive do
          {course, lecturers, course_tags} when course != nil <-
            Course.Staff.get_course_with_lecturers(id) do
       Learning.watch_course(course)
+      Money.watch_course(course)
+
+      profits = Money.calculate_course_profits(course.id)
 
       {:ok,
        socket
        |> assign(course: course)
+       |> assign(profits: profits)
        |> load_lessons(course)
        |> stream(:lecturers, lecturers)
        |> stream(:course_tags, course_tags)}
@@ -46,7 +51,7 @@ defmodule LukasWeb.Operator.CourseLive do
 
       <.link navigate={~p"/controls/courses/#{@course.id}/lessons"}>
         <CommonComponents.transparent_button>
-          <.icon name="hero-book-open" class="me-2" /> <%= gettext("Lessons") %>
+          <.icon name="hero-book-open" class="me-2" /> <%= gettext("lessons") %>
         </CommonComponents.transparent_button>
       </.link>
 
@@ -64,7 +69,13 @@ defmodule LukasWeb.Operator.CourseLive do
 
       <.link navigate={~p"/controls/courses/#{@course.id}/assign-lecturer"}>
         <CommonComponents.transparent_button>
-          <.icon name="hero-sparkles" class="me-2" /> <%= gettext("Lecturers") %>
+          <.icon name="hero-sparkles" class="me-2" /> <%= gettext("lecturers") %>
+        </CommonComponents.transparent_button>
+      </.link>
+
+      <.link>
+        <CommonComponents.transparent_button>
+          <.icon name="hero-currency-dollar" class="me-2" /> <%= gettext("profits") %> (<%= @profits %> LYD)
         </CommonComponents.transparent_button>
       </.link>
 
@@ -96,4 +107,8 @@ defmodule LukasWeb.Operator.CourseLive do
   end
 
   def handle_info({:course, _, _, _}, socket), do: {:noreply, socket}
+
+  def handle_info({:course_purchases, _, :purchase_made, purchase}, socket) do
+    {:noreply, assign(socket, profits: socket.assigns.profits + purchase.amount)}
+  end
 end

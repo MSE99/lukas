@@ -67,6 +67,36 @@ defmodule LukasWeb.Courses.CourseLiveTest do
       assert html =~ tag2.name
       assert html =~ tag3.name
     end
+
+    test "should render 0.0 if the course has no price.", %{conn: conn, course: course} do
+      student1 = student_fixture()
+      student2 = student_fixture()
+
+      direct_deposit_fixture(user_fixture(), student1, 50_000.0)
+      direct_deposit_fixture(user_fixture(), student2, 50_000.0)
+
+      {:ok, _} = Students.enroll_student(course, student1)
+      {:ok, _} = Students.enroll_student(course, student2)
+
+      {:ok, _, html} = live(conn, ~p"/controls/courses/#{course.id}")
+
+      assert html =~ "#{:erlang.float_to_binary(course.price * 2, decimals: 1)} LYD"
+    end
+
+    test "should react to course being purchased.", %{conn: conn, course: course} do
+      {:ok, lv, _} = live(conn, ~p"/controls/courses/#{course.id}")
+
+      student1 = student_fixture()
+      student2 = student_fixture()
+
+      direct_deposit_fixture(user_fixture(), student1, 50_000.0)
+      direct_deposit_fixture(user_fixture(), student2, 50_000.0)
+
+      {:ok, _} = Students.enroll_student(course, student1)
+      {:ok, _} = Students.enroll_student(course, student2)
+
+      assert render(lv) =~ "#{:erlang.float_to_binary(course.price * 2, decimals: 1)} LYD"
+    end
   end
 
   describe "lecturers" do
