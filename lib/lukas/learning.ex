@@ -18,15 +18,6 @@ defmodule Lukas.Learning do
     |> Repo.all()
   end
 
-  def count_courses() do
-    Query.courses_count()
-    |> Repo.one()
-    |> case do
-      nil -> 0
-      num -> num
-    end
-  end
-
   def get_course_and_tags(course_id) when is_integer(course_id) do
     Multi.new()
     |> Multi.one(:course, Query.course_by_id(course_id))

@@ -65,15 +65,6 @@ defmodule Lukas.LearningTest do
       Learning.untag_course(cr.id, tag.id)
       assert_received({:course, _, :course_untagged, ^tag})
     end
-
-    test "count_courses/1 should return a count of all the courses in the system." do
-      assert Learning.count_courses() == 0
-
-      1..100
-      |> Enum.each(fn _ -> course_fixture() end)
-
-      assert Learning.count_courses() == 100
-    end
   end
 
   describe "courses lessons" do
