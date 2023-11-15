@@ -39,4 +39,12 @@ defmodule Lukas.Money.CoursePurchase do
       select: sum(purchase.amount)
     )
   end
+
+  def query_profits_by_course_id(course_id) do
+    from(
+      purchase in __MODULE__,
+      where: purchase.course_id == ^course_id,
+      select: sum(purchase.amount)
+    )
+  end
 end

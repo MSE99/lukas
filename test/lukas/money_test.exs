@@ -80,4 +80,20 @@ defmodule Lukas.MoneyTest do
 
     assert_received({:wallet, ^student_id, :amount_updated, 10_000.0})
   end
+
+  describe "list_profits/1" do
+    test "calculate_course_profits/1 should return 0." do
+      cr = course_fixture()
+      assert Money.calculate_course_profits(cr.id) == 0
+    end
+
+    test "calculate_course_profits/1 should return 500.0.", %{student: student, clerk: clerk} do
+      course = course_fixture(%{price: 500.0})
+      direct_deposit_fixture(clerk, student, 1000)
+
+      Money.purchase_course_for(student, course)
+
+      assert Money.calculate_course_profits(course.id) == 500.0
+    end
+  end
 end

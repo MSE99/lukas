@@ -148,4 +148,14 @@ defmodule Lukas.Money do
       {:ok, ensure_sum_not_nil(deps) - ensure_sum_not_nil(purchases)}
     end)
   end
+
+  def calculate_course_profits(course_id) do
+    course_id
+    |> CoursePurchase.query_profits_by_course_id()
+    |> Repo.one()
+    |> case do
+      nil -> 0.0
+      amount -> amount
+    end
+  end
 end
