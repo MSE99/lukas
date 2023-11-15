@@ -107,6 +107,14 @@ defmodule LukasWeb.Lecturer.LessonLive do
         class="w-full h-auto rounded-xl mb-3"
       />
 
+      <video
+        :if={@live_action == :edit_topic and @topic.kind == :video}
+        controls
+        class="w-full h-auto mb-5 rounded-lg shadow"
+      >
+        <source src={~p"/images/#{@topic.media}"} />
+      </video>
+
       <.form
         for={@form}
         phx-change="validate"
@@ -122,19 +130,7 @@ defmodule LukasWeb.Lecturer.LessonLive do
           phx-change="update-topic-kind"
         />
 
-        <.input
-          :if={@topic_kind == "text"}
-          type="textarea"
-          label={gettext("Content")}
-          field={@form[:content]}
-        />
-
-        <.input
-          :if={@topic_kind != "text"}
-          type="text"
-          label={gettext("Content")}
-          field={@form[:content]}
-        />
+        <.input type="textarea" label={gettext("Content")} field={@form[:content]} />
 
         <div class="my-5">
           <p class="font-bold mb-3">
