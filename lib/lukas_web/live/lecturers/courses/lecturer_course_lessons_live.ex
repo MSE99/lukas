@@ -115,6 +115,24 @@ defmodule LukasWeb.Lecturer.CourseLessonsLive do
           <.input type="text" label={gettext("Title")} field={@form[:title]} />
           <.input type="textarea" label={gettext("Description")} field={@form[:description]} />
 
+          <div class="my-5">
+            <p class="font-bold mb-3">
+              <%= gettext("image") %>
+            </p>
+
+            <.live_file_input upload={@uploads.image} />
+          </div>
+
+          <%= for entry <- @uploads.image.entries do %>
+            <progress value={entry.progress} max="100">
+              <%= entry.progress %>%
+            </progress>
+
+            <%= for err <- upload_errors(@uploads.image, entry) do %>
+              <p class="alert alert-danger"><%= error_to_string(err) %></p>
+            <% end %>
+          <% end %>
+
           <div class="mt-5 flex justify-end">
             <.button class="px-8">
               <%= gettext("Create") %>
@@ -125,6 +143,9 @@ defmodule LukasWeb.Lecturer.CourseLessonsLive do
     </.async_result>
     """
   end
+
+  def error_to_string(:too_large), do: gettext("Too large")
+  def error_to_string(:not_accepted), do: gettext("You have selected an unacceptable file type")
 
   def handle_event("clear", _, socket) do
     form = Learning.Course.Content.create_lesson_changeset(socket.assigns.course) |> to_form()
