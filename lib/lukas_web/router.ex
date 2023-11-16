@@ -75,6 +75,8 @@ defmodule LukasWeb.Router do
 
       live("/tags/:id", TagLive.Show, :show)
       live("/tags/:id/show/edit", TagLive.Show, :edit)
+
+      live("/stats", Operator.StatsLive)
     end
   end
 

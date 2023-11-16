@@ -12,6 +12,15 @@ defmodule Lukas.Learning do
 
   alias Ecto.Multi
 
+  def count_courses() do
+    Query.courses_count()
+    |> Repo.one()
+    |> case do
+      nil -> 0
+      count -> count
+    end
+  end
+
   def list_courses(opts \\ []) do
     opts
     |> Query.courses_with_taggings()
