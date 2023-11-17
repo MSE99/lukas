@@ -87,8 +87,8 @@ defmodule LukasWeb.Students.StudyLive do
 
   def render(assigns) do
     ~H"""
-    <div class="w-full min-h-screen flex">
-      <div class="w-full pt-10 px-5">
+    <div class="w-full min-h-screen flex flex-col lg:flex-row">
+      <div class="w-full pt-10 px-5 md:max-h-screen md:overflow-y-auto">
         <div :if={@lesson} class="max-w-2xl mx-auto">
           <CommonComponents.course_banner image_src={~p"/images/#{@lesson.image}"} />
 
@@ -106,8 +106,6 @@ defmodule LukasWeb.Students.StudyLive do
             >
               next
             </.button>
-
-            <.button phx-click={show_modal("lessons-modal")}>Open lessons</.button>
           </div>
         </div>
 
@@ -137,8 +135,6 @@ defmodule LukasWeb.Students.StudyLive do
             >
               next
             </.button>
-
-            <.button phx-click={show_modal("lessons-modal")}>Open lessons</.button>
           </div>
         </div>
 
@@ -146,13 +142,6 @@ defmodule LukasWeb.Students.StudyLive do
           <CommonComponents.course_banner image_src={~p"/images/#{@course.banner_image}"} />
 
           <div class="mt-10 text-secondary px-2 pb-5 max-w-2xl mx-auto">
-            <CommonComponents.navigate_breadcrumbs links={[
-              {~p"/home", gettext("home")},
-              {~p"/home/courses", gettext("courses")},
-              {~p"/home/courses/#{@course.id}", @course.name},
-              {~p"/home/courses/#{@course.id}/study", gettext("study")}
-            ]} />
-
             <div class="flex justify-end">
               <.button id="reset-button" phx-click="reset-progress" class="me-1">
                 reset progress
@@ -164,12 +153,22 @@ defmodule LukasWeb.Students.StudyLive do
         </div>
       </div>
 
-      <.modal id="lessons-modal">
-        <div class="flex gap-3 mb-3">
-          <h1 class="font-bold text-primary text-sm">
+      <div class="w-full lg:max-w-sm p-10 bg-gray-200 min-h-screen">
+        <div class="flex flex-col gap-3 mb-3 justify-start">
+          <h1 class="text-2xl font-bold text-secondary"><%= @course.name %></h1>
+
+          <CommonComponents.navigate_breadcrumbs links={[
+            {~p"/home", gettext("home")},
+            {~p"/home/courses", gettext("courses")},
+            {~p"/home/courses/#{@course.id}", @course.name},
+            {~p"/home/courses/#{@course.id}/study", gettext("study")}
+          ]} />
+
+          <p class="font-bold text-primary text-sm">
             completed <%= :erlang.float_to_binary(@completed, decimals: 1) %>%
-          </h1>
+          </p>
         </div>
+
         <ul id="lessons" phx-update="stream" class="text-secondary">
           <li :for={{id, lesson} <- @streams.lessons} id={id} class="mb-5">
             <.link
@@ -182,8 +181,8 @@ defmodule LukasWeb.Students.StudyLive do
                                          else: "" %>
             </.link>
 
-            <ul id={"lesson-#{lesson.id}-topics"} class="pl-3">
-              <li :for={topic <- lesson.topics} class="my-1 text-lg">
+            <ul id={"lesson-#{lesson.id}-topics"} class="ps-5">
+              <li :for={topic <- lesson.topics} class="my-1 text-md">
                 <.link patch={
                   ~p"/home/courses/#{@course.id}/study?lesson_id=#{topic.lesson_id}&topic_id=#{topic.id}"
                 }>
@@ -193,7 +192,7 @@ defmodule LukasWeb.Students.StudyLive do
             </ul>
           </li>
         </ul>
-      </.modal>
+      </div>
     </div>
     """
   end
