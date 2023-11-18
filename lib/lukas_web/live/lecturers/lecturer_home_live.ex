@@ -11,16 +11,34 @@ defmodule LukasWeb.Lecturer.HomeLive do
       <%= gettext("Hello") %>
       <%= @current_user.name %>
     </.greeting>
+    <ul class="flex flex-col w-full gap-2 mt-5 justify-center md:justify-start">
+      <li class="max-w-xs w-full h-full">
+        <.link
+          navigate={~p"/tutor/my-courses"}
+          class="bg-white shadow rounded-lg h-28 hover:outline outline-green-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
+        >
+          <div class="flex items-center">
+            <.icon name="hero-academic-cap-solid me-3" /> <%= gettext("Courses") %>
+          </div>
 
-    <ul class="flex flex-col gap-2 mt-5">
-      <li>
-        <.link class="bg-white shadow p-5 block max-w-xs" navigate={~p"/tutor/my-courses"}>
-          <.icon name="hero-academic-cap-solid" class="me-5" /><%= gettext("My courses") %>
+          <p class="mt-3 text-sm text-secondary">
+            <%= gettext("View all courses on your platform or add new ones.") %>
+          </p>
         </.link>
       </li>
-      <li>
-        <.link class="bg-white shadow p-5 block max-w-xs" href={~p"/users/settings"}>
-          <.icon name="hero-cog-6-tooth-solid" class="me-5" /><%= gettext("settings") %>
+
+      <li class="max-w-xs w-full h-full">
+        <.link
+          navigate={~p"/users/settings"}
+          class="bg-white shadow rounded-lg h-28 hover:outline outline-green-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
+        >
+          <div class="flex items-center">
+            <.icon name="hero-cog-solid me-3" /> <%= gettext("Settings") %>
+          </div>
+
+          <p class="mt-3 text-sm text-secondary">
+            <%= gettext("Update your accounts settings.") %>
+          </p>
         </.link>
       </li>
     </ul>
