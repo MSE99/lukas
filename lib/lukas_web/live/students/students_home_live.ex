@@ -1,13 +1,16 @@
 defmodule LukasWeb.Students.HomeLive do
   use LukasWeb, :live_view
 
+  alias LukasWeb.CommonComponents
+
   def mount(_, _, socket), do: {:ok, socket}
 
   def render(assigns) do
     ~H"""
-    <h1 class="text-lg mb-5 mt-16">
-      Hello <%= @current_user.name %>
-    </h1>
+    <CommonComponents.greeting>
+      <%= gettext("Hello") %>
+      <%= @current_user.name %>
+    </CommonComponents.greeting>
 
     <ul class="flex flex-col w-full gap-2 mt-5 justify-center md:justify-start">
       <li class="max-w-xs w-full h-full">
