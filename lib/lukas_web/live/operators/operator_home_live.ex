@@ -32,7 +32,7 @@ defmodule LukasWeb.Operators.HomeLive do
 
       <li class="max-w-xs w-full h-full">
         <.link
-          navigate={~p"/controls/courses"}
+          navigate={~p"/controls/stats"}
           class="bg-white shadow rounded-lg h-28 hover:outline outline-green-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
         >
           <div class="flex items-center">
