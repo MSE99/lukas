@@ -4,6 +4,8 @@ defmodule LukasWeb.Operator.StatsLive do
   alias Lukas.Learning
   alias Phoenix.LiveView.AsyncResult
 
+  import LukasWeb.CommonComponents
+
   def mount(_, _, socket) do
     next_socket =
       socket
@@ -33,7 +35,14 @@ defmodule LukasWeb.Operator.StatsLive do
     <.async_result assign={@loading}>
       <:loading><.loading_spinner /></:loading>
       <:failed>Failed to load...</:failed>
-      <%= @courses_count %> <%= gettext("Courses") %>
+
+      <.navigate_breadcrumbs links={[
+        {~p"/controls", gettext("home")},
+        {~p"/controls/stats", gettext("stats")}
+      ]} />
+
+      <%= gettext("Number of courses in the system") %>
+      <%= @courses_count %>
     </.async_result>
     """
   end
