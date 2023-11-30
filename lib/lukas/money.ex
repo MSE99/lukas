@@ -168,4 +168,16 @@ defmodule Lukas.Money do
       amount -> amount
     end
   end
+
+  def calculate_total_profits() do
+    now = NaiveDateTime.utc_now()
+
+    now
+    |> CoursePurchase.query_profits()
+    |> Repo.one()
+    |> case do
+      nil -> 0.0
+      gross_profits -> gross_profits
+    end
+  end
 end

@@ -47,4 +47,12 @@ defmodule Lukas.Money.CoursePurchase do
       select: sum(purchase.amount)
     )
   end
+
+  def query_profits(before) do
+    from(
+      purchase in __MODULE__,
+      where: purchase.inserted_at <= ^before,
+      select: sum(purchase.amount)
+    )
+  end
 end

@@ -1,7 +1,6 @@
 defmodule Lukas.Stats do
   alias Lukas.Repo
-  alias Lukas.Learning
-  alias Lukas.Accounts
+  alias Lukas.{Learning, Accounts, Money}
 
   def count_courses() do
     Learning.Query.courses_count()
@@ -21,4 +20,6 @@ defmodule Lukas.Stats do
       count -> count
     end
   end
+
+  def get_total_earnings(), do: Money.calculate_total_profits()
 end

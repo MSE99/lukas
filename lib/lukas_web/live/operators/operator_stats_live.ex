@@ -18,18 +18,20 @@ defmodule LukasWeb.Operator.StatsLive do
   defp load_data() do
     courses_count = Stats.count_courses()
     students_count = Stats.count_students()
+    earnings = Stats.get_total_earnings()
 
-    %{courses_count: courses_count, students_count: students_count}
+    %{courses_count: courses_count, students_count: students_count, earnings: earnings}
   end
 
   def handle_async(:loading, {:ok, result}, socket) do
-    %{courses_count: courses_count, students_count: students_count} = result
+    %{courses_count: courses_count, students_count: students_count, earnings: earnings} = result
 
     {:noreply,
      socket
      |> assign(:loading, AsyncResult.ok(socket.assigns.loading, nil))
      |> assign(:courses_count, courses_count)
-     |> assign(:students_count, students_count)}
+     |> assign(:students_count, students_count)
+     |> assign(earnings: earnings)}
   end
 
   def handle_async(:loading, {:exit, reason}, socket) do
@@ -55,6 +57,11 @@ defmodule LukasWeb.Operator.StatsLive do
       <div>
         <%= gettext("Number of courses in the system") %>
         <%= @courses_count %>
+      </div>
+
+      <div>
+        <%= gettext("Total money earned") %>
+        <%= @earnings |> :erlang.float_to_binary(decimals: 1) %>
       </div>
     </.async_result>
     """
