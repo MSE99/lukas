@@ -42,6 +42,14 @@ defmodule Lukas.Accounts.Query do
     end
   end
 
+  def count_students() do
+    from(
+      s in User,
+      where: s.kind == :student,
+      select: count(s.id)
+    )
+  end
+
   def user_by_phone_number_and_enabled(phone_number) when is_binary(phone_number) do
     from(u in User, where: u.phone_number == ^phone_number and u.enabled)
   end
