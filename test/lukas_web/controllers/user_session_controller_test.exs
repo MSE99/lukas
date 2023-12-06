@@ -126,4 +126,24 @@ defmodule LukasWeb.UserSessionControllerTest do
       assert resp_body == user |> Jason.encode!() |> Jason.decode!()
     end
   end
+
+  describe "GET /api/token" do
+    test "should respond with 401 if the user is not authenticated.", %{conn: conn} do
+      conn
+      |> get(~p"/api/tokens")
+      |> response(401)
+    end
+
+    test "should respond 200 and the token as the request body.", %{conn: conn, user: user} do
+      body =
+        conn
+        |> log_in_user(user)
+        |> get(~p"/api/tokens")
+        |> response(200)
+
+      {:ok, user_id} = Phoenix.Token.verify(LukasWeb.Endpoint, "channels api token", body)
+
+      assert user_id == user.id
+    end
+  end
 end

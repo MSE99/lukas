@@ -178,5 +178,6 @@ defmodule LukasWeb.Router do
     pipe_through([:api])
 
     get("/whoami", UserSessionController, :whoami)
+    get("/tokens", UserSessionController, :get_token)
   end
 end
