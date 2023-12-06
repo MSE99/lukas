@@ -16,6 +16,8 @@ defmodule LukasWeb.Router do
 
   pipeline :api do
     plug(:accepts, ["json"])
+    plug(:fetch_session)
+    plug(:fetch_current_user)
   end
 
   scope "/", LukasWeb do
@@ -170,5 +172,11 @@ defmodule LukasWeb.Router do
       live("/users/confirm/:token", UserConfirmationLive, :edit)
       live("/users/confirm", UserConfirmationInstructionsLive, :new)
     end
+  end
+
+  scope "/api", LukasWeb do
+    pipe_through([:api])
+
+    get("/whoami", UserSessionController, :whoami)
   end
 end

@@ -9,6 +9,7 @@ defmodule Lukas.Accounts.User do
   defguard must_be_student(user) when is_struct(user, __MODULE__) and user.kind == :student
   defguard must_be_operator(user) when is_struct(user, __MODULE__) and user.kind == :operator
 
+  @derive {Jason.Encoder, except: [:password, :hashed_password, :__meta__]}
   schema "users" do
     field(:phone_number, :string)
     field(:email, :string)

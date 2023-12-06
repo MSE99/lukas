@@ -39,4 +39,12 @@ defmodule LukasWeb.UserSessionController do
     |> put_flash(:info, "Logged out successfully.")
     |> UserAuth.log_out_user()
   end
+
+  def whoami(conn, _params) do
+    if conn.assigns[:current_user] == nil do
+      conn |> resp(401, "Unauthorized") |> send_resp()
+    else
+      render(conn, :whoami, user: conn.assigns.current_user)
+    end
+  end
 end
