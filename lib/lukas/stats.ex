@@ -13,7 +13,6 @@ defmodule Lukas.Stats do
 
   def count_students() do
     Accounts.Query.count_students()
-    |> IO.inspect()
     |> Repo.one()
     |> case do
       nil -> 0
