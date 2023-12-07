@@ -55,6 +55,34 @@ defmodule LukasWeb.UserAuth do
     assign(conn, :current_user, user)
   end
 
+  def fetch_student_by_api_token(conn, _opts) do
+    with ["Bearer " <> token] <- get_req_header(conn, "authorization"),
+         {:ok, user} <- Accounts.fetch_student_by_api_token(token) do
+      assign(conn, :current_user, user)
+    else
+      _ -> assign(conn, :current_user, nil)
+    end
+  end
+
+  def require_api_authenticated_student(conn, _opts) do
+    if conn.assigns[:current_user] do
+      conn
+    else
+      conn
+      |> send_resp(401, "Unauthorized")
+      |> halt()
+    end
+  end
+
+  def redirect_if_student_is_api_authenticated(conn, _opts) do
+    if conn.assigns[:current_user] do
+      conn
+      |> halt()
+    else
+      conn
+    end
+  end
+
   def fetch_current_locale(conn, _opts) do
     if conn.cookies["locale"] in ["ar", "en"] do
       locale = conn.cookies["locale"]

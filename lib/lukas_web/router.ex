@@ -16,8 +16,7 @@ defmodule LukasWeb.Router do
 
   pipeline :api do
     plug(:accepts, ["json"])
-    plug(:fetch_session)
-    plug(:fetch_current_user)
+    plug(:fetch_student_by_api_token)
   end
 
   scope "/", LukasWeb do
