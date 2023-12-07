@@ -436,4 +436,19 @@ defmodule Lukas.AccountsTest do
       refute inspect(%User{password: "123456"}) =~ "password: \"123456\""
     end
   end
+
+  describe "student tokens API" do
+    test "should create the token and return it." do
+      student = student_fixture()
+      token = Accounts.create_student_api_token(student)
+      assert token != ""
+    end
+
+    test "created token should be usable with fetch_student_by_api_token/1" do
+      student = student_fixture()
+      token = Accounts.create_student_api_token(student)
+
+      assert {:ok, ^student} = Accounts.fetch_student_by_api_token(token)
+    end
+  end
 end

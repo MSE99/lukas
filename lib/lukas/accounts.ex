@@ -230,6 +230,22 @@ defmodule Lukas.Accounts do
 
   def get_user!(id), do: Repo.get!(User, id)
 
+  # Students API
+  def create_student_api_token(%User{kind: :student} = student) do
+    {serialized_token, token} = UserToken.build_email_token(student, "api-token")
+    Repo.insert!(token)
+    serialized_token
+  end
+
+  def fetch_student_by_api_token(token) when is_binary(token) do
+    with {:ok, query} <- UserToken.verify_email_token_query(token, "api-token"),
+         %User{kind: :student} = user <- Repo.one(query) do
+      {:ok, user}
+    else
+      _ -> :error
+    end
+  end
+
   # Invites
   def list_invites() do
     Repo.all(Invite)
