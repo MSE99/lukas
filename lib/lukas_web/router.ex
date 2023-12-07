@@ -174,10 +174,15 @@ defmodule LukasWeb.Router do
   end
 
   # Students API
-
   scope "/api", LukasWeb do
     pipe_through [:api, :forbid_if_student_is_api_authenticated]
 
     post("/log_in", StudentTokenController, :create)
+  end
+
+  scope "/api", LukasWeb do
+    pipe_through [:api, :require_api_authenticated_student]
+
+    get("/whoami", StudentTokenController, :whoami)
   end
 end

@@ -15,4 +15,9 @@ defmodule LukasWeb.StudentTokenController do
       |> send_resp(400, "Invalid phone number or password")
     end
   end
+
+  def whoami(conn, _params) do
+    %{current_user: current_user} = conn.assigns
+    render(conn, :whoami, user: current_user)
+  end
 end

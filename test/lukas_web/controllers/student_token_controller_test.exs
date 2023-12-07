@@ -36,4 +36,23 @@ defmodule LukasWeb.StudentTokenControllerTest do
       assert {:ok, ^student} = Accounts.fetch_student_by_api_token(token)
     end
   end
+
+  describe "GET /api/whoami" do
+    test "should respond with 401 if the user is not authenticated.", %{conn: conn} do
+      conn
+      |> get(~p"/api/whoami")
+      |> response(401)
+    end
+
+    test "should respond with the student if the user is authenticated.", ctx do
+      %{conn: conn, user: user} = register_and_log_in_student(ctx)
+
+      body =
+        conn
+        |> get(~p"/api/whoami")
+        |> json_response(200)
+
+      assert body == user |> Jason.encode!() |> Jason.decode!()
+    end
+  end
 end
