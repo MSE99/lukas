@@ -12,6 +12,7 @@ defmodule LukasWeb.Endpoint do
   ]
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
+  socket "/student", LukasWeb.StudentSocket, websocket: true, longpoll: true
 
   # Serve at "/" the static files from "priv/static" directory.
   #
