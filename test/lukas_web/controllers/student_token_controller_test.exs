@@ -55,4 +55,25 @@ defmodule LukasWeb.StudentTokenControllerTest do
       assert body == user |> Jason.encode!() |> Jason.decode!()
     end
   end
+
+  describe "GET /api/socket-token" do
+    test "should respond with 401 if the user is not authenticated.", %{conn: conn} do
+      conn
+      |> get(~p"/api/socket-token")
+      |> response(401)
+    end
+
+    test "should respond with the token containing the user id if the user is authenticated.",
+         ctx do
+      %{conn: conn, user: user} = register_and_log_in_student(ctx)
+
+      body =
+        conn
+        |> get(~p"/api/socket-token")
+        |> response(200)
+
+      res = Phoenix.Token.verify(LukasWeb.Endpoint, "student socket", body, max_age: 86400)
+      assert res == {:ok, user.id}
+    end
+  end
 end

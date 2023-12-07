@@ -184,5 +184,6 @@ defmodule LukasWeb.Router do
     pipe_through [:api, :require_api_authenticated_student]
 
     get("/whoami", StudentTokenController, :whoami)
+    get("/socket-token", StudentTokenController, :get_socket_token)
   end
 end

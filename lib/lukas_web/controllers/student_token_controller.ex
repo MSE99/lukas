@@ -20,4 +20,12 @@ defmodule LukasWeb.StudentTokenController do
     %{current_user: current_user} = conn.assigns
     render(conn, :whoami, user: current_user)
   end
+
+  def get_socket_token(conn, _params) do
+    token = Phoenix.Token.sign(conn, "student socket", conn.assigns.current_user.id)
+
+    conn
+    |> put_resp_content_type("text/plain")
+    |> resp(200, token)
+  end
 end
