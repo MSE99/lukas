@@ -74,9 +74,10 @@ defmodule LukasWeb.UserAuth do
     end
   end
 
-  def redirect_if_student_is_api_authenticated(conn, _opts) do
+  def forbid_if_student_is_api_authenticated(conn, _opts) do
     if conn.assigns[:current_user] do
       conn
+      |> send_resp(403, "Forbidden")
       |> halt()
     else
       conn

@@ -70,5 +70,13 @@ defmodule LukasWeb.ConnCase do
     conn
     |> Phoenix.ConnTest.init_test_session(%{})
     |> Plug.Conn.put_session(:user_token, token)
+    |> maybe_add_api_token_if_student(user)
   end
+
+  defp maybe_add_api_token_if_student(conn, %{kind: :student} = user) do
+    token = Lukas.Accounts.create_student_api_token(user)
+    Plug.Conn.put_req_header(conn, "authorization", "Bearer #{token}")
+  end
+
+  defp maybe_add_api_token_if_student(conn, _), do: conn
 end

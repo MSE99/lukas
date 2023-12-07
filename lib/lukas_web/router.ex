@@ -172,4 +172,12 @@ defmodule LukasWeb.Router do
       live("/users/confirm", UserConfirmationInstructionsLive, :new)
     end
   end
+
+  # Students API
+
+  scope "/api", LukasWeb do
+    pipe_through [:api, :forbid_if_student_is_api_authenticated]
+
+    post("/log_in", StudentTokenController, :create)
+  end
 end
