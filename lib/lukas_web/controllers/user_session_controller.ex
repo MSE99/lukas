@@ -39,27 +39,4 @@ defmodule LukasWeb.UserSessionController do
     |> put_flash(:info, "Logged out successfully.")
     |> UserAuth.log_out_user()
   end
-
-  def whoami(conn, _params) do
-    if conn.assigns[:current_user] == nil do
-      conn |> resp(401, "Unauthorized") |> send_resp()
-    else
-      render(conn, :whoami, user: conn.assigns.current_user)
-    end
-  end
-
-  def get_token(conn, _params) do
-    if conn.assigns[:current_user] == nil do
-      conn
-      |> resp(401, "Unauthorized")
-      |> send_resp()
-    else
-      token = Phoenix.Token.sign(conn, "channels api token", conn.assigns.current_user.id)
-
-      conn
-      |> put_resp_content_type("text/plain")
-      |> resp(200, token)
-      |> send_resp()
-    end
-  end
 end

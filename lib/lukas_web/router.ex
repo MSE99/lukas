@@ -173,11 +173,4 @@ defmodule LukasWeb.Router do
       live("/users/confirm", UserConfirmationInstructionsLive, :new)
     end
   end
-
-  scope "/api", LukasWeb do
-    pipe_through([:api])
-
-    get("/whoami", UserSessionController, :whoami)
-    get("/tokens", UserSessionController, :get_token)
-  end
 end
