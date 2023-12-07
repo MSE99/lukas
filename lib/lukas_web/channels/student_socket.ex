@@ -3,8 +3,10 @@ defmodule LukasWeb.StudentSocket do
 
   alias Lukas.Accounts
 
+  channel "student", LukasWeb.StudentChannel
+
   @impl true
-  def connect(token, socket, _connect_info) do
+  def connect(%{"token" => token}, socket, _connect_info) do
     {:ok, student_id} =
       Phoenix.Token.verify(
         socket,
@@ -18,5 +20,5 @@ defmodule LukasWeb.StudentSocket do
   end
 
   @impl true
-  def id(socket), do: "students_socket:#{socket.assigns.student.id}"
+  def id(socket), do: "student_socket:#{socket.assigns.student.id}"
 end
