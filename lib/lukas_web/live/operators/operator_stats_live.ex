@@ -71,21 +71,29 @@ defmodule LukasWeb.Operator.StatsLive do
         {~p"/controls/stats", gettext("stats")}
       ]} />
 
-      <div>
-        <%= gettext("Number of students in the system") %>
-        <%= @students_count %>
+      <div class="flex flex-col mb-16 justify-center items-center">
+        <p class="font-bold text-sm lg:me-auto">
+          <span class="me-1 lg:text-lg">🧑‍🎓</span>
+          <%= gettext("Number of students in the system") %>
+          <%= @students_count %>
+        </p>
+
+        <p class="font-bold text-sm">
+          <span class="me-1 lg:text-lg">📚</span>
+          <%= gettext("Number of courses in the system") %>
+          <%= @courses_count %>
+        </p>
       </div>
 
-      <div>
-        <%= gettext("Number of courses in the system") %>
-        <%= @courses_count %>
-      </div>
-
-      <div dir="ltr">
+      <div dir="ltr" class="mx-auto">
         <%= @svg %>
       </div>
 
-      <div>
+      <p class="font-bold text-center mt-5">
+        <%= gettext("Profits in the last 12 weeks") %>
+      </p>
+
+      <div class="text-center">
         <%= gettext("Total money earned") %>
         <%= @earnings |> :erlang.float_to_binary(decimals: 1) %>
       </div>

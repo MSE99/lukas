@@ -170,10 +170,10 @@ defmodule Lukas.Money do
   end
 
   def calculate_total_profits(opts \\ []) do
-    now = Keyword.get(opts, :before, NaiveDateTime.utc_now())
+    before = Keyword.get(opts, :before, NaiveDateTime.utc_now())
+    aft = Keyword.get(opts, :after, NaiveDateTime.add(before, -7, :day))
 
-    now
-    |> CoursePurchase.query_profits()
+    CoursePurchase.query_profits(before: before, after: aft)
     |> Repo.one()
     |> case do
       nil -> 0.0
@@ -186,7 +186,7 @@ defmodule Lukas.Money do
 
     0..12
     |> Enum.map(fn month ->
-      NaiveDateTime.add(now, -(month * 32), :day)
+      NaiveDateTime.add(now, -(month * 7), :day)
     end)
     |> Enum.map(fn before ->
       {before, calculate_total_profits(before: before)}

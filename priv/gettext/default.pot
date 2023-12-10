@@ -266,7 +266,7 @@ msgstr ""
 #: lib/lukas_web/live/operators/invites_live.ex:38
 #: lib/lukas_web/live/operators/opeartor_lecturers_live.ex:18
 #: lib/lukas_web/live/operators/operator_operators_live.ex:48
-#: lib/lukas_web/live/operators/operator_stats_live.ex:40
+#: lib/lukas_web/live/operators/operator_stats_live.ex:70
 #: lib/lukas_web/live/operators/operator_students_live.ex:20
 #: lib/lukas_web/live/operators/tags/index.html.heex:2
 #: lib/lukas_web/live/public/course_live.ex:50
@@ -737,12 +737,22 @@ msgstr ""
 msgid "profits"
 msgstr ""
 
-#: lib/lukas_web/live/operators/operator_stats_live.ex:44
+#: lib/lukas_web/live/operators/operator_stats_live.ex:80
 #, elixir-autogen, elixir-format
 msgid "Number of courses in the system"
 msgstr ""
 
-#: lib/lukas_web/live/operators/operator_stats_live.ex:41
+#: lib/lukas_web/live/operators/operator_stats_live.ex:71
 #, elixir-autogen, elixir-format
 msgid "stats"
+msgstr ""
+
+#: lib/lukas_web/live/operators/operator_stats_live.ex:75
+#, elixir-autogen, elixir-format
+msgid "Number of students in the system"
+msgstr ""
+
+#: lib/lukas_web/live/operators/operator_stats_live.ex:89
+#, elixir-autogen, elixir-format
+msgid "Total money earned"
 msgstr ""

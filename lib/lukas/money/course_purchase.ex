@@ -48,10 +48,13 @@ defmodule Lukas.Money.CoursePurchase do
     )
   end
 
-  def query_profits(before) do
+  def query_profits(opts) do
+    before = Keyword.get(opts, :before)
+    aft = Keyword.get(opts, :after)
+
     from(
       purchase in __MODULE__,
-      where: purchase.inserted_at <= ^before,
+      where: purchase.inserted_at <= ^before and purchase.inserted_at >= ^aft,
       select: sum(purchase.amount)
     )
   end
