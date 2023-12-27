@@ -74,7 +74,7 @@ defmodule LukasWeb.Students.HomeLive do
       </li>
     </ul>
 
-    <div class="flex flex-col gap-10 mt-5">
+    <div class="flex flex-col gap-10 mt-5 items-start">
       <.link method="DELETE" href={~p"/users/log_out"}>
         <.button>
           <%= gettext("Logout") %>
