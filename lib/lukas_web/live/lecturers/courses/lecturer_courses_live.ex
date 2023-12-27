@@ -93,7 +93,12 @@ defmodule LukasWeb.Lecturer.CoursesLive do
           id={id}
           class="mb-2 flex items-center text-secondary font-bold mb-3"
         >
-          <img src={~p"/images/#{course.banner_image}"} width={80} height={80} class="rounded" />
+          <img
+            src={~p"/images/#{course.banner_image}"}
+            width={80}
+            height={80}
+            class="rounded w-[80px] h-[80px]"
+          />
 
           <.link navigate={~p"/tutor/my-courses/#{course.id}"} class="ms-5 hover:underline">
             <%= course.name %>

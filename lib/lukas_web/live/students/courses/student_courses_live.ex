@@ -42,7 +42,7 @@ defmodule LukasWeb.Students.CoursesLive do
       <:failed>Failed to load courses courses.</:failed>
 
       <ul id="courses" phx-update="stream">
-        <li :for={{id, course} <- @streams.courses} id={id} class="mb-3 max-w-lg mx-auto">
+        <li :for={{id, course} <- @streams.courses} id={id} class="mb-3 max-w-md mx-auto">
           <.link navigate={~p"/home/courses/#{course.id}"}>
             <CommonComponents.course_card course={course} />
           </.link>

@@ -255,7 +255,7 @@ defmodule LukasWeb.CommonComponents do
 
   def course_card(assigns) do
     ~H"""
-    <div class="flex h-[104px] bg-white shadow rounded text-secondary max-w-md mx-auto">
+    <div class="flex h-[104px] bg-white shadow rounded text-secondary max-w-md mx-auto rounded-ts-lg rounded-bs-lg">
       <img
         src={~p"/images/#{@course.banner_image}"}
         width={110}

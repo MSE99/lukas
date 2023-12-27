@@ -133,7 +133,12 @@ defmodule LukasWeb.Operator.AllCoursesLive do
       enable_replace={true}
     >
       <:item :let={course} class="flex items-center text-secondary font-bold mb-3">
-        <img src={~p"/images/#{course.banner_image}"} width={80} height={80} class="rounded" />
+        <img
+          src={~p"/images/#{course.banner_image}"}
+          width={80}
+          height={80}
+          class="rounded w-[80px] h-[80px]"
+        />
 
         <.link navigate={~p"/controls/courses/#{course.id}"} class="ms-5 hover:underline">
           <%= course.name %>

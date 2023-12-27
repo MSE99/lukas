@@ -92,7 +92,7 @@ defmodule LukasWeb.Students.AvailableCoursesLive do
       entry_dom_id={fn course -> "courses-#{course.id}" end}
     >
       <:item :let={course}>
-        <.link navigate={~p"/home/courses/#{course.id}"} class="block mb-2">
+        <.link navigate={~p"/home/courses/#{course.id}"} class="block mb-2 max-w-md mx-auto">
           <CommonComponents.course_card course={course} />
         </.link>
       </:item>
