@@ -43,15 +43,17 @@ defmodule LukasWeb.Lecturer.HomeLive do
       </li>
     </ul>
 
-    <.link href={~p"/users/log_out"} method="DELETE" class="flex justify-end mt-5">
-      <.danger_button>
-        <%= gettext("Logout") %>
-      </.danger_button>
-    </.link>
+    <div class="flex mt-5 flex-col items-end gap-10">
+      <.link href={~p"/users/log_out"} method="DELETE">
+        <.danger_button>
+          <%= gettext("Logout") %>
+        </.danger_button>
+      </.link>
 
-    <.link href={~p"/locale"} method="patch">
-      <.icon name="hero-language" />
-    </.link>
+      <.link href={~p"/locale"} method="patch">
+        <.icon name="hero-language" />
+      </.link>
+    </div>
     """
   end
 end
