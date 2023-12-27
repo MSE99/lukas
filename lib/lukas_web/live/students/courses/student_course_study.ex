@@ -88,7 +88,7 @@ defmodule LukasWeb.Students.StudyLive do
   def render(assigns) do
     ~H"""
     <div class="w-full min-h-screen flex flex-col lg:flex-row">
-      <div class="w-full pt-10 px-5 md:max-h-screen md:overflow-y-auto">
+      <div class="w-full pt-10 px-2 md:max-h-screen md:overflow-y-auto">
         <div :if={@lesson} class="max-w-2xl mx-auto">
           <CommonComponents.course_banner image_src={~p"/images/#{@lesson.image}"} />
 
@@ -102,9 +102,9 @@ defmodule LukasWeb.Students.StudyLive do
             <.button
               :if={@lesson.progressed == false}
               phx-click="progress-lesson"
-              class="px-8 py-2 me-1"
+              class="px-8 py-2 me-1 mb-5"
             >
-              next
+              <%= gettext("next") %>
             </.button>
           </div>
         </div>
@@ -127,13 +127,13 @@ defmodule LukasWeb.Students.StudyLive do
             <%= @topic.content %>
           </.paragraph>
 
-          <div class="flex justify-end mt-10">
+          <div class="flex justify-end mt-10 mb-10">
             <.button
               :if={@topic.progressed == false}
               phx-click="progress-topic"
               class="px-8 py-2 me-1"
             >
-              next
+              <%= gettext("next") %>
             </.button>
           </div>
         </div>
