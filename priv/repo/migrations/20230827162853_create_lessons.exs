@@ -5,7 +5,7 @@ defmodule Lukas.Repo.Migrations.CreateLessons do
     create table(:lessons) do
       add :title, :string
       add :description, :string
-      add :course_id, references(:courses)
+      add :course_id, references(:courses, on_delete: :delete_all, on_update: :update_all)
       add :image, :string
 
       timestamps()

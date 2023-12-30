@@ -21,6 +21,10 @@ defmodule Lukas.Learning do
     end
   end
 
+  def delete_course(%Course{} = cr) do
+    Repo.delete(cr)
+  end
+
   def list_courses(opts \\ []) do
     opts
     |> Query.courses_with_taggings()

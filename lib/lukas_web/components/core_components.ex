@@ -40,6 +40,7 @@ defmodule LukasWeb.CoreComponents do
   attr :show, :boolean, default: false
   attr :dark, :boolean, default: false
   attr :on_cancel, JS, default: %JS{}
+  attr :danger, :boolean, default: false
   slot :inner_block, required: true
 
   def modal(assigns) do
@@ -67,7 +68,10 @@ defmodule LukasWeb.CoreComponents do
               phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
               phx-key="escape"
               phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
-              class="shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-t-2xl bg-white p-14 shadow-lg ring-1 transition"
+              class={[
+                "shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-t-2xl bg-white p-14 shadow-lg ring-1 transition",
+                @danger && "border-t-4 border-r-4 border-l-4 border-red-500"
+              ]}
             >
               <div class="absolute top-6 end-5">
                 <button

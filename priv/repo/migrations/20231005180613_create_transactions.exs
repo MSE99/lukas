@@ -26,7 +26,7 @@ defmodule Lukas.Repo.Migrations.AddTransactions do
 
     create table(:course_purchases) do
       add(:amount, :float)
-      add(:course_id, references(:courses))
+      add(:course_id, references(:courses, on_delete: :delete_all))
       add(:buyer_id, references(:users))
 
       timestamps()

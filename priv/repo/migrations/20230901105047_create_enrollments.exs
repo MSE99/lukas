@@ -3,8 +3,8 @@ defmodule Lukas.Repo.Migrations.CreateEnrollments do
 
   def change do
     create table(:enrollments) do
-      add :student_id, references(:users, on_delete: :nothing)
-      add :course_id, references(:courses, on_delete: :nothing)
+      add :student_id, references(:users, on_delete: :delete_all)
+      add :course_id, references(:courses, on_delete: :delete_all)
 
       timestamps()
     end
