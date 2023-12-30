@@ -123,9 +123,21 @@ defmodule LukasWeb.Students.StudyLive do
             <source src={~p"/images/#{@topic.media}"} />
           </video>
 
-          <.paragraph :if={@topic.kind == :text} class="mb-10">
+          <.paragraph :if={@topic.kind in [:text, :file]} class="mb-10">
             <%= @topic.content %>
           </.paragraph>
+
+          <a
+            :if={@topic.kind == :file}
+            href={~p"/images/#{@topic.media}"}
+            target="_blank"
+            class="block mt-5"
+          >
+            <.button class="flex justify-center items-center gap-3">
+              <.icon name="hero-arrow-down" />
+              <%= gettext("Download file") %>
+            </.button>
+          </a>
 
           <div class="flex justify-end mt-10 mb-10">
             <.button
@@ -146,8 +158,6 @@ defmodule LukasWeb.Students.StudyLive do
               <.button id="reset-button" phx-click="reset-progress" class="me-1">
                 reset progress
               </.button>
-
-              <.button phx-click={show_modal("lessons-modal")}>Open lessons</.button>
             </div>
           </div>
         </div>

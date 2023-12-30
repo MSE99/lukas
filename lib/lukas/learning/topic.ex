@@ -3,7 +3,7 @@ defmodule Lukas.Learning.Lesson.Topic do
 
   import Ecto.Changeset
 
-  @kinds [:text, :video]
+  @kinds [:text, :video, :file]
 
   @default_image "default-profile.png"
 

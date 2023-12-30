@@ -21,7 +21,7 @@ defmodule LukasWeb.Operator.LessonLive do
        |> assign(course: course)
        |> allow_upload(:image,
          max_entries: 1,
-         accept: ~w(.jpg .jpeg .png .webp .mp4 .webm),
+         accept: ~w(.jpg .jpeg .png .webp .mp4 .webm .pdf .txt .docx .doc .xlsx .xls .rar .zip),
          max_file_size: 120_000_000
        )}
     else

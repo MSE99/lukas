@@ -10,7 +10,8 @@ defmodule Lukas.Learning.Course.Content do
   def topic_kinds() do
     %{
       gettext("text") => "text",
-      gettext("video") => "video"
+      gettext("video") => "video",
+      gettext("file") => "file"
     }
   end
 
