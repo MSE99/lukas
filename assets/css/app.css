@@ -18,6 +18,10 @@
   background: rgb(117, 31, 132);
 }
 
+.bg-primary-light {
+  background: rgba(117, 31, 132, .1);
+}
+
 .text-secondary {
   color: rgba(0, 0, 0, .51);
 }

@@ -57,26 +57,32 @@ defmodule LukasWeb.CommonComponents do
 
   def navbar(assigns) do
     ~H"""
-    <header class="px-6 sm:px-8 lg:px-10" dir="ltr">
+    <header class="px-6 sm:px-8 lg:px-10">
       <nav class="mx-auto max-w-3xl">
-        <h1 :if={assigns[:current_user] == nil} class="text-primary font-bold text-2xl mt-8 mb-16">
+        <h1
+          :if={assigns[:current_user] == nil}
+          class="text-primary font-bold text-2xl mt-8 mb-16 flex justify-start"
+        >
           <.link href={~p"/"} class="flex gap-3 max-w-fit">
-            البصائر النيرة <img src={~p"/images/logo.png"} width={30} height={30} />
+            البصائر النيرة
+            <img src={~p"/images/logo.png"} width={30} height={30} class="order-first" />
           </.link>
         </h1>
 
-        <ul :if={assigns[:current_user]} class="flex items-center">
-          <li class="mr-auto self-end">
+        <ul :if={assigns[:current_user]} class="flex items-center justify-center pt-4">
+          <li class="me-auto">
             <h1 class="text-primary font-bold text-2xl mt-8">
               <.link href={~p"/"} class="flex gap-3 max-w-fit">
-                البصائر النيرة <img src={~p"/images/logo.png"} width={30} height={30} />
+                البصائر النيرة
+                <img src={~p"/images/logo.png"} width={30} height={30} class="order-first" />
               </.link>
             </h1>
           </li>
 
-          <li class="mt-2 -mr-3">
+          <li class="-mr-3 -ml-3">
             <.link href={~p"/users/settings"}>
               <img
+                :if={@current_user.profile_image != "default-profile.png"}
                 width="100"
                 height="100"
                 class="rounded-full border-8 border-primary-opaque w-[100px] h-[100px]"

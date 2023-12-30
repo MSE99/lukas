@@ -624,12 +624,12 @@ msgstr "الكورسات الاخيرة"
 #: lib/lukas_web/live/public/home_live.ex:43
 #, elixir-autogen, elixir-format
 msgid "Learn from the best teachers in Libya"
-msgstr "تعلم من افضل المدرسين في ليبيا"
+msgstr "أفضل محتوى تعليمي في ليبيا للمرحلة المتوسطة والجامعيـة"
 
 #: lib/lukas_web/live/public/home_live.ex:47
 #, elixir-autogen, elixir-format
 msgid "Lukas is an online platform for both educators to offer their content and students to learn."
-msgstr "لوكاس هو منصة تعليم اونلاين مصممة لربط المدرسين بالطلبة"
+msgstr "البصائر النيرة تقدم أفضل الكورسات أحدثها, يقدمها نخبه من الاساتذة المتميزين ذوي الخبرة والكفاءة."
 
 #: lib/lukas_web/live/public/home_live.ex:60
 #, elixir-autogen, elixir-format

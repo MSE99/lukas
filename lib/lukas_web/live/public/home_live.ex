@@ -39,26 +39,35 @@ defmodule LukasWeb.Public.HomeLive do
       <:loading><.loading_spinner /></:loading>
       <:failed>Failed...</:failed>
 
-      <h1 class="text-xl md:text-3xl font-bold mb-5">
-        <%= gettext("Learn from the best teachers in Libya") %>
-      </h1>
+      <div class="bg-primary-light w-full p-3 rounded-lg flex flex-col lg:flex-row gap-10">
+        <div class="order-last lg:order-first">
+          <h1 class="text-xl md:text-3xl font-bold mb-5">
+            <%= gettext("Learn from the best teachers in Libya") %>
+          </h1>
 
-      <p class="mb-6 text-secondary">
-        <%= gettext(
-          "Lukas is an online platform for both educators to offer their content and students to learn."
-        ) %>
-      </p>
+          <p class="mb-6 text-secondary">
+            <%= gettext(
+              "Lukas is an online platform for both educators to offer their content and students to learn."
+            ) %>
+          </p>
 
-      <div class="mb-10 flex">
-        <CommonComponents.transparent_button>
-          <.link navigate={~p"/log_in"}>
-            <u><%= gettext("Sign in") %></u>
-          </.link>
-        </CommonComponents.transparent_button>
+          <div class="flex">
+            <CommonComponents.transparent_button>
+              <.link navigate={~p"/log_in"}>
+                <u><%= gettext("Sign in") %></u>
+              </.link>
+            </CommonComponents.transparent_button>
 
-        <CommonComponents.transparent_button>
-          <.link href={~p"/users/register"}><u><%= gettext("Register") %></u></.link>
-        </CommonComponents.transparent_button>
+            <CommonComponents.transparent_button>
+              <.link href={~p"/users/register"}><u><%= gettext("Register") %></u></.link>
+            </CommonComponents.transparent_button>
+          </div>
+        </div>
+
+        <img
+          src={~p"/images/logo-lg.png"}
+          class="w-[300px] h-[300px] sm:order-1 lg:order-2 rounded-lg "
+        />
       </div>
 
       <h3 class="font-bold text-secondary text-xl mb-10 mt-3 text-center">
