@@ -18,7 +18,7 @@ defmodule LukasWeb.Operators.HomeLive do
       <li class="max-w-xs w-full h-full">
         <.link
           navigate={~p"/controls/courses"}
-          class="bg-white shadow rounded-lg h-28 hover:outline outline-green-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
+          class="bg-white shadow rounded-lg h-28 hover:outline outline-purple-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
         >
           <div class="flex items-center">
             <.icon name="hero-academic-cap-solid me-3" /> <%= gettext("Courses") %>
@@ -33,7 +33,7 @@ defmodule LukasWeb.Operators.HomeLive do
       <li class="max-w-xs w-full h-full">
         <.link
           navigate={~p"/controls/stats"}
-          class="bg-white shadow rounded-lg h-28 hover:outline outline-green-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
+          class="bg-white shadow rounded-lg h-28 hover:outline outline-purple-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
         >
           <div class="flex items-center">
             <.icon name="hero-chart-pie-solid me-3" /> <%= gettext("Statistics") %>
@@ -48,7 +48,7 @@ defmodule LukasWeb.Operators.HomeLive do
       <li class="max-w-xs w-full h-full">
         <.link
           navigate={~p"/controls/lecturers"}
-          class="bg-white shadow rounded-lg h-28 hover:outline outline-green-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
+          class="bg-white shadow rounded-lg h-28 hover:outline outline-purple-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
         >
           <div class="flex items-center">
             <.icon name="hero-user-circle-solid me-3" /> <%= gettext("Lecturers") %>
@@ -63,7 +63,7 @@ defmodule LukasWeb.Operators.HomeLive do
       <li class="max-w-xs w-full h-full">
         <.link
           navigate={~p"/controls/students"}
-          class="bg-white shadow rounded-lg h-28 hover:outline outline-green-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
+          class="bg-white shadow rounded-lg h-28 hover:outline outline-purple-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
         >
           <div class="flex items-center">
             <.icon name="hero-users-solid me-3" /> <%= gettext("Students") %>
@@ -78,7 +78,7 @@ defmodule LukasWeb.Operators.HomeLive do
       <li class="max-w-xs w-full h-full">
         <.link
           navigate={~p"/controls/operators"}
-          class="bg-white shadow rounded-lg h-28 hover:outline outline-green-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
+          class="bg-white shadow rounded-lg h-28 hover:outline outline-purple-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
         >
           <div class="flex items-center">
             <.icon name="hero-cursor-arrow-ripple-solid me-3" /> <%= gettext("Operators") %>
@@ -93,7 +93,7 @@ defmodule LukasWeb.Operators.HomeLive do
       <li class="max-w-xs w-full h-full">
         <.link
           navigate={~p"/controls/invites"}
-          class="bg-white shadow rounded-lg h-28 hover:outline outline-green-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
+          class="bg-white shadow rounded-lg h-28 hover:outline outline-purple-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
         >
           <div class="flex items-center">
             <.icon name="hero-envelope-solid me-3" /> <%= gettext("Invites") %>
@@ -108,7 +108,7 @@ defmodule LukasWeb.Operators.HomeLive do
       <li class="max-w-xs w-full h-full">
         <.link
           navigate={~p"/controls/tags"}
-          class="bg-white shadow rounded-lg h-28 hover:outline outline-green-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
+          class="bg-white shadow rounded-lg h-28 hover:outline outline-purple-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
         >
           <div class="flex items-center">
             <.icon name="hero-tag-solid me-3" /> <%= gettext("Tags") %>
@@ -123,7 +123,7 @@ defmodule LukasWeb.Operators.HomeLive do
       <li class="max-w-xs w-full h-full">
         <.link
           href={~p"/users/settings"}
-          class="bg-white shadow rounded-lg h-28 hover:outline outline-green-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
+          class="bg-white shadow rounded-lg h-28 hover:outline outline-purple-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
         >
           <div class="flex items-center">
             <.icon name="hero-cog-6-tooth-solid me-3" /> <%= gettext("Settings") %>

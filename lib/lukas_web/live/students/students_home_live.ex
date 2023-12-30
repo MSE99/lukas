@@ -16,7 +16,7 @@ defmodule LukasWeb.Students.HomeLive do
       <li class="max-w-xs w-full h-full">
         <.link
           navigate={~p"/home/courses"}
-          class="bg-white shadow rounded-lg h-28 hover:outline outline-green-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
+          class="bg-white shadow rounded-lg h-28 hover:outline outline-purple-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
         >
           <div class="flex items-center">
             <.icon name="hero-academic-cap-solid me-3" /> <%= gettext("My courses") %>
@@ -31,7 +31,7 @@ defmodule LukasWeb.Students.HomeLive do
       <li class="max-w-xs w-full h-full">
         <.link
           navigate={~p"/users/settings"}
-          class="bg-white shadow rounded-lg h-28 hover:outline outline-green-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
+          class="bg-white shadow rounded-lg h-28 hover:outline outline-purple-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
         >
           <div class="flex items-center">
             <.icon name="hero-cog-solid me-3" /> <%= gettext("Settings") %>
@@ -46,7 +46,7 @@ defmodule LukasWeb.Students.HomeLive do
       <li class="max-w-xs w-full h-full">
         <.link
           navigate={~p"/home/courses/available"}
-          class="bg-white shadow rounded-lg h-28 hover:outline outline-green-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
+          class="bg-white shadow rounded-lg h-28 hover:outline outline-purple-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
         >
           <div class="flex items-center">
             <.icon name="hero-academic-cap-solid" class="me-3" /> <%= gettext("Other courses") %>
@@ -61,7 +61,7 @@ defmodule LukasWeb.Students.HomeLive do
       <li class="max-w-xs w-full h-full">
         <.link
           navigate={~p"/home/wallet"}
-          class="bg-white shadow rounded-lg h-28 hover:outline outline-green-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
+          class="bg-white shadow rounded-lg h-28 hover:outline outline-purple-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
         >
           <div class="flex items-center">
             <.icon name="hero-envelope-solid" class="me-3" /> <%= gettext("My wallet") %>

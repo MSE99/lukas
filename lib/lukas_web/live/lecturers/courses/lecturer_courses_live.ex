@@ -143,7 +143,7 @@ defmodule LukasWeb.Lecturer.CoursesLive do
             phx-click="toggle-tag"
             phx-value-id={tag.id}
             class={[
-              "hover:bg-green-600 hover:text-white transition-all hover:cursor-pointer font-bold text-sm px-4 py-1 rounded-full",
+              "hover:bg-purple-800 hover:text-white transition-all hover:cursor-pointer font-bold text-sm px-4 py-1 rounded-full",
               if(
                 tag.id in @chosen_tag_ids,
                 do: "bg-primary text-white",

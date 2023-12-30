@@ -50,7 +50,7 @@ defmodule LukasWeb.CommonComponents do
   def basic_navbar(assigns) do
     ~H"""
     <h1 class="text-2xl text-center font-bold text-orange-300">
-      Lukas
+      البصائر النيرة
     </h1>
     """
   end
@@ -60,13 +60,17 @@ defmodule LukasWeb.CommonComponents do
     <header class="px-6 sm:px-8 lg:px-10" dir="ltr">
       <nav class="mx-auto max-w-3xl">
         <h1 :if={assigns[:current_user] == nil} class="text-primary font-bold text-2xl mt-8 mb-16">
-          <.link href={~p"/"}> Lukas</.link>
+          <.link href={~p"/"} class="flex gap-3 max-w-fit">
+            البصائر النيرة <img src={~p"/images/logo.png"} width={30} height={30} />
+          </.link>
         </h1>
 
         <ul :if={assigns[:current_user]} class="flex items-center">
           <li class="mr-auto self-end">
             <h1 class="text-primary font-bold text-2xl mt-8">
-              <.link href={~p"/"}>Lukas</.link>
+              <.link href={~p"/"} class="flex gap-3 max-w-fit">
+                البصائر النيرة <img src={~p"/images/logo.png"} width={30} height={30} />
+              </.link>
             </h1>
           </li>
 
@@ -198,7 +202,7 @@ defmodule LukasWeb.CommonComponents do
 
   def tag(assigns) do
     ~H"""
-    <div class="bg-primary hover:bg-green-600 transition-all text-white font-bold px-6 py-2 rounded-full">
+    <div class="bg-primary hover:bg-purple-800 transition-all text-white font-bold px-6 py-2 rounded-full">
       <%= @tag.name %>
     </div>
     """
