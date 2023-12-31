@@ -80,7 +80,7 @@ defmodule LukasWeb.Courses.CourseLiveTest do
 
       {:ok, _, html} = live(conn, ~p"/controls/courses/#{course.id}")
 
-      assert html =~ "#{:erlang.float_to_binary(course.price * 2, decimals: 1)} LYD"
+      assert html =~ "#{:erlang.float_to_binary(course.price * 2, decimals: 2)} LYD"
     end
 
     test "should react to course being purchased.", %{conn: conn, course: course} do
@@ -95,7 +95,7 @@ defmodule LukasWeb.Courses.CourseLiveTest do
       {:ok, _} = Students.enroll_student(course, student1)
       {:ok, _} = Students.enroll_student(course, student2)
 
-      assert render(lv) =~ "#{:erlang.float_to_binary(course.price * 2, decimals: 1)} LYD"
+      assert render(lv) =~ "#{:erlang.float_to_binary(course.price * 2, decimals: 2)} LYD"
     end
   end
 
