@@ -17,7 +17,10 @@ defmodule Lukas.Money do
   def tag_from_tx(%DirectDepositTx{} = d), do: "tx-deposit-#{d.id}"
 
   def describe_tx(%CoursePurchase{} = c) do
-    gettext("Course %{course_id} was bought for %{amount}", course_id: c.id, amount: c.amount)
+    gettext("Course %{course_id} was bought for %{amount}",
+      course_id: c.id,
+      amount: :erlang.float_to_binary(c.amount, decimals: 2)
+    )
   end
 
   def describe_tx(%DirectDepositTx{} = dtx) do

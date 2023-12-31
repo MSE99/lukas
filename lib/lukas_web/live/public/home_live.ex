@@ -13,7 +13,10 @@ defmodule LukasWeb.Public.HomeLive do
       |> stream_configure(:free_courses, [])
       |> assign(:loading, AsyncResult.loading())
       |> start_async(:loading, fn ->
-        paid = Learning.list_courses(limit: 10, free: false)
+        paid =
+          Learning.list_courses(limit: 10, free: false)
+          |> Enum.filter(fn course -> course.price > 0.0 end)
+
         free = Learning.list_courses(limit: 10, free: true)
         %{paid: paid, free: free}
       end)

@@ -766,4 +766,4 @@ msgstr "الارباح في اخر 12 اسبوع"
 #: lib/lukas_web/live/students/courses/student_course_study.ex:136
 #, elixir-autogen, elixir-format, fuzzy
 msgid "next"
-msgstr "نصي"
+msgstr "التالي"

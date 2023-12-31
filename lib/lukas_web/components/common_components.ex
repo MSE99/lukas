@@ -129,12 +129,12 @@ defmodule LukasWeb.CommonComponents do
 
   def navigate_breadcrumbs(assigns) do
     ~H"""
-    <ul class="flex gap-1 text-lg text-secondary my-8">
+    <ul class="gap-1 text-lg text-secondary my-8">
       <%= for {path, name} <- @links do %>
-        <li>
+        <li class="inline">
           <.link navigate={path}><%= name %></.link>
         </li>
-        <li :if={Enum.count(@links) > 1 && List.last(@links) != {path, name}}>/</li>
+        <li :if={Enum.count(@links) > 1 && List.last(@links) != {path, name}} class="inline">/</li>
       <% end %>
     </ul>
     """

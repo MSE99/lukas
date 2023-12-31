@@ -156,7 +156,7 @@ defmodule LukasWeb.Students.StudyLive do
           <div class="mt-10 text-secondary px-2 pb-5 max-w-2xl mx-auto">
             <div class="flex justify-end">
               <.button id="reset-button" phx-click="reset-progress" class="me-1">
-                reset progress
+                <%= gettext("reset progress") %>
               </.button>
             </div>
           </div>

@@ -75,7 +75,10 @@ defmodule LukasWeb.Operator.CourseLive do
 
       <.link>
         <CommonComponents.transparent_button>
-          <.icon name="hero-currency-dollar" class="me-2" /> <%= gettext("profits") %> (<%= @profits %> LYD)
+          <.icon name="hero-currency-dollar" class="me-2" /> <%= gettext("profits") %> (<%= :erlang.float_to_binary(
+            @profits,
+            decimals: 2
+          ) %> LYD)
         </CommonComponents.transparent_button>
       </.link>
 

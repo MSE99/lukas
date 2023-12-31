@@ -68,7 +68,7 @@ defmodule LukasWeb.Lecturer.CourseLive do
     </div>
 
     <h3 class="mt-5 pb-5 font-bold text-primary">
-      Price <%= :erlang.float_to_binary(@course.price, decimals: 1) %> LYD
+      Price <%= :erlang.float_to_binary(@course.price, decimals: 2) %> LYD
     </h3>
     """
   end
