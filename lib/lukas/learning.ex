@@ -60,6 +60,7 @@ defmodule Lukas.Learning do
   end
 
   def get_course(id), do: Repo.get(Course, id)
+  def get_course!(id), do: Repo.get!(Course, id)
 
   def get_course_with_students(id) when is_integer(id) do
     Multi.new()
