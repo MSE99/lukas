@@ -81,7 +81,7 @@ defmodule Lukas.Learning.Query do
         if name == "" do
           q
         else
-          where(q, [_, c], like(c.name, ^like_clause))
+          where(q, [c], like(c.name, ^like_clause))
         end
     end
   end
