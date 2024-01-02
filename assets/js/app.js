@@ -4,7 +4,6 @@ import { LiveSocket } from "phoenix_live_view";
 import topbar from "../vendor/topbar";
 
 import Croppie from "../vendor/croppie.js";
-import "@editorjs/editorjs";
 
 let ImageCropper = {
   mounted() {

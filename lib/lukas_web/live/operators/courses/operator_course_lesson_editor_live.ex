@@ -10,7 +10,7 @@ defmodule LukasWeb.Operator.LessonEditorLive do
       |> start_async(:loading, fn -> load_course(raw_course_id) end)
       |> assign(:loading, AsyncResult.loading())
 
-    {:ok, next_socket, layout: {LukasWeb.Layouts, :frameless}}
+    {:ok, next_socket}
   end
 
   defp load_course(raw_id) do
