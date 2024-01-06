@@ -110,11 +110,6 @@ defmodule LukasWeb.Students.StudyLive do
         </div>
 
         <div :if={@topic} class="max-w-2xl mx-auto">
-          <CommonComponents.course_banner
-            :if={@topic.kind == :text}
-            image_src={~p"/images/#{@topic.media}"}
-          />
-
           <.main_title>
             <%= @topic.title %>
           </.main_title>
@@ -123,7 +118,11 @@ defmodule LukasWeb.Students.StudyLive do
             <source src={~p"/images/#{@topic.media}"} />
           </video>
 
-          <.paragraph :if={@topic.kind in [:text, :file]} class="mb-10">
+          <div :if={@topic.kind == :text} class="tiny-mce-content">
+            <%= {:safe, @topic.content} %>
+          </div>
+
+          <.paragraph :if={@topic.kind == :file} class="mb-10">
             <%= @topic.content %>
           </.paragraph>
 

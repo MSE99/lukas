@@ -50,3 +50,39 @@
     transform: rotate(360deg);
   }
 }
+
+.tiny-mce-content h1 {
+  @apply mb-5;
+  @apply font-bold;
+  @apply text-6xl;
+}
+
+.tiny-mce-content h2 {
+  @apply mb-5;
+  @apply font-bold;
+  @apply text-5xl;
+}
+
+.tiny-mce-content h3 {
+  @apply mb-5;
+  @apply font-bold;
+  @apply text-4xl;
+}
+
+.tiny-mce-content h4 {
+  @apply mb-5;
+  @apply font-bold;
+  @apply text-3xl;
+}
+
+.tiny-mce-content h5 {
+  @apply mb-5;
+  @apply font-bold;
+  @apply text-2xl;
+}
+
+.tiny-mce-content h6 {
+  @apply mb-5;
+  @apply font-bold;
+  @apply text-xl;
+}
