@@ -58,10 +58,11 @@ defmodule LukasWeb.Router do
       live("/courses/:id/assign-lecturer", Operator.AssignLecturerLive, :add_lecturer)
 
       live("/courses/:id/lessons", Operator.CourseLessonsLive)
-      live("/courses/:id/lessons/editor", Operator.LessonEditorLive)
 
       live("/courses/:id/lessons/:lesson_id", Operator.LessonLive)
       live("/courses/:id/lessons/:lesson_id/new-topic", Operator.LessonLive, :new_topic)
+
+      live("/courses/:id/lessons/:lesson_id/topics/new", Operator.TopicEditorLive)
 
       live("/courses/:id/enrollments", Operator.CourseEnrollmentsLive)
 
