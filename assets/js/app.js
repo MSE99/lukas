@@ -13,6 +13,8 @@ const closeAllToolbars = () => {
 
 let Editor = {
   mounted() {
+    const initialContent = this.el.getAttribute("data-original-content") || "";
+
     tinymce.init({
       selector: "#lesson-editor",
       height: 600,
@@ -44,6 +46,11 @@ let Editor = {
       content_style:
         "body { font-family:Helvetica,Arial,sans-serif; font-size:16px }",
       placeholder: "Type something here...",
+      setup(editor) {
+        editor.on("init", () => {
+          editor.setContent(initialContent);
+        });
+      },
     });
 
     const editor = tinymce.get("lesson-editor");

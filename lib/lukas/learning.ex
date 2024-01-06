@@ -94,8 +94,12 @@ defmodule Lukas.Learning do
   def get_lessons(%Course{id: course_id}),
     do: from(l in Lesson, where: l.course_id == ^course_id) |> Repo.all()
 
-  def get_lesson_by_id_lesson_id(course_id, lesson_id) do
+  def get_lesson_by_id_and_course_id(course_id, lesson_id) do
     Repo.get_by(Lesson, course_id: course_id, id: lesson_id)
+  end
+
+  def get_topic_by_id_and_lesson_id(topic_id, lesson_id) do
+    Repo.get_by(Lesson.Topic, lesson_id: lesson_id, id: topic_id)
   end
 
   def create_course(attrs, opts \\ []) do
