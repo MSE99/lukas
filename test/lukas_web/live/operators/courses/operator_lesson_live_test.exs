@@ -63,7 +63,7 @@ defmodule LukasWeb.Operator.LessonLiveTest do
       lesson: lesson
     } do
       {:ok, lv, _html} = live(conn, path)
-      lv |> element("a", "New topic") |> render_click()
+      lv |> element("a", "New video topic") |> render_click()
       assert_patched(lv, ~p"/controls/courses/#{lesson.course_id}/lessons/#{lesson.id}/new-topic")
     end
 

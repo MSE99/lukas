@@ -65,7 +65,14 @@ defmodule LukasWeb.Operator.LessonLive do
     <div class="flex justify-end">
       <.link patch={~p"/controls/courses/#{@lesson.course_id}/lessons/#{@lesson.id}/new-topic"}>
         <.button class="flex items-center gap-3">
-          <%= gettext("New topic") %>
+          <%= gettext("New video topic") %>
+          <.icon name="hero-plus-circle-solid" />
+        </.button>
+      </.link>
+
+      <.link patch={~p"/controls/courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/new"}>
+        <.button class="flex items-center gap-3">
+          <%= gettext("New text topic") %>
           <.icon name="hero-plus-circle-solid" />
         </.button>
       </.link>
