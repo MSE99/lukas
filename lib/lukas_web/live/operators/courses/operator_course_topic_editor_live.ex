@@ -59,7 +59,7 @@ defmodule LukasWeb.Operator.TopicEditorLive do
       </:loading>
       <:failed>Failed to load course...</:failed>
 
-      <div class="mt-10">
+      <div id="editor-container" class="mt-10" phx-update="ignore">
         <div id="lesson-editor" phx-update="ignore" phx-hook="Editor"></div>
       </div>
 
@@ -103,5 +103,9 @@ defmodule LukasWeb.Operator.TopicEditorLive do
     form = to_form(cs)
 
     {:noreply, assign(socket, :form, form)}
+  end
+
+  def handle_event("text-editor", %{"text_content" => content}, socket) do
+    {:noreply, socket |> assign(:content, content)}
   end
 end

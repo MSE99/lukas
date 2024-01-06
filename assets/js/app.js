@@ -5,6 +5,12 @@ import topbar from "../vendor/topbar";
 
 import Croppie from "../vendor/croppie.js";
 
+const closeAllToolbars = () => {
+  document
+    .querySelectorAll(".tox-toolbar__overflow")
+    .forEach((el) => el.remove());
+};
+
 let Editor = {
   mounted() {
     tinymce.init({
@@ -28,16 +34,37 @@ let Editor = {
         "table",
         "help",
         "wordcount",
+        "directionality",
       ],
       toolbar:
         "undo redo | blocks | " +
         "bold italic backcolor image | alignleft aligncenter " +
         "alignright alignjustify | bullist numlist outdent indent | " +
-        "removeformat | help",
+        "removeformat | help | ltr rtl",
       content_style:
         "body { font-family:Helvetica,Arial,sans-serif; font-size:16px }",
       placeholder: "Type something here...",
     });
+
+    const editor = tinymce.get("lesson-editor");
+
+    const pushEventHandler = () => {
+      const content = editor.getContent();
+      this.pushEventTo(this.el, "text-editor", { text_content: content });
+    };
+
+    const onChangeHandler = () => {
+      closeAllToolbars();
+      pushEventHandler();
+    };
+
+    this.handleEvent("tinymce_reset", () => {
+      editor.resetContent();
+      pushEventHandler();
+    });
+
+    editor.on("keyup", onChangeHandler);
+    editor.on("change", onChangeHandler);
   },
 };
 
