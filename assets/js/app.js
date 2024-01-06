@@ -5,6 +5,42 @@ import topbar from "../vendor/topbar";
 
 import Croppie from "../vendor/croppie.js";
 
+let Editor = {
+  mounted() {
+    tinymce.init({
+      selector: "#lesson-editor",
+      height: 600,
+      plugins: [
+        "advlist",
+        "autolink",
+        "lists",
+        "link",
+        "image",
+        "charmap",
+        "preview",
+        "anchor",
+        "searchreplace",
+        "visualblocks",
+        "code",
+        "fullscreen",
+        "insertdatetime",
+        "media",
+        "table",
+        "help",
+        "wordcount",
+      ],
+      toolbar:
+        "undo redo | blocks | " +
+        "bold italic backcolor image | alignleft aligncenter " +
+        "alignright alignjustify | bullist numlist outdent indent | " +
+        "removeformat | help",
+      content_style:
+        "body { font-family:Helvetica,Arial,sans-serif; font-size:16px }",
+      placeholder: "Type something here...",
+    });
+  },
+};
+
 let ImageCropper = {
   mounted() {
     const input = document.getElementById("image-cropper-input");
@@ -55,7 +91,7 @@ let ImageCropper = {
   },
 };
 
-let hooks = { ImageCropper };
+let hooks = { ImageCropper, Editor };
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")

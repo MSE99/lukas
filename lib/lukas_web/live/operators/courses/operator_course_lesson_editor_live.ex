@@ -50,8 +50,10 @@ defmodule LukasWeb.Operator.LessonEditorLive do
         <.loading_spinner />
       </:loading>
       <:failed>Failed to load course...</:failed>
-      <!-- JS land -->
-      <div id="lesson-editor" phx-update="ignore"></div>
+
+      <div class="mt-10">
+        <div id="lesson-editor" phx-update="ignore" phx-hook="Editor"></div>
+      </div>
     </.async_result>
     """
   end
