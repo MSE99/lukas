@@ -60,17 +60,21 @@ defmodule LukasWeb.Lecturer.LessonLive do
       {~p"/tutor/my-courses/#{@course.id}/lessons/#{@lesson.id}", @lesson.title}
     ]} />
 
-    <h1 class="text-primary text-2xl font-bold mb-8">
-      <%= gettext("Lesson") %>
-      <%= @lesson.title %>
-    </h1>
+    <h1 class="text-primary text-2xl font-bold mb-8">Lesson <%= @lesson.title %></h1>
 
     <p class="text-md text-secondary mb-5"><%= @lesson.description %></p>
 
-    <div class="flex justify-end">
+    <div class="flex justify-end gap-2">
       <.link patch={~p"/tutor/my-courses/#{@lesson.course_id}/lessons/#{@lesson.id}/new-topic"}>
         <.button class="flex items-center gap-3">
-          <%= gettext("New topic") %>
+          <%= gettext("New video topic") %>
+          <.icon name="hero-plus-circle-solid" />
+        </.button>
+      </.link>
+
+      <.link patch={~p"/tutor/my-courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/new"}>
+        <.button class="flex items-center gap-3">
+          <%= gettext("New text topic") %>
           <.icon name="hero-plus-circle-solid" />
         </.button>
       </.link>
@@ -83,9 +87,22 @@ defmodule LukasWeb.Lecturer.LessonLive do
         class="font-bold text-black flex items-center gap-3 my-3"
       >
         <span class="me-auto"><%= topic.title %></span>
-        <.link patch={
-          ~p"/tutor/my-courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{topic.id}/edit-topic"
-        }>
+
+        <.link
+          :if={topic.kind != :text}
+          patch={
+            ~p"/tutor/my-courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{topic.id}/edit-topic"
+          }
+        >
+          <.icon name="hero-pencil" />
+        </.link>
+
+        <.link
+          :if={topic.kind == :text}
+          patch={
+            ~p"/tutor/my-courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{topic.id}/edit"
+          }
+        >
           <.icon name="hero-pencil" />
         </.link>
 

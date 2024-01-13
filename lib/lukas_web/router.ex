@@ -111,6 +111,13 @@ defmodule LukasWeb.Router do
 
       live("/my-courses/:id/lessons/:lesson_id", Lecturer.LessonLive)
       live("/my-courses/:id/lessons/:lesson_id/new-topic", Lecturer.LessonLive, :new_topic)
+      live("/my-courses/:id/lessons/:lesson_id/topics/new", Lecturer.TopicEditorLive)
+
+      live(
+        "/my-courses/:id/lessons/:lesson_id/topics/:topic_id/edit",
+        Lecturer.TopicEditorLive,
+        :edit_topic
+      )
 
       live("/my-courses/:id/enrollments", Lecturer.CourseEnrollmentsLive)
 
