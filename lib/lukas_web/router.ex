@@ -33,6 +33,12 @@ defmodule LukasWeb.Router do
     end
   end
 
+  scope "/media", LukasWeb do
+    pipe_through [:fetch_session, :fetch_current_user, :require_authenticated_user]
+
+    post "/", MediaController, :handle_upload
+  end
+
   scope "/controls", LukasWeb do
     pipe_through([:browser, :require_authenticated_operator])
 

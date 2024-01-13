@@ -18,6 +18,7 @@ import "tinymce/plugins/link";
 import "tinymce/plugins/lists";
 import "tinymce/plugins/table";
 import "tinymce/plugins/image";
+import "tinymce/plugins/media";
 
 const closeAllToolbars = () => {
   document
@@ -47,7 +48,6 @@ let Editor = {
         "code",
         "fullscreen",
         "insertdatetime",
-        "media",
         "table",
         "help",
         "wordcount",
@@ -66,6 +66,9 @@ let Editor = {
           editor.setContent(initialContent);
         });
       },
+      automatic_uploads: true,
+      images_upload_url: "/media",
+      images_upload_credentials: true,
     });
 
     const editor = tinymce.get("lesson-editor");
