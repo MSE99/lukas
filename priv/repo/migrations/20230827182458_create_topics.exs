@@ -5,7 +5,7 @@ defmodule Lukas.Repo.Migrations.CreateTextTopics do
     create table(:topics) do
       add(:title, :string)
       add(:kind, :string)
-      add(:content, :string)
+      add(:content, :text)
       add(:media, :string)
 
       add(:lesson_id, references(:lessons, on_delete: :delete_all, on_update: :update_all))
