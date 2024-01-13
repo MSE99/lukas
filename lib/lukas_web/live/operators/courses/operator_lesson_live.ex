@@ -62,7 +62,7 @@ defmodule LukasWeb.Operator.LessonLive do
 
     <p class="text-md text-secondary mb-5"><%= @lesson.description %></p>
 
-    <div class="flex justify-end">
+    <div class="flex justify-end gap-2">
       <.link patch={~p"/controls/courses/#{@lesson.course_id}/lessons/#{@lesson.id}/new-topic"}>
         <.button class="flex items-center gap-3">
           <%= gettext("New video topic") %>

@@ -93,10 +93,13 @@ defmodule LukasWeb.Operator.TopicEditorLive do
       </:loading>
       <:failed>Failed to load course...</:failed>
 
-      <div id="editor-container" class="mt-10" phx-update="ignore">
-        <div id="lesson-editor" phx-update="ignore" phx-hook="Editor" data-original-content={@content}>
-        </div>
-      </div>
+      <h3 :if={@live_action == :edit_topic} class="text-xl font-bold text-primary mt-10 mb-5">
+        <%= gettext("Editing: %{topic}", topic: @topic.title) %>
+      </h3>
+
+      <h3 :if={@live_action != :edit_topic} class="text-xl font-bold text-primary mt-10 mb-5">
+        <%= gettext("Creating a new topic") %>
+      </h3>
 
       <.form
         id="topic-form"
@@ -104,8 +107,21 @@ defmodule LukasWeb.Operator.TopicEditorLive do
         phx-change="validate"
         phx-submit={if @live_action == :edit_topic, do: "edit", else: "create"}
       >
-        <.input field={@form[:title]} type="text" />
-        <.button>Save</.button>
+        <.input field={@form[:title]} type="text" label={gettext("Title")} />
+
+        <div id="editor-container" class="mt-10" phx-update="ignore">
+          <div
+            id="lesson-editor"
+            phx-update="ignore"
+            phx-hook="Editor"
+            data-original-content={@content}
+          >
+          </div>
+        </div>
+
+        <.button class="mt-5 me-auto">
+          <%= gettext("Save") %>
+        </.button>
       </.form>
     </.async_result>
     """
@@ -121,7 +137,11 @@ defmodule LukasWeb.Operator.TopicEditorLive do
 
     case res do
       {:ok, _} ->
-        {:noreply, redirect(socket, to: ~p"/controls/courses/#{socket.assigns.course.id}")}
+        {:noreply,
+         redirect(socket,
+           to:
+             ~p"/controls/courses/#{socket.assigns.course.id}/lessons/#{socket.assigns.lesson.id}"
+         )}
 
       {:error, cs} ->
         {:noreply, assign(socket, :form, to_form(cs))}
