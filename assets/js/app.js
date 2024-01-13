@@ -12,13 +12,22 @@ import "tinymce/models/dom/model.min.js";
 import "tinymce/skins/ui/oxide/skin.js";
 import "tinymce/plugins/advlist";
 import "tinymce/plugins/code";
-import "tinymce/plugins/emoticons";
-import "tinymce/plugins/emoticons/js/emojis";
 import "tinymce/plugins/link";
 import "tinymce/plugins/lists";
 import "tinymce/plugins/table";
 import "tinymce/plugins/image";
 import "tinymce/plugins/media";
+import "tinymce/plugins/wordcount";
+import "tinymce/plugins/anchor";
+import "tinymce/plugins/directionality";
+import "tinymce/plugins/preview";
+import "tinymce/plugins/searchreplace";
+import "tinymce/plugins/visualblocks";
+import "tinymce/plugins/code";
+import "tinymce/plugins/charmap";
+import "tinymce/plugins/autolink";
+import "tinymce/plugins/fullscreen";
+import "tinymce/plugins/insertdatetime";
 
 const closeAllToolbars = () => {
   document
@@ -49,7 +58,6 @@ let Editor = {
         "fullscreen",
         "insertdatetime",
         "table",
-        "help",
         "wordcount",
         "directionality",
       ],
@@ -57,7 +65,7 @@ let Editor = {
         "undo redo | blocks | " +
         "bold italic backcolor image | alignleft aligncenter " +
         "alignright alignjustify | bullist numlist outdent indent | " +
-        "removeformat | help | ltr rtl",
+        "removeformat | ltr rtl",
       content_style:
         "body { font-family:Helvetica,Arial,sans-serif; font-size:16px }",
       placeholder: "Type something here...",
