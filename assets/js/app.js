@@ -5,6 +5,20 @@ import topbar from "../vendor/topbar";
 
 import Croppie from "../vendor/croppie.js";
 
+import tinymce from "tinymce";
+import "tinymce/icons/default/icons.min.js";
+import "tinymce/themes/silver/theme.min.js";
+import "tinymce/models/dom/model.min.js";
+import "tinymce/skins/ui/oxide/skin.js";
+import "tinymce/plugins/advlist";
+import "tinymce/plugins/code";
+import "tinymce/plugins/emoticons";
+import "tinymce/plugins/emoticons/js/emojis";
+import "tinymce/plugins/link";
+import "tinymce/plugins/lists";
+import "tinymce/plugins/table";
+import "tinymce/plugins/image";
+
 const closeAllToolbars = () => {
   document
     .querySelectorAll(".tox-toolbar__overflow")
@@ -17,6 +31,7 @@ let Editor = {
 
     tinymce.init({
       selector: "#lesson-editor",
+      promotion: false,
       height: 600,
       plugins: [
         "advlist",
