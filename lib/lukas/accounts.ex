@@ -230,6 +230,8 @@ defmodule Lukas.Accounts do
 
   def get_user!(id), do: Repo.get!(User, id)
 
+  def get_user(id), do: Repo.get(User, id)
+
   # Students API
   def create_student_api_token(%User{kind: :student} = student) do
     {serialized_token, token} = UserToken.build_email_token(student, "api-token")

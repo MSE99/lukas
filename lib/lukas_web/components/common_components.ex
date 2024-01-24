@@ -24,7 +24,7 @@ defmodule LukasWeb.CommonComponents do
       "text-xs font-bold lg:font-regular md:text-base transition-all flex items-center"
     ]}>
       <img
-        src={~p"/images/#{@user.profile_image}"}
+        src={~p"/profile-image?user_id#{@user.profile_image}"}
         width="50"
         height="50"
         class="w-[50px] h-[50px] rounded-full me-3 lg:me-5 border-4 border-primary-opaque"
@@ -102,7 +102,7 @@ defmodule LukasWeb.CommonComponents do
       <img
         width="260"
         height="260"
-        src={~p"/images/#{@user.profile_image}"}
+        src={~p"/profile-image?user_id=#{@user.profile_image}"}
         class="rounded-full border-8 border-[rgba(253,186,116,0.27)] mb-8"
       />
 
@@ -174,7 +174,7 @@ defmodule LukasWeb.CommonComponents do
     <ul id={@id} phx-update="stream">
       <li :for={{id, user} <- @users} id={id} class="flex items-center gap-3 mb-3">
         <img
-          src={~p"/images/#{user.profile_image}"}
+          src={~p"/profile-image?user_id=#{user.profile_image}"}
           height="38"
           width="38"
           class="rounded-full h-[38px] w-[38px] border-4 border-primary-opaque"

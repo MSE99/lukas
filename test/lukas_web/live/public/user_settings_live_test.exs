@@ -215,7 +215,7 @@ defmodule LukasWeb.UserSettingsLiveTest do
     test "should only support .jpg .jpeg .png .gif files", %{conn: conn} do
       {:ok, lv, _} = live(conn, ~p"/users/settings/update-profile-image")
 
-      image_bytes = File.read!("priv/static/images/default-profile.png")
+      image_bytes = File.read!("priv/static/content/users/default-profile.png")
 
       upload =
         lv
