@@ -86,7 +86,7 @@ defmodule LukasWeb.CommonComponents do
                 width="100"
                 height="100"
                 class="rounded-full border-8 border-primary-opaque w-[100px] h-[100px]"
-                src={~p"/images/#{@current_user.profile_image}"}
+                src={~p"/profile-image"}
               />
             </.link>
           </li>

@@ -153,6 +153,12 @@ defmodule LukasWeb.Router do
     end
   end
 
+  scope "/profile-image", LukasWeb do
+    pipe_through([:browser, :require_authenticated_user])
+
+    get "/", UserController, :get_profile_image
+  end
+
   ## Authentication routes
 
   scope "/", LukasWeb do

@@ -44,7 +44,7 @@ defmodule LukasWeb.UserSettingsLive do
     <div class="space-y-12 divide-y">
       <div class="flex flex-col justify-center items-center">
         <img
-          src={~p"/images/#{@current_user.profile_image}"}
+          src={~p"/profile-image"}
           width={250}
           height={250}
           class="rounded-full border-8 border-primary-opaque mb-7 w-[250px] h-[250px]"
