@@ -181,7 +181,7 @@ defmodule LukasWeb.UserSettingsLive do
   def handle_event("update-profile-image", _, socket) do
     consume_uploaded_entries(socket, :profile_image, fn %{path: path}, entry ->
       filename = "#{entry.uuid}.#{ext(entry)}"
-      dist = Path.join([:code.priv_dir(:lukas), "static", "images", filename])
+      dist = Path.join([:code.priv_dir(:lukas), "static", "content", "users", filename])
 
       {:ok, next_user} =
         Accounts.update_user_profile_image(
