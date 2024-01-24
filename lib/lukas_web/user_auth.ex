@@ -254,6 +254,20 @@ defmodule LukasWeb.UserAuth do
     end
   end
 
+  def require_authenticated_staff(conn, _opts) do
+    current_user = conn.assigns[:current_user]
+
+    if Accounts.User.is_lecturer?(current_user) || Accounts.User.is_operator?(current_user) do
+      conn
+    else
+      conn
+      |> put_flash(:error, "Unauthorized.")
+      |> maybe_store_return_to()
+      |> redirect(to: ~p"/users/log_in")
+      |> halt()
+    end
+  end
+
   def require_authenticated_student(conn, _opts) do
     if Accounts.User.is_student?(conn.assigns[:current_user]) do
       conn

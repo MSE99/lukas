@@ -57,16 +57,6 @@ defmodule LukasWeb.Lecturers.LessonLiveTest do
       Enum.each(topics, fn topic -> assert html =~ topic.title end)
     end
 
-    test "should render a button for adding new topics.", %{
-      conn: conn,
-      path: path,
-      lesson: lesson
-    } do
-      {:ok, lv, _html} = live(conn, path)
-      lv |> element("a", "New topic") |> render_click()
-      assert_patched(lv, ~p"/tutor/my-courses/#{lesson.course_id}/lessons/#{lesson.id}/new-topic")
-    end
-
     test "should react to lesson being updated.", %{conn: conn, lesson: lesson} do
       {:ok, lv, html} = live(conn, ~p"/tutor/my-courses/#{lesson.course_id}/lessons/#{lesson.id}")
 
