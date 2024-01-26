@@ -134,6 +134,8 @@ defmodule LukasWeb.Router do
         :edit_topic
       )
     end
+
+    get "/my-courses/:id/banner", MediaController, :get_course_banner_for_lecturer
   end
 
   scope "/home", LukasWeb do

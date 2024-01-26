@@ -17,7 +17,7 @@ defmodule LukasWeb.MediaControllerTest do
     |> response(302)
   end
 
-  describe "GET /controls/courses/:course_id/banner_image" do
+  describe "GET /controls/courses/:course_id/banner" do
     setup :register_and_log_in_user
 
     test "should respond with 400 if the course id is invalid.", %{conn: conn} do
@@ -49,6 +49,56 @@ defmodule LukasWeb.MediaControllerTest do
       gotten =
         conn
         |> get(~p"/controls/courses/#{course.id}/banner")
+        |> response(200)
+
+      assert gotten == wanted
+    end
+  end
+
+  describe "GET /tutor/my-courses/:course_id/banner" do
+    setup :register_and_log_in_lecturer
+
+    test "should respond with 400 if the course id is invalid.", %{conn: conn} do
+      conn
+      |> get(~p"/tutor/my-courses/foo/banner")
+      |> response(400)
+    end
+
+    test "should respond with 400 if the course cannot be found.", %{conn: conn} do
+      conn
+      |> get(~p"/tutor/my-courses/50000000/banner")
+      |> response(400)
+    end
+
+    test "should respond with 400 if the lecturer is not assigned to the course.", %{conn: conn} do
+      cr = course_fixture()
+
+      conn
+      |> get(~p"/tutor/my-courses/#{cr.id}/banner")
+      |> response(400)
+    end
+
+    test "should respond with the course banner for the lecturer.", %{
+      conn: conn,
+      user: lecturer
+    } do
+      cr = course_fixture()
+      {:ok, _} = Lukas.Learning.Course.Staff.add_lecturer_to_course(cr, lecturer)
+
+      wanted =
+        Path.join([
+          :code.priv_dir(:lukas),
+          "static",
+          "content",
+          "courses",
+          "images",
+          Lukas.Learning.Course.default_banner_image()
+        ])
+        |> File.read!()
+
+      gotten =
+        conn
+        |> get(~p"/tutor/my-courses/#{cr.id}/banner")
         |> response(200)
 
       assert gotten == wanted
