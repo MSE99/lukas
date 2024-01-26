@@ -144,4 +144,42 @@ defmodule LukasWeb.MediaControllerTest do
       assert gotten == wanted
     end
   end
+
+  describe "GET /courses/:course_id/banner" do
+    test "should respond with 400 if the course id is invalid.", %{conn: conn} do
+      conn
+      |> get(~p"/courses/foo/banner")
+      |> response(400)
+    end
+
+    test "should respond with 400 if the course cannot be found.", %{conn: conn} do
+      conn
+      |> get(~p"/courses/50000000/banner")
+      |> response(400)
+    end
+
+    test "should respond with the course banner for the student.", %{
+      conn: conn
+    } do
+      cr = course_fixture()
+
+      wanted =
+        Path.join([
+          :code.priv_dir(:lukas),
+          "static",
+          "content",
+          "courses",
+          "images",
+          Lukas.Learning.Course.default_banner_image()
+        ])
+        |> File.read!()
+
+      gotten =
+        conn
+        |> get(~p"/courses/#{cr.id}/banner")
+        |> response(200)
+
+      assert gotten == wanted
+    end
+  end
 end

@@ -31,6 +31,8 @@ defmodule LukasWeb.Router do
       live "/courses/:id", Public.CourseLive
       live "/log_in", UserLoginLive
     end
+
+    get "/courses/:id/banner", MediaController, :get_course_banner_for_visitor
   end
 
   scope "/media", LukasWeb do
