@@ -155,6 +155,8 @@ defmodule LukasWeb.Router do
 
       live("/wallet", Students.WalletLive)
     end
+
+    get "/courses/:id/banner", MediaController, :get_course_banner_for_student
   end
 
   scope "/profile-image", LukasWeb do

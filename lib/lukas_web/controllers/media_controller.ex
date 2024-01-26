@@ -17,6 +17,10 @@ defmodule LukasWeb.MediaController do
     ext
   end
 
+  def get_course_banner_for_student(conn, params) do
+    get_course_banner(conn, params)
+  end
+
   def get_course_banner(conn, %{"id" => raw_course_id}) do
     with {course_id, _} <- Integer.parse(raw_course_id),
          course when course != nil <- Learning.get_course(course_id) do
