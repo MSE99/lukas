@@ -98,6 +98,8 @@ defmodule LukasWeb.Router do
 
       live("/stats", Operator.StatsLive)
     end
+
+    get "/courses/:id/banner", MediaController, :get_course_banner
   end
 
   scope "/tutor", LukasWeb do

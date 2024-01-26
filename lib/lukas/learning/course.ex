@@ -3,7 +3,7 @@ defmodule Lukas.Learning.Course do
 
   import Ecto.Changeset
 
-  @default_banner_image "default-profile.png"
+  @default_banner_image "default-banner.png"
 
   schema "courses" do
     field(:name, :string)
