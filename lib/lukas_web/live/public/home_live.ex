@@ -84,7 +84,10 @@ defmodule LukasWeb.Public.HomeLive do
       >
         <li :for={{id, course} <- @streams.latest_courses} id={id}>
           <.link class="hover:bg-gray-300" navigate={~p"/courses/#{course.id}"}>
-            <CommonComponents.course_info course={course} />
+            <CommonComponents.course_info
+              course={course}
+              banner_image_url={~p"/courses/#{course.id}/banner"}
+            />
           </.link>
         </li>
       </ul>
@@ -100,7 +103,10 @@ defmodule LukasWeb.Public.HomeLive do
       >
         <li :for={{id, course} <- @streams.free_courses} id={id}>
           <.link class="hover:bg-gray-300" navigate={~p"/courses/#{course.id}"}>
-            <CommonComponents.course_info course={course} />
+            <CommonComponents.course_info
+              course={course}
+              banner_image_url={~p"/home/courses/#{course.id}/banner"}
+            />
           </.link>
         </li>
       </ul>

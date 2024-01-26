@@ -262,12 +262,13 @@ defmodule LukasWeb.CommonComponents do
   end
 
   attr :course, Lukas.Learning.Course, required: true
+  attr :banner_image_url, :string, required: true
 
   def course_card(assigns) do
     ~H"""
     <div class="flex h-[104px] bg-white shadow rounded text-secondary max-w-md mx-auto rounded-ts-lg rounded-bs-lg">
       <img
-        src={~p"/images/#{@course.banner_image}"}
+        src={@banner_image_url}
         width={110}
         height={104}
         class="w-[110px] h-[104px] rounded-ts-lg rounded-bs-lg"
@@ -285,12 +286,14 @@ defmodule LukasWeb.CommonComponents do
   end
 
   attr :course, Lukas.Learning.Course, required: true
+  attr :banner_image_url, :string, required: true
 
   def course_info(assigns) do
     ~H"""
     <div class="group">
       <img
-        src={~p"/images/#{@course.banner_image}"}
+        src={@banner_image_url}
+        width="120"
         height="120"
         width="120"
         class="w-[135px] h-[120px] rounded-xl"

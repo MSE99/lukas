@@ -44,7 +44,10 @@ defmodule LukasWeb.Students.CoursesLive do
       <ul id="courses" phx-update="stream">
         <li :for={{id, course} <- @streams.courses} id={id} class="mb-3 max-w-md mx-auto">
           <.link navigate={~p"/home/courses/#{course.id}"}>
-            <CommonComponents.course_card course={course} />
+            <CommonComponents.course_card
+              course={course}
+              banner_image_url={~p"/home/courses/#{course.id}/banner"}
+            />
           </.link>
         </li>
       </ul>

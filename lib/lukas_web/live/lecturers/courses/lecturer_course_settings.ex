@@ -84,7 +84,7 @@ defmodule LukasWeb.Lecturer.CourseSettingsLive do
 
       <h1 class="mb-5 font-bold text-lg text-primary"><%= gettext("Settings") %></h1>
 
-      <CommonComponents.course_banner image_src={~p"/images/#{@course.banner_image}"} />
+      <CommonComponents.course_banner image_src={~p"/tutor/my-courses/#{@course.id}/banner"} />
 
       <.form for={@form} phx-change="validate" phx-submit="save">
         <.input field={@form[:name]} type="text" label={gettext("Name")} />
@@ -195,7 +195,9 @@ defmodule LukasWeb.Lecturer.CourseSettingsLive do
     uploaded_images =
       consume_uploaded_entries(socket, :banner_image, fn %{path: path}, entry ->
         filename = "#{entry.uuid}.#{ext(entry)}"
-        dist = Path.join([:code.priv_dir(:lukas), "static", "images", filename])
+
+        dist =
+          Path.join([:code.priv_dir(:lukas), "static", "content", "courses", "images", filename])
 
         File.cp!(path, dist)
 

@@ -101,7 +101,10 @@ defmodule LukasWeb.Public.CoursesLive do
     >
       <:item :let={course}>
         <.link navigate={~p"/courses/#{course.id}"} class="block mb-2 max-w-md mx-auto">
-          <CommonComponents.course_card course={course} />
+          <CommonComponents.course_card
+            course={course}
+            banner_image_url={~p"/courses/#{course.id}/banner"}
+          />
         </.link>
       </:item>
     </.live_component>

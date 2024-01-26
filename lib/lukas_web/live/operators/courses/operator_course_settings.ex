@@ -80,7 +80,7 @@ defmodule LukasWeb.Operator.CourseSettingsLive do
         <%= gettext("Settings") %>
       </h1>
 
-      <CommonComponents.course_banner image_src={~p"/images/#{@course.banner_image}"} />
+      <CommonComponents.course_banner image_src={~p"/controls/courses/#{@course.id}/banner"} />
 
       <.form for={@form} phx-change="validate" phx-submit="save">
         <.input field={@form[:name]} type="text" label="Name" />
