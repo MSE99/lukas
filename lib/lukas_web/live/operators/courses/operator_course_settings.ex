@@ -211,7 +211,16 @@ defmodule LukasWeb.Operator.CourseSettingsLive do
     uploaded_images =
       consume_uploaded_entries(socket, :banner_image, fn %{path: path}, entry ->
         filename = "#{entry.uuid}.#{ext(entry)}"
-        dist = Path.join([:code.priv_dir(:lukas), "static", "images", filename])
+
+        dist =
+          Path.join([
+            :code.priv_dir(:lukas),
+            "static",
+            "content",
+            "courses",
+            "images",
+            filename
+          ])
 
         File.cp!(path, dist)
 

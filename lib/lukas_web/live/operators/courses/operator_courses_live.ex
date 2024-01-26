@@ -134,7 +134,7 @@ defmodule LukasWeb.Operator.AllCoursesLive do
     >
       <:item :let={course} class="flex items-center text-secondary font-bold mb-3">
         <img
-          src={~p"/images/#{course.banner_image}"}
+          src={~p"/controls/courses/#{course.id}/banner"}
           width={80}
           height={80}
           class="rounded w-[80px] h-[80px]"
@@ -348,7 +348,16 @@ defmodule LukasWeb.Operator.AllCoursesLive do
     uploaded_images =
       consume_uploaded_entries(socket, :banner_image, fn %{path: path}, entry ->
         filename = "#{entry.uuid}.#{ext(entry)}"
-        dist = Path.join([:code.priv_dir(:lukas), "static", "images", filename])
+
+        dist =
+          Path.join([
+            :code.priv_dir(:lukas),
+            "static",
+            "content",
+            "courses",
+            "images",
+            filename
+          ])
 
         File.cp!(path, dist)
 

@@ -40,7 +40,7 @@ defmodule LukasWeb.Operator.CourseLive do
       {~p"/controls/courses/#{@course.id}", @course.name}
     ]} />
 
-    <CommonComponents.course_banner image_src={~p"/images/#{@course.banner_image}"} />
+    <CommonComponents.course_banner image_src={~p"/controls/courses/#{@course.id}/banner"} />
 
     <div class="mt-10 text-secondary px-2 pb-5">
       <h3 class="text-xl font-bold mb-3"><%= @course.name %></h3>
