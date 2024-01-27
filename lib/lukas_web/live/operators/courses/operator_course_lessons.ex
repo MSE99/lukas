@@ -98,7 +98,11 @@ defmodule LukasWeb.Operator.CourseLessonsLive do
       </ul>
 
       <.modal :if={@show_form_modal} id="form-modal" on_cancel={JS.push("clear")} show>
-        <img :if={@lesson} src={~p"/images/#{@lesson.image}"} class="w-full h-auto rounded-xl mb-3" />
+        <img
+          :if={@lesson}
+          src={~p"/controls/courses/#{@course.id}/lessons/#{@lesson.id}/image"}
+          class="w-full h-auto rounded-xl mb-3"
+        />
 
         <.form for={@form} phx-change="validate" phx-submit={if @lesson, do: "edit", else: "create"}>
           <.input type="text" label={gettext("Title")} field={@form[:title]} />
