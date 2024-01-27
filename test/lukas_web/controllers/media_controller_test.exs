@@ -182,4 +182,50 @@ defmodule LukasWeb.MediaControllerTest do
       assert gotten == wanted
     end
   end
+
+  describe "GET /controls/courses/:id/lessons/:lesson_id/image" do
+    setup :register_and_log_in_user
+
+    test "should respond with 400 if the course id is invalid.", %{conn: conn} do
+      conn
+      |> get(~p"/controls/courses/foo/lessons/foo/image")
+      |> response(400)
+    end
+
+    test "should respond with 400 if the lesson id is invalid.", %{conn: conn} do
+      cr = course_fixture()
+
+      conn
+      |> get(~p"/controls/courses/#{cr.id}/lessons/foo/image")
+      |> response(400)
+    end
+
+    test "should respond with 400 if the lesson does not belong to the course or vice versa.", %{
+      conn: conn
+    } do
+      cr = course_fixture()
+      other_course = course_fixture()
+      lesson = lesson_fixture(other_course)
+
+      conn
+      |> get(~p"/controls/courses/#{cr.id}/lessons/#{lesson.id}/image")
+      |> response(400)
+    end
+
+    test "should respond with the image of the lesson.", %{
+      conn: conn
+    } do
+      cr = course_fixture()
+      lesson = lesson_fixture(cr)
+
+      wanted = Lukas.Media.read_lesson_image!(lesson)
+
+      gotten =
+        conn
+        |> get(~p"/controls/courses/#{cr.id}/lessons/#{lesson.id}/image")
+        |> response(200)
+
+      assert gotten == wanted
+    end
+  end
 end
