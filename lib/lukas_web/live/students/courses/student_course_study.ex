@@ -90,7 +90,9 @@ defmodule LukasWeb.Students.StudyLive do
     <div class="w-full min-h-screen flex flex-col lg:flex-row">
       <div class="w-full pt-10 px-2 md:max-h-screen md:overflow-y-auto">
         <div :if={@lesson} class="max-w-2xl mx-auto">
-          <CommonComponents.course_banner image_src={~p"/images/#{@lesson.image}"} />
+          <CommonComponents.course_banner image_src={
+            ~p"/home/courses/#{@lesson.course_id}/lessons/#{@lesson.id}/image"
+          } />
 
           <.main_title>
             <%= @lesson.title %>
@@ -150,7 +152,7 @@ defmodule LukasWeb.Students.StudyLive do
         </div>
 
         <div :if={@topic == nil && @lesson == nil}>
-          <CommonComponents.course_banner image_src={~p"/images/#{@course.banner_image}"} />
+          <CommonComponents.course_banner image_src={~p"/home/courses/#{@course.id}/banner"} />
 
           <div class="mt-10 text-secondary px-2 pb-5 max-w-2xl mx-auto">
             <div class="flex justify-end">
