@@ -90,4 +90,16 @@ defmodule LukasWeb.MediaController do
       _ -> send_resp(conn, 400, "invalid course id")
     end
   end
+
+  def get_lesson_image_for_student(conn, %{"id" => raw_course_id, "lesson_id" => raw_lesson_id}) do
+    with {course_id, _} <- Integer.parse(raw_course_id),
+         {lesson_id, _} <- Integer.parse(raw_lesson_id),
+         lesson <-
+           Content.get_lesson_for_student!(conn.assigns.current_user, course_id, lesson_id) do
+      path = Media.get_lesson_image_filepath(lesson)
+      send_file(conn, 200, path)
+    else
+      _ -> send_resp(conn, 400, "invalid course id")
+    end
+  end
 end

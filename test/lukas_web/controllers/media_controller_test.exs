@@ -1,9 +1,10 @@
 defmodule LukasWeb.MediaControllerTest do
   use LukasWeb.ConnCase, async: true
 
+  import Lukas.AccountsFixtures
   import Lukas.LearningFixtures
 
-  alias Lukas.Learning.Course.Staff
+  alias Lukas.Learning.Course.{Staff, Students}
 
   test "should redirect if the user is not authenticated.", %{conn: conn} do
     conn
@@ -285,6 +286,49 @@ defmodule LukasWeb.MediaControllerTest do
       gotten =
         conn
         |> get(~p"/tutor/my-courses/#{cr.id}/lessons/#{lesson.id}/image")
+        |> response(200)
+
+      assert gotten == wanted
+    end
+  end
+
+  describe "GET /home/courses/:id/lessons/:lesson_id/image" do
+    setup :register_and_log_in_student
+
+    test "should respond with 400 if the course id is invalid.", %{conn: conn} do
+      conn
+      |> get(~p"/home/courses/foo/lessons/foo/image")
+      |> response(400)
+    end
+
+    test "should respond with 400 if the lesson id is invalid.", %{conn: conn} do
+      cr = course_fixture()
+
+      conn
+      |> get(~p"/home/courses/#{cr.id}/lessons/foo/image")
+      |> response(400)
+    end
+
+    test "should respond with the image of the lesson.", %{
+      conn: conn,
+      user: student
+    } do
+      cr = course_fixture()
+      lesson = lesson_fixture(cr)
+
+      Lukas.Money.directly_deposit_to_student!(
+        user_fixture(),
+        student,
+        5_000_000
+      )
+
+      {:ok, _} = Students.enroll_student(cr, student)
+
+      wanted = Lukas.Media.read_lesson_image!(lesson)
+
+      gotten =
+        conn
+        |> get(~p"/home/courses/#{cr.id}/lessons/#{lesson.id}/image")
         |> response(200)
 
       assert gotten == wanted

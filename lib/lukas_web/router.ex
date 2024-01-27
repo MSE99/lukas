@@ -164,6 +164,10 @@ defmodule LukasWeb.Router do
     end
 
     get "/courses/:id/banner", MediaController, :get_course_banner_for_student
+
+    get "/courses/:id/lessons/:lesson_id/image",
+        MediaController,
+        :get_lesson_image_for_student
   end
 
   scope "/profile-image", LukasWeb do
