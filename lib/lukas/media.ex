@@ -10,6 +10,10 @@ defmodule Lukas.Media do
   end
 
   def get_lesson_image_filepath(%{image: image}) do
+    get_lesson_image_filepath(image)
+  end
+
+  def get_lesson_image_filepath(image) when is_binary(image) do
     Path.join([
       :code.priv_dir(:lukas),
       "static",
