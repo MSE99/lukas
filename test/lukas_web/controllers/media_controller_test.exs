@@ -3,6 +3,8 @@ defmodule LukasWeb.MediaControllerTest do
 
   import Lukas.LearningFixtures
 
+  alias Lukas.Learning.Course.Staff
+
   test "should redirect if the user is not authenticated.", %{conn: conn} do
     conn
     |> post(~p"/media", %{})
@@ -223,6 +225,66 @@ defmodule LukasWeb.MediaControllerTest do
       gotten =
         conn
         |> get(~p"/controls/courses/#{cr.id}/lessons/#{lesson.id}/image")
+        |> response(200)
+
+      assert gotten == wanted
+    end
+  end
+
+  describe "GET /tutor/my-courses/:id/lessons/:lesson_id/image" do
+    setup :register_and_log_in_lecturer
+
+    test "should respond with 400 if the course id is invalid.", %{conn: conn} do
+      conn
+      |> get(~p"/tutor/my-courses/foo/lessons/foo/image")
+      |> response(400)
+    end
+
+    test "should respond with 400 if the lesson id is invalid.", %{conn: conn} do
+      cr = course_fixture()
+
+      conn
+      |> get(~p"/tutor/my-courses/#{cr.id}/lessons/foo/image")
+      |> response(400)
+    end
+
+    test "should respond with 400 if the lecturer is not assigned to the course.", %{
+      conn: conn
+    } do
+      cr = course_fixture()
+      lesson = lesson_fixture(cr)
+
+      conn
+      |> get(~p"/tutor/my-courses/#{cr.id}/lessons/#{lesson.id}/image")
+      |> response(400)
+    end
+
+    test "should respond with 400 if the lesson does not belong to the course or vice versa.", %{
+      conn: conn
+    } do
+      cr = course_fixture()
+      other_course = course_fixture()
+      lesson = lesson_fixture(other_course)
+
+      conn
+      |> get(~p"/tutor/my-courses/#{cr.id}/lessons/#{lesson.id}/image")
+      |> response(400)
+    end
+
+    test "should respond with the image of the lesson.", %{
+      conn: conn,
+      user: lecturer
+    } do
+      cr = course_fixture()
+      lesson = lesson_fixture(cr)
+
+      {:ok, _} = Staff.add_lecturer_to_course(cr, lecturer)
+
+      wanted = Lukas.Media.read_lesson_image!(lesson)
+
+      gotten =
+        conn
+        |> get(~p"/tutor/my-courses/#{cr.id}/lessons/#{lesson.id}/image")
         |> response(200)
 
       assert gotten == wanted

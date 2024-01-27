@@ -57,6 +57,11 @@ defmodule Lukas.Learning.Course.Staff do
     Query.course_lecturers(course.id) |> Repo.all()
   end
 
+  def is_lecturer_assigned_to_course?(course_id, lecturer_id) do
+    Query.teaching_by_lecturer_and_course_ids(course_id, lecturer_id)
+    |> Repo.exists?()
+  end
+
   def add_lecturer_to_course(%Course{} = course, lecturer) when must_be_lecturer(lecturer) do
     Teaching.changeset(%Teaching{}, %{course_id: course.id, lecturer_id: lecturer.id})
     |> Repo.insert()

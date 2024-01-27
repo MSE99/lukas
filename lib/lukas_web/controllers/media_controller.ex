@@ -2,7 +2,7 @@ defmodule LukasWeb.MediaController do
   use LukasWeb, :controller
 
   alias Lukas.{Learning, Media}
-  alias Lukas.Learning.Course.Content
+  alias Lukas.Learning.Course.{Content, Staff}
 
   def handle_upload(conn, %{"file" => file}) do
     filename = "#{Path.basename(file.path)}.#{ext(file)}"
@@ -71,6 +71,19 @@ defmodule LukasWeb.MediaController do
     with {course_id, _} <- Integer.parse(raw_course_id),
          {lesson_id, _} <- Integer.parse(raw_lesson_id),
          lesson when lesson != nil <- Content.get_lesson(course_id, lesson_id) do
+      path = Media.get_lesson_image_filepath(lesson)
+      send_file(conn, 200, path)
+    else
+      _ -> send_resp(conn, 400, "invalid course id")
+    end
+  end
+
+  def get_lesson_image_for_lecturer(conn, %{"id" => raw_course_id, "lesson_id" => raw_lesson_id}) do
+    with {course_id, _} <- Integer.parse(raw_course_id),
+         {lesson_id, _} <- Integer.parse(raw_lesson_id),
+         lesson when lesson != nil <- Content.get_lesson(course_id, lesson_id),
+         is_assigned when is_assigned == true <-
+           Staff.is_lecturer_assigned_to_course?(course_id, conn.assigns.current_user.id) do
       path = Media.get_lesson_image_filepath(lesson)
       send_file(conn, 200, path)
     else
