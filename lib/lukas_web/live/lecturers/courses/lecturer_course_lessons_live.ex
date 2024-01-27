@@ -212,7 +212,7 @@ defmodule LukasWeb.Lecturer.CourseLessonsLive do
   end
 
   # TODO: Replace this insecure code, attacker can use
-  # the id parameter to delete any lesson on the system. 
+  # the id parameter to delete any lesson on the system.
   def handle_event("delete", %{"id" => raw_id}, socket) do
     raw_id
     |> String.to_integer()
@@ -225,7 +225,7 @@ defmodule LukasWeb.Lecturer.CourseLessonsLive do
     uploaded_images =
       consume_uploaded_entries(socket, :image, fn %{path: path}, entry ->
         filename = "#{entry.uuid}.#{ext(entry)}"
-        dist = Path.join([:code.priv_dir(:lukas), "static", "images", filename])
+        dist = Lukas.Media.get_lesson_image_filepath(filename)
 
         File.cp!(path, dist)
 
