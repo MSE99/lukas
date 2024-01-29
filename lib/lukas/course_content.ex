@@ -58,6 +58,17 @@ defmodule Lukas.Learning.Course.Content do
     |> Repo.one()
   end
 
+  def get_topic_for_lecturer(%Accounts.User{} = lecturer, course_id, lesson_id, topic_id) do
+    Multi.new()
+    |> Multi.one(:topic, Query.topic_by_ids(course_id, lesson_id, topic_id))
+    |> Multi.one(:course, Query.course_for_lecturer(course_id, lecturer.id))
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{topic: topic, course: course}} when course != nil -> topic
+      _ -> nil
+    end
+  end
+
   def get_lesson_and_topic_names(course_id, lesson_id) do
     Ecto.Multi.new()
     |> Ecto.Multi.one(:lesson, Query.lesson_by_course_id_and_id(course_id, lesson_id))

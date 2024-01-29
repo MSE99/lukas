@@ -147,6 +147,10 @@ defmodule LukasWeb.Router do
     get "/my-courses/:id/lessons/:lesson_id/image",
         MediaController,
         :get_lesson_image_for_lecturer
+
+    get "/my-courses/:id/lessons/:lesson_id/topics/:topic_id/media",
+        MediaController,
+        :get_topic_media_for_lecturer
   end
 
   scope "/home", LukasWeb do
@@ -172,6 +176,10 @@ defmodule LukasWeb.Router do
     get "/courses/:id/lessons/:lesson_id/image",
         MediaController,
         :get_lesson_image_for_student
+
+    get "/courses/:id/lessons/:lesson_id/topics/:topic_id/media",
+        MediaController,
+        :get_topic_media_for_student
   end
 
   scope "/profile-image", LukasWeb do

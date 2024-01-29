@@ -118,4 +118,49 @@ defmodule LukasWeb.MediaController do
       _ -> send_resp(conn, 400, "invalid course id")
     end
   end
+
+  def get_topic_media_for_lecturer(conn, %{
+        "id" => raw_course_id,
+        "lesson_id" => raw_lesson_id,
+        "topic_id" => raw_topic_id
+      }) do
+    with {course_id, _} <- Integer.parse(raw_course_id),
+         {lesson_id, _} <- Integer.parse(raw_lesson_id),
+         {topic_id, _} <- Integer.parse(raw_topic_id),
+         topic when topic != nil <-
+           Content.get_topic_for_lecturer(
+             conn.assigns.current_user,
+             course_id,
+             lesson_id,
+             topic_id
+           ) do
+      path = Media.get_topic_media_filepath(topic)
+      send_file(conn, 200, path)
+    else
+      _ -> send_resp(conn, 400, "invalid course id")
+    end
+  end
+
+  def get_topic_media_for_student(conn, %{
+        "id" => raw_course_id,
+        "lesson_id" => raw_lesson_id,
+        "topic_id" => raw_topic_id
+      }) do
+    with {course_id, _} <- Integer.parse(raw_course_id),
+         {lesson_id, _} <- Integer.parse(raw_lesson_id),
+         {topic_id, _} <- Integer.parse(raw_topic_id) do
+      topic =
+        Content.get_topic_for_student!(
+          conn.assigns.current_user,
+          course_id,
+          lesson_id,
+          topic_id
+        )
+
+      path = Media.get_topic_media_filepath(topic)
+      send_file(conn, 200, path)
+    else
+      _ -> send_resp(conn, 400, "invalid course id")
+    end
+  end
 end
