@@ -121,7 +121,7 @@ defmodule LukasWeb.Lecturer.LessonLive do
       <img
         :if={@live_action == :edit_topic and @topic.kind == :text}
         src={
-          ~p"/tutor/my-courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{@topic.media}/media"
+          ~p"/tutor/my-courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{@topic.id}/media"
         }
         class="w-full h-auto rounded-xl mb-3"
       />
@@ -132,7 +132,7 @@ defmodule LukasWeb.Lecturer.LessonLive do
         class="w-full h-auto mb-5 rounded-lg shadow"
       >
         <source src={
-          ~p"/tutor/my-courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{@topic.media}/media"
+          ~p"/tutor/my-courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{@topic.id}/media"
         } />
       </video>
 
@@ -268,7 +268,9 @@ defmodule LukasWeb.Lecturer.LessonLive do
       consume_uploaded_entries(socket, :image, fn %{path: path}, entry ->
         filename = "#{entry.uuid}.#{ext(entry)}"
 
-        dist = Path.join([:code.priv_dir(:lukas), "static", "images", filename])
+        dist =
+          Path.join([:code.priv_dir(:lukas), "static", "content", "courses", "images", filename])
+
         File.cp!(path, dist)
 
         {:ok, filename}
