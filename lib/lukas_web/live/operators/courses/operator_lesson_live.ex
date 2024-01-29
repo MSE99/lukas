@@ -1,7 +1,7 @@
 defmodule LukasWeb.Operator.LessonLive do
   use LukasWeb, :live_view
 
-  alias Lukas.Learning
+  alias Lukas.{Learning, Media}
   alias Lukas.Learning.Course.Content
 
   alias LukasWeb.CommonComponents
@@ -118,7 +118,9 @@ defmodule LukasWeb.Operator.LessonLive do
     >
       <img
         :if={@live_action == :edit_topic and @topic.kind == :text}
-        src={~p"/images/#{@topic.media}"}
+        src={
+          ~p"/controls/courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{@topic.media}/media"
+        }
         class="w-full h-auto rounded-xl mb-3"
       />
 
@@ -127,7 +129,9 @@ defmodule LukasWeb.Operator.LessonLive do
         controls
         class="w-full h-auto mb-5 rounded-lg shadow"
       >
-        <source src={~p"/images/#{@topic.media}"} />
+        <source src={
+          ~p"/controls/courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{@topic.media}/media"
+        } />
       </video>
 
       <.form
@@ -257,8 +261,8 @@ defmodule LukasWeb.Operator.LessonLive do
     uploaded_images =
       consume_uploaded_entries(socket, :image, fn %{path: path}, entry ->
         filename = "#{entry.uuid}.#{ext(entry)}"
-        dist = Path.join([:code.priv_dir(:lukas), "static", "images", filename])
 
+        dist = Path.join([:code.priv_dir(:lukas), "static", "images", filename])
         File.cp!(path, dist)
 
         {:ok, filename}

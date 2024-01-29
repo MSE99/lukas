@@ -27,4 +27,17 @@ defmodule Lukas.Media do
       image
     ])
   end
+
+  def store_in_course_content(from) do
+    filename = Path.basename(from)
+
+    Path.join([
+      :code.priv_dir(:lukas),
+      "static",
+      "content",
+      "courses",
+      "images",
+      filename
+    ])
+  end
 end

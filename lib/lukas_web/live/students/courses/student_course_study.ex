@@ -117,7 +117,9 @@ defmodule LukasWeb.Students.StudyLive do
           </.main_title>
 
           <video :if={@topic.kind == :video} controls class="w-full h-auto mb-5 rounded-lg shadow">
-            <source src={~p"/images/#{@topic.media}"} />
+            <source src={
+              ~p"/home/courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{@topic.media}"
+            } />
           </video>
 
           <div :if={@topic.kind == :text} class="tiny-mce-content">
@@ -130,7 +132,7 @@ defmodule LukasWeb.Students.StudyLive do
 
           <a
             :if={@topic.kind == :file}
-            href={~p"/images/#{@topic.media}"}
+            href={~p"/home/courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{@topic.media}"}
             target="_blank"
             class="block mt-5"
           >
