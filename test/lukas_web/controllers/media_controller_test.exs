@@ -334,4 +334,62 @@ defmodule LukasWeb.MediaControllerTest do
       assert gotten == wanted
     end
   end
+
+  describe "GET /controls/courses/:id/lessons/:lesson_id/topics/:topic_id/media" do
+    setup :register_and_log_in_user
+
+    test "should respond with 400 if the course id is invalid.", %{conn: conn} do
+      lesson = lesson_fixture(course_fixture())
+      topic = text_topic_fixture(lesson)
+
+      conn
+      |> get(~p"/controls/courses/foo/lessons/#{lesson.id}/topics/#{topic.id}/media")
+      |> response(400)
+    end
+
+    test "should respond with 400 if the lesson id is invalid.", %{conn: conn} do
+      course = course_fixture()
+      topic = text_topic_fixture(lesson_fixture(course))
+
+      conn
+      |> get(~p"/controls/courses/#{course.id}/lessons/foo-bar-baz/topics/#{topic.id}/media")
+      |> response(400)
+    end
+
+    test "should respond with 400 if the topic id is invalid.", %{conn: conn} do
+      course = course_fixture()
+      lesson = lesson_fixture(course)
+
+      conn
+      |> get(~p"/controls/courses/#{course.id}/lessons/#{lesson.id}/topics/foo-bar-baz/media")
+      |> response(400)
+    end
+
+    test "should respond with 400 if the topic cannot be found using the ids.", %{conn: conn} do
+      course = course_fixture()
+      lesson = lesson_fixture(course)
+
+      conn
+      |> get(~p"/controls/courses/#{course.id}/lessons/#{lesson.id}/topics/404/media")
+      |> response(400)
+    end
+
+    test "should send the topic media to the user.", %{conn: conn} do
+      course = course_fixture()
+      lesson = lesson_fixture(course)
+      topic = text_topic_fixture(lesson)
+
+      wanted =
+        topic
+        |> Lukas.Media.get_topic_media_filepath()
+        |> File.read!()
+
+      gotten =
+        conn
+        |> get(~p"/controls/courses/#{course.id}/lessons/#{lesson.id}/topics/#{topic.id}/media")
+        |> response(200)
+
+      assert gotten == wanted
+    end
+  end
 end

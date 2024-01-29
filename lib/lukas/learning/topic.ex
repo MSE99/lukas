@@ -5,7 +5,7 @@ defmodule Lukas.Learning.Lesson.Topic do
 
   @kinds [:text, :video, :file]
 
-  @default_image "default-profile.png"
+  @default_image "default-banner.png"
 
   schema "topics" do
     field(:title, :string)

@@ -9,6 +9,10 @@ defmodule Lukas.Media do
     |> File.read!()
   end
 
+  def get_topic_media_filepath(%{media: media}) do
+    get_lesson_image_filepath(media)
+  end
+
   def get_lesson_image_filepath(%{image: image}) do
     get_lesson_image_filepath(image)
   end
