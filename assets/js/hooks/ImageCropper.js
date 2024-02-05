@@ -1,4 +1,4 @@
-import Croppie from "../vendor/croppie.js";
+import Croppie from "../../vendor/croppie.js";
 
 export default {
   mounted() {
