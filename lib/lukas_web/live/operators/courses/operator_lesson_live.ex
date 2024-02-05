@@ -69,13 +69,6 @@ defmodule LukasWeb.Operator.LessonLive do
           <.icon name="hero-plus-circle-solid" />
         </.button>
       </.link>
-
-      <.link patch={~p"/controls/courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/new"}>
-        <.button class="flex items-center gap-3">
-          <%= gettext("New text topic") %>
-          <.icon name="hero-plus-circle-solid" />
-        </.button>
-      </.link>
     </div>
 
     <ul id="topics" phx-update="stream" class="mt-10">
@@ -90,15 +83,6 @@ defmodule LukasWeb.Operator.LessonLive do
           :if={topic.kind != :text}
           patch={
             ~p"/controls/courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{topic.id}/edit-topic"
-          }
-        >
-          <.icon name="hero-pencil" />
-        </.link>
-
-        <.link
-          :if={topic.kind == :text}
-          patch={
-            ~p"/controls/courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{topic.id}/edit"
           }
         >
           <.icon name="hero-pencil" />
