@@ -2,9 +2,15 @@ import "phoenix_html";
 import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
 import topbar from "../vendor/topbar";
-import ImageCropper from "./hooks/ImageCropper";
 
-let hooks = { ImageCropper };
+let hooks = {
+  ImageCropper: {
+    async mounted() {
+      const { default: ImageCropper } = await import("./hooks/ImageCropper");
+      ImageCropper.mounted.call(this);
+    },
+  },
+};
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
