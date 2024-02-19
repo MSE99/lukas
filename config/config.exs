@@ -17,6 +17,7 @@ config :lukas, LukasWeb.Endpoint,
     formats: [html: LukasWeb.ErrorHTML, json: LukasWeb.ErrorJSON],
     layout: false
   ],
+  adapter: Bandit.PhoenixAdapter,
   pubsub_server: Lukas.PubSub,
   live_view: [signing_salt: "ol1NzyRR"]
 

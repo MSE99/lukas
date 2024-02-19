@@ -54,6 +54,7 @@ defmodule Lukas.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:mix_audit, "~> 2.0", only: [:dev, :test], runtime: false},
+      {:bandit, "~> 1.0"},
       {:contex, "~> 0.5.0"}
     ]
   end
