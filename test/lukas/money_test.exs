@@ -96,4 +96,28 @@ defmodule Lukas.MoneyTest do
       assert Money.calculate_course_profits(course.id) == 500.0
     end
   end
+
+  describe "list_top_up_cards/0" do
+    test "should return []." do
+      assert Money.list_top_up_cards() == []
+    end
+
+    test "should return the top up cards created in the system." do
+      card1 = top_up_card_fixture(10)
+      card2 = top_up_card_fixture(20)
+      card3 = top_up_card_fixture(30)
+
+      assert Money.list_top_up_cards(state: :unused) == [card1, card2, card3]
+
+      assert Money.list_top_up_cards(state: :unused, order_by: [desc: :id]) == [
+               card3,
+               card2,
+               card1
+             ]
+
+      assert Money.list_top_up_cards(code: card1.code) == [card1]
+      assert Money.list_top_up_cards(limit: 1) == [card1]
+      assert Money.list_top_up_cards(limit: 1, page: 1) == [card2]
+    end
+  end
 end

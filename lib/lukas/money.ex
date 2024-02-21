@@ -4,10 +4,35 @@ defmodule Lukas.Money do
 
   alias Lukas.Accounts.User
   alias Lukas.Learning.Course
-  alias Lukas.Money.{TxLog, DirectDepositTx, CoursePurchase}
+  alias Lukas.Money.{TxLog, DirectDepositTx, CoursePurchase, Card}
   alias Lukas.Repo
 
   alias Ecto.Multi
+
+  def generate_top_up_card(value) when is_integer(value) do
+    %Card{}
+    |> Card.changeset(%{value: value, state: :unused, code: generate_random_top_up_card_code()})
+    |> Repo.insert()
+    |> maybe_emit_card_created()
+  end
+
+  defp maybe_emit_card_created({:ok, card} = res) do
+    Phoenix.PubSub.broadcast(Lukas.PubSub, "cards", {:cards, :card_created, card})
+    res
+  end
+
+  defp maybe_emit_card_created(res), do: res
+
+  def list_top_up_cards(opts \\ []) do
+    opts
+    |> Card.query_all_cards()
+    |> Repo.all()
+  end
+
+  # TODO: find a better way to generate random numbers
+  defp generate_random_top_up_card_code() do
+    "#{System.unique_integer([:positive])}-#{System.unique_integer([:positive])}-#{System.unique_integer([:positive])}-#{System.unique_integer([:positive])}"
+  end
 
   def watch_course(%Course{} = course) do
     Phoenix.PubSub.subscribe(Lukas.PubSub, "courses/#{course.id}/purchases")
