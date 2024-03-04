@@ -256,7 +256,7 @@ defmodule LukasWeb.Operator.LessonLive do
 
     default_image =
       case socket.assigns.live_action do
-        :edit -> socket.assigns.topic.image
+        :edit_topic -> socket.assigns.topic.media
         _ -> Learning.Lesson.Topic.default_image()
       end
 
