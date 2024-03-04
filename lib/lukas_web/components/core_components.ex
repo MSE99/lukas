@@ -218,7 +218,7 @@ defmodule LukasWeb.CoreComponents do
     <button
       type={@type}
       class={[
-        "phx-submit-loading:opacity-75 rounded-lg bg-primary hover:bg-purple-700 py-2 px-3",
+        "phx-submit-loading:opacity-75 rounded-lg bg-primary hover:bg-green-500 py-2 px-3 transition-all",
         "text-sm font-semibold leading-6 text-white active:text-white/80",
         @class
       ]}
