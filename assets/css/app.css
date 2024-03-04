@@ -11,15 +11,11 @@
 }
 
 .text-primary {
-  color: rgb(117, 31, 132);
+  color: rgb(253, 186, 116);
 }
 
 .bg-primary {
-  background: rgb(117, 31, 132);
-}
-
-.bg-primary-light {
-  background: rgba(117, 31, 132, .1);
+  background: rgb(253, 186, 116);
 }
 
 .text-secondary {
@@ -27,13 +23,13 @@
 }
 
 .border-primary-opaque {
-  border-color: rgba(117, 31, 132, .135);
+  border-color: rgba(253, 186, 116, .27);
 }
 
 .loader {
   width: 48px;
   height: 48px;
-  border: 5px dotted rgba(117, 31, 132, .27);
+  border: 5px dotted rgba(253, 186, 116, .27);
   border-radius: 50%;
   display: inline-block;
   position: relative;
@@ -49,40 +45,4 @@
   100% {
     transform: rotate(360deg);
   }
-}
-
-.tiny-mce-content h1 {
-  @apply mb-5;
-  @apply font-bold;
-  @apply text-6xl;
-}
-
-.tiny-mce-content h2 {
-  @apply mb-5;
-  @apply font-bold;
-  @apply text-5xl;
-}
-
-.tiny-mce-content h3 {
-  @apply mb-5;
-  @apply font-bold;
-  @apply text-4xl;
-}
-
-.tiny-mce-content h4 {
-  @apply mb-5;
-  @apply font-bold;
-  @apply text-3xl;
-}
-
-.tiny-mce-content h5 {
-  @apply mb-5;
-  @apply font-bold;
-  @apply text-2xl;
-}
-
-.tiny-mce-content h6 {
-  @apply mb-5;
-  @apply font-bold;
-  @apply text-xl;
 }

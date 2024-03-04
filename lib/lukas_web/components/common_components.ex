@@ -50,7 +50,7 @@ defmodule LukasWeb.CommonComponents do
   def basic_navbar(assigns) do
     ~H"""
     <h1 class="text-2xl text-center font-bold text-orange-300">
-      البصائر النيرة
+      <%= gettext("Lukas") %>
     </h1>
     """
   end
@@ -64,8 +64,7 @@ defmodule LukasWeb.CommonComponents do
           class="text-primary font-bold text-2xl mt-8 mb-16 flex justify-start"
         >
           <.link href={~p"/"} class="flex gap-3 max-w-fit">
-            البصائر النيرة
-            <img src={~p"/images/logo.png"} width={30} height={30} class="order-first" />
+            <%= gettext("Lukas") %>
           </.link>
         </h1>
 
@@ -73,8 +72,7 @@ defmodule LukasWeb.CommonComponents do
           <li class="me-auto">
             <h1 class="text-primary font-bold text-2xl mt-8">
               <.link href={~p"/"} class="flex gap-3 max-w-fit">
-                البصائر النيرة
-                <img src={~p"/images/logo.png"} width={30} height={30} class="order-first" />
+                <%= gettext("Lukas") %>
               </.link>
             </h1>
           </li>
@@ -82,7 +80,6 @@ defmodule LukasWeb.CommonComponents do
           <li class="-mr-3 -ml-3">
             <.link href={~p"/users/settings"}>
               <img
-                :if={@current_user.profile_image != "default-profile.png"}
                 width="100"
                 height="100"
                 class="rounded-full border-8 border-primary-opaque w-[100px] h-[100px]"

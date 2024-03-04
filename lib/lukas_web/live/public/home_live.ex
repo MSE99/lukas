@@ -66,11 +66,6 @@ defmodule LukasWeb.Public.HomeLive do
             </CommonComponents.transparent_button>
           </div>
         </div>
-
-        <img
-          src={~p"/images/logo-lg.png"}
-          class="w-[300px] h-[300px] sm:order-1 lg:order-2 rounded-lg "
-        />
       </div>
 
       <h3 class="font-bold text-secondary text-xl mb-10 mt-3 text-center">
