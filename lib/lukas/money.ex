@@ -9,6 +9,11 @@ defmodule Lukas.Money do
 
   alias Ecto.Multi
 
+  def delete_card(id) when is_integer(id) do
+    Repo.get!(Card, id)
+    |> Repo.delete()
+  end
+
   def generate_top_up_card(value) when is_integer(value) do
     %Card{}
     |> Card.changeset(%{value: value, state: :unused, code: generate_random_top_up_card_code()})
