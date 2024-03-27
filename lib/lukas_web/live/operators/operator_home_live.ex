@@ -134,6 +134,21 @@ defmodule LukasWeb.Operators.HomeLive do
           </p>
         </.link>
       </li>
+
+      <li class="max-w-xs w-full h-full">
+        <.link
+          href={~p"/controls/cards"}
+          class="bg-white shadow rounded-lg h-28 hover:outline outline-purple-300 transition-all transition-100 p-5 flex flex-col max-w-xs"
+        >
+          <div class="flex items-center">
+            <.icon name="hero-currency-dollar-solid me-3" /> <%= gettext("Cards") %>
+          </div>
+
+          <p class="mt-3 text-sm text-secondary">
+            <%= gettext("Credit cards for your platform.") %>
+          </p>
+        </.link>
+      </li>
     </ul>
 
     <div class="flex justify-end my-5">

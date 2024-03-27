@@ -91,6 +91,8 @@ defmodule LukasWeb.Router do
       live("/tags/:id/show/edit", TagLive.Show, :edit)
 
       live("/stats", Operator.StatsLive)
+
+      live("/cards", Operator.CardsLive)
     end
 
     get "/courses/:id/banner", MediaController, :get_course_banner
