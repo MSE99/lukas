@@ -4,6 +4,8 @@ defmodule LukasWeb.UserController do
   alias Lukas.Accounts
 
   def get_profile_image(conn, %{"user_id" => raw_user_id}) do
+    IO.inspect("HIT HIT HIT HIT")
+
     with {user_id, _} <- Integer.parse(raw_user_id),
          user when user != nil <- Accounts.get_user(user_id) do
       image_path =

@@ -167,12 +167,6 @@ defmodule LukasWeb.Router do
         :get_topic_media_for_student
   end
 
-  scope "/profile-image", LukasWeb do
-    pipe_through([:browser, :require_authenticated_user])
-
-    get "/", UserController, :get_profile_image
-  end
-
   ## Authentication routes
 
   scope "/", LukasWeb do
@@ -188,6 +182,11 @@ defmodule LukasWeb.Router do
     end
 
     post("/users/log_in", UserSessionController, :create)
+  end
+
+  scope "/", LukasWeb do
+    pipe_through([:browser])
+    get("/profile-image", UserController, :get_profile_image)
   end
 
   scope "/", LukasWeb do

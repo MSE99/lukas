@@ -67,7 +67,7 @@ defmodule LukasWeb.Lecturer.LessonLive do
     <div class="flex justify-end gap-2">
       <.link patch={~p"/tutor/my-courses/#{@lesson.course_id}/lessons/#{@lesson.id}/new-topic"}>
         <.button class="flex items-center gap-3">
-          <%= gettext("New video topic") %>
+          <%= gettext("New topic") %>
           <.icon name="hero-plus-circle-solid" />
         </.button>
       </.link>
@@ -81,12 +81,9 @@ defmodule LukasWeb.Lecturer.LessonLive do
       >
         <span class="me-auto"><%= topic.title %></span>
 
-        <.link
-          :if={topic.kind != :text}
-          patch={
-            ~p"/tutor/my-courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{topic.id}/edit-topic"
-          }
-        >
+        <.link patch={
+          ~p"/tutor/my-courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{topic.id}/edit-topic"
+        }>
           <.icon name="hero-pencil" />
         </.link>
 
@@ -125,7 +122,7 @@ defmodule LukasWeb.Lecturer.LessonLive do
         phx-change="validate"
         phx-submit={if @live_action == :new_topic, do: "create", else: "update"}
       >
-        <.input field={@form[:title]} type="text" label={gettext("Title")} />
+        <.input field={@form[:title]} type="text" label={gettext("الاسم")} />
 
         <.input
           field={@form[:kind]}
@@ -135,7 +132,7 @@ defmodule LukasWeb.Lecturer.LessonLive do
           phx-change="update-topic-kind"
         />
 
-        <.input type="textarea" label={gettext("Content")} field={@form[:content]} />
+        <.input type="textarea" label={gettext("الوصف")} field={@form[:content]} />
 
         <div class="my-5">
           <p class="font-bold mb-3">
@@ -262,7 +259,7 @@ defmodule LukasWeb.Lecturer.LessonLive do
 
     default_image =
       case socket.assigns.live_action do
-        :edit_topic -> socket.assigns.topic.image
+        :edit_topic -> socket.assigns.topic.media
         _ -> Learning.Lesson.Topic.default_image()
       end
 

@@ -100,7 +100,7 @@ defmodule LukasWeb.Public.HomeLive do
           <.link class="hover:bg-gray-300" navigate={~p"/courses/#{course.id}"}>
             <CommonComponents.course_info
               course={course}
-              banner_image_url={~p"/home/courses/#{course.id}/banner"}
+              banner_image_url={~p"/courses/#{course.id}/banner"}
             />
           </.link>
         </li>

@@ -171,7 +171,7 @@ defmodule LukasWeb.CommonComponents do
     <ul id={@id} phx-update="stream">
       <li :for={{id, user} <- @users} id={id} class="flex items-center gap-3 mb-3">
         <img
-          src={~p"/profile-image?user_id=#{user.profile_image}"}
+          src={~p"/profile-image?user_id=#{user.id}"}
           height="38"
           width="38"
           class="rounded-full h-[38px] w-[38px] border-4 border-primary-opaque"
