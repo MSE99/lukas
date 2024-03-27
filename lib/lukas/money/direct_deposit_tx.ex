@@ -20,7 +20,7 @@ defmodule Lukas.Money.DirectDepositTx do
   def changeset(tx, attrs) do
     tx
     |> cast(attrs, [:amount, :student_id, :clerk_id])
-    |> validate_required([:amount, :student_id, :clerk_id])
+    |> validate_required([:amount, :student_id])
     |> validate_number(:amount, greater_than_or_equal_to: 0)
   end
 

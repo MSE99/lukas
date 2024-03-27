@@ -34,6 +34,21 @@ defmodule Lukas.Money do
     |> Repo.all()
   end
 
+  def use_top_up_card(%User{} = student, card_code) when is_binary(card_code) do
+    case Repo.get_by(Card, code: card_code) do
+      %Card{state: :unused, value: value} = card ->
+        Repo.delete(card)
+
+        DirectDepositTx.new(value, nil, student.id)
+        |> Repo.insert!()
+
+        :ok
+
+      _ ->
+        {:error, :invalid_code}
+    end
+  end
+
   # TODO: find a better way to generate random numbers
   defp generate_random_top_up_card_code() do
     "#{System.unique_integer([:positive])}-#{System.unique_integer([:positive])}-#{System.unique_integer([:positive])}-#{System.unique_integer([:positive])}"
@@ -50,6 +65,13 @@ defmodule Lukas.Money do
     gettext("Course %{course_id} was bought for %{amount}",
       course_id: c.id,
       amount: :erlang.float_to_binary(c.amount, decimals: 2)
+    )
+  end
+
+  def describe_tx(%DirectDepositTx{clerk_id: nil} = dtx) do
+    gettext(
+      "You charged %{amount} to your account",
+      amount: :erlang.float_to_binary(dtx.amount, decimals: 1)
     )
   end
 

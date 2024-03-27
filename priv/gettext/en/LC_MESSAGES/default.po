@@ -276,7 +276,7 @@ msgstr ""
 #: lib/lukas_web/live/students/courses/student_course_live.ex:93
 #: lib/lukas_web/live/students/courses/student_course_study.ex:176
 #: lib/lukas_web/live/students/courses/student_courses_live.ex:36
-#: lib/lukas_web/live/students/students_wallet_live.ex:40
+#: lib/lukas_web/live/students/students_wallet_live.ex:43
 #, elixir-autogen, elixir-format
 msgid "home"
 msgstr ""
@@ -344,17 +344,17 @@ msgstr ""
 msgid "available courses"
 msgstr ""
 
-#: lib/lukas_web/live/students/students_wallet_live.ex:41
+#: lib/lukas_web/live/students/students_wallet_live.ex:44
 #, elixir-autogen, elixir-format, fuzzy
 msgid "wallet"
 msgstr ""
 
-#: lib/lukas/money.ex:50
+#: lib/lukas/money.ex:65
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Course %{course_id} was bought for %{amount}"
 msgstr ""
 
-#: lib/lukas/money.ex:57
+#: lib/lukas/money.ex:79
 #, elixir-autogen, elixir-format
 msgid "Operator with id %{operator_id} deposited %{amount} in your account"
 msgstr ""
@@ -430,6 +430,7 @@ msgstr ""
 
 #: lib/lukas_web/live/operators/invites_live.ex:61
 #: lib/lukas_web/live/operators/operator_cards_live.ex:53
+#: lib/lukas_web/live/students/students_wallet_live.ex:54
 #, elixir-autogen, elixir-format
 msgid "Code"
 msgstr ""
@@ -842,4 +843,14 @@ msgstr ""
 #: lib/lukas_web/live/lecturers/courses/lecturer_lesson_live.ex:135
 #, elixir-autogen, elixir-format
 msgid "الوصف"
+msgstr ""
+
+#: lib/lukas_web/live/students/students_wallet_live.ex:56
+#, elixir-autogen, elixir-format
+msgid "Charge"
+msgstr ""
+
+#: lib/lukas/money.ex:72
+#, elixir-autogen, elixir-format
+msgid "You charged %{amount} to your account"
 msgstr ""
