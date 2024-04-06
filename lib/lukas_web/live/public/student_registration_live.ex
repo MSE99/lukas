@@ -38,7 +38,7 @@ defmodule LukasWeb.Public.StudentRegistrationLive do
 
         <:actions>
           <.button phx-disable-with={gettext("Creating account...")} class="w-full">
-            <%= gettext("Create an account") %>
+            <%= gettext("Register") %>
           </.button>
         </:actions>
       </.simple_form>
