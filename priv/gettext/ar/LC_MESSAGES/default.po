@@ -417,6 +417,7 @@ msgstr "كلمة سر جديدة"
 msgid "Save"
 msgstr "حفظ"
 
+#: lib/lukas_web/live/public/about.ex:24
 #: lib/lukas_web/live/public/student_registration_live.ex:36
 #: lib/lukas_web/live/public/user_settings_live.ex:63
 #, elixir-autogen, elixir-format
@@ -511,6 +512,7 @@ msgstr "تسجيل دخول"
 msgid "Password"
 msgstr "كلمة السر"
 
+#: lib/lukas_web/live/public/about.ex:28
 #: lib/lukas_web/live/public/student_registration_live.ex:34
 #: lib/lukas_web/live/public/user_login_live.ex:23
 #, elixir-autogen, elixir-format
@@ -542,11 +544,6 @@ msgstr "يتم الدخول..."
 #, elixir-autogen, elixir-format
 msgid "Already registered?"
 msgstr "مسجل مسبقا"
-
-#: lib/lukas_web/live/public/student_registration_live.ex:41
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Create an account"
-msgstr "انشاء كورس جديد"
 
 #: lib/lukas_web/live/public/student_registration_live.ex:40
 #, elixir-autogen, elixir-format
@@ -632,6 +629,7 @@ msgid "Lukas is an online platform for both educators to offer their content and
 msgstr "البصائر النيرة تقدم أفضل الكورسات أحدثها, يقدمها نخبه من الاساتذة المتميزين ذوي الخبرة والكفاءة."
 
 #: lib/lukas_web/live/public/home_live.ex:65
+#: lib/lukas_web/live/public/student_registration_live.ex:41
 #, elixir-autogen, elixir-format
 msgid "Register"
 msgstr "تسجيل"
@@ -854,3 +852,13 @@ msgstr "شحن"
 #, elixir-autogen, elixir-format
 msgid "You charged %{amount} to your account"
 msgstr "لقد أضفت %{amount} الي حسابك"
+
+#: lib/lukas_web/live/public/about.ex:11
+#, elixir-autogen, elixir-format
+msgid "Lukas is an advanced LMS, it's a platform for both students and lecturers to study"
+msgstr "لوكاس هو منصة تعليمية متقدمة لكل من الطلبة والاساتذة"
+
+#: lib/lukas_web/live/public/about.ex:18
+#, elixir-autogen, elixir-format
+msgid "Contact us"
+msgstr "تواصل معنا"

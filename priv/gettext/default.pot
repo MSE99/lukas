@@ -417,6 +417,7 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
+#: lib/lukas_web/live/public/about.ex:24
 #: lib/lukas_web/live/public/student_registration_live.ex:36
 #: lib/lukas_web/live/public/user_settings_live.ex:63
 #, elixir-autogen, elixir-format
@@ -511,6 +512,7 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
+#: lib/lukas_web/live/public/about.ex:28
 #: lib/lukas_web/live/public/student_registration_live.ex:34
 #: lib/lukas_web/live/public/user_login_live.ex:23
 #, elixir-autogen, elixir-format
@@ -541,11 +543,6 @@ msgstr ""
 #: lib/lukas_web/live/public/student_registration_live.ex:13
 #, elixir-autogen, elixir-format
 msgid "Already registered?"
-msgstr ""
-
-#: lib/lukas_web/live/public/student_registration_live.ex:41
-#, elixir-autogen, elixir-format
-msgid "Create an account"
 msgstr ""
 
 #: lib/lukas_web/live/public/student_registration_live.ex:40
@@ -632,6 +629,7 @@ msgid "Lukas is an online platform for both educators to offer their content and
 msgstr ""
 
 #: lib/lukas_web/live/public/home_live.ex:65
+#: lib/lukas_web/live/public/student_registration_live.ex:41
 #, elixir-autogen, elixir-format
 msgid "Register"
 msgstr ""
@@ -853,4 +851,14 @@ msgstr ""
 #: lib/lukas/money.ex:72
 #, elixir-autogen, elixir-format
 msgid "You charged %{amount} to your account"
+msgstr ""
+
+#: lib/lukas_web/live/public/about.ex:11
+#, elixir-autogen, elixir-format
+msgid "Lukas is an advanced LMS, it's a platform for both students and lecturers to study"
+msgstr ""
+
+#: lib/lukas_web/live/public/about.ex:18
+#, elixir-autogen, elixir-format
+msgid "Contact us"
 msgstr ""

@@ -24,6 +24,7 @@ defmodule LukasWeb.Router do
 
     live_session :public, on_mount: [{LukasWeb.UserAuth, :redirect_if_user_is_authenticated}] do
       live "/", Public.HomeLive
+      live "/about-us", Public.AboutUsLive
 
       live "/courses", Public.CoursesLive, :index
       live "/courses/new", Public.CoursesLive, :new
