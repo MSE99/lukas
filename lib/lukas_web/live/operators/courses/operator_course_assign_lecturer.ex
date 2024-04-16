@@ -74,7 +74,7 @@ defmodule LukasWeb.Operator.AssignLecturerLive do
       <ul id="assigned-lecturers" phx-update="stream">
         <li :for={{id, lect} <- @streams.assigned} id={id} class="flex items-center gap-3 mb-3">
           <img
-            src={~p"/images/#{lect.profile_image}"}
+            src={~p"/profile-image?user_id=#{lect.id}"}
             height="38"
             width="38"
             class="rounded-full h-[38px] w-[38px] border-4 border-primary-opaque"
@@ -97,7 +97,7 @@ defmodule LukasWeb.Operator.AssignLecturerLive do
       <ul id="available-lecturers" phx-update="stream">
         <li :for={{id, lect} <- @streams.available} id={id} class="flex items-center gap-3 mb-3">
           <img
-            src={~p"/images/#{lect.profile_image}"}
+            src={~p"/profile-image?user_id=#{lect.id}"}
             height="38"
             width="38"
             class="rounded-full h-[38px] w-[38px] border-4 border-primary-opaque"

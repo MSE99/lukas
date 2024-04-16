@@ -24,7 +24,7 @@ defmodule LukasWeb.CommonComponents do
       "text-xs font-bold lg:font-regular md:text-base transition-all flex items-center"
     ]}>
       <img
-        src={~p"/profile-image?user_id#{@user.profile_image}"}
+        src={~p"/profile-image?user_id=#{@user.id}"}
         width="50"
         height="50"
         class="w-[50px] h-[50px] rounded-full me-3 lg:me-5 border-4 border-primary-opaque"
