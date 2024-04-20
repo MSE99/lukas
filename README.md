@@ -1,6 +1,6 @@
 # Lukas
 
-A simple LMS built with elixir and <3
+A simple Learning management system built with elixir and <3 + phoenix, it lacks a lot of modern features and need some optimization 
 
 # Goals
 
