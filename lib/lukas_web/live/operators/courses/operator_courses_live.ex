@@ -217,7 +217,7 @@ defmodule LukasWeb.Operator.AllCoursesLive do
 
         <div class="flex justify-end">
           <.button class="px-10">
-            <%= gettext("Create") %>
+            <%= gettext("Save") %>
           </.button>
         </div>
       </.form>

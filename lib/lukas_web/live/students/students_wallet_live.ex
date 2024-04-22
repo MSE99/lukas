@@ -16,8 +16,6 @@ defmodule LukasWeb.Students.WalletLive do
          Money.get_deposited_amount!(socket.assigns.current_user)}
       end)
 
-    IO.inspect(Lukas.Repo.all(Money.Card))
-
     {:ok, next_socket}
   end
 

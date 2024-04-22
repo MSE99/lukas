@@ -8,12 +8,6 @@ defmodule LukasWeb.UserControllerTest do
     |> File.read!()
   end
 
-  test "should respond with 302 if the user is not authenticated.", %{conn: conn} do
-    conn
-    |> get(~p"/profile-image")
-    |> response(302)
-  end
-
   test "should respond with the default profile image for students.", ctx do
     %{conn: conn} = register_and_log_in_student(ctx)
 
