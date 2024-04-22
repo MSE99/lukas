@@ -237,8 +237,8 @@ defmodule LukasWeb.Lecturer.CourseLessonsLive do
       end)
 
     default_image =
-      case socket.assigns.live_action do
-        :edit -> socket.assigns.lesson.image
+      case socket.assigns do
+        %{lesson: l} when l != nil -> l.image
         _ -> Learning.Lesson.default_image()
       end
 

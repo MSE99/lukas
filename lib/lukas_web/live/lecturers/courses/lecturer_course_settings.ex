@@ -3,7 +3,6 @@ defmodule LukasWeb.Lecturer.CourseSettingsLive do
 
   alias Lukas.Learning
   alias Lukas.Learning.Course
-
   alias Lukas.Categories
 
   alias Phoenix.LiveView.AsyncResult

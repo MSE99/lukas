@@ -191,7 +191,7 @@ defmodule LukasWeb.Lecturer.LessonLive do
 
       {:ok, _} ->
         {:noreply,
-         push_patch(socket,
+         redirect(socket,
            to:
              ~p"/tutor/my-courses/#{socket.assigns.lesson.course_id}/lessons/#{socket.assigns.lesson.id}"
          )}

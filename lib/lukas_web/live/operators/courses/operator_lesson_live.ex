@@ -65,7 +65,7 @@ defmodule LukasWeb.Operator.LessonLive do
     <div class="flex justify-end gap-2">
       <.link patch={~p"/controls/courses/#{@lesson.course_id}/lessons/#{@lesson.id}/new-topic"}>
         <.button class="flex items-center gap-3">
-          <%= gettext("New video topic") %>
+          <%= gettext("New topic") %>
           <.icon name="hero-plus-circle-solid" />
         </.button>
       </.link>
@@ -79,12 +79,9 @@ defmodule LukasWeb.Operator.LessonLive do
       >
         <span class="me-auto"><%= topic.title %></span>
 
-        <.link
-          :if={topic.kind != :text}
-          patch={
-            ~p"/controls/courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{topic.id}/edit-topic"
-          }
-        >
+        <.link patch={
+          ~p"/controls/courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{topic.id}/edit-topic"
+        }>
           <.icon name="hero-pencil" />
         </.link>
 
@@ -103,7 +100,7 @@ defmodule LukasWeb.Operator.LessonLive do
       <img
         :if={@live_action == :edit_topic and @topic.kind == :text}
         src={
-          ~p"/controls/courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{@topic.media}/media"
+          ~p"/controls/courses/#{@lesson.course_id}/lessons/#{@lesson.id}/topics/#{@topic.id}/media"
         }
         class="w-full h-auto rounded-xl mb-3"
       />
@@ -188,7 +185,7 @@ defmodule LukasWeb.Operator.LessonLive do
 
       {:ok, _} ->
         {:noreply,
-         push_patch(socket,
+         redirect(socket,
            to:
              ~p"/controls/courses/#{socket.assigns.lesson.course_id}/lessons/#{socket.assigns.lesson.id}"
          )}

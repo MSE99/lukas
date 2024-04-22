@@ -226,9 +226,13 @@ defmodule LukasWeb.Operator.CourseLessonsLive do
       end)
 
     default_image =
-      case socket.assigns.live_action do
-        :edit -> socket.assigns.lesson.image
-        _ -> Learning.Lesson.default_image()
+      case socket.assigns do
+        %{lesson: l} when l != nil ->
+          l.image
+
+        _ ->
+          IO.inspect("USING DEFAULT IMAGE FOR LESSON")
+          Learning.Lesson.default_image()
       end
 
     List.first(uploaded_images, default_image)
