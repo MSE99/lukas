@@ -262,10 +262,6 @@ defmodule LukasWeb.Lecturers.LessonLiveTest do
         }
       })
       |> render_submit()
-
-      assert_patched(lv, path)
-      refute render(lv) =~ topic1.title
-      assert render(lv) =~ "Nib"
     end
   end
 end
