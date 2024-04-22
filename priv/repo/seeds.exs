@@ -3,7 +3,7 @@ inv = Lukas.Accounts.generate_operator_invite!()
 {:ok, clerk} =
   Lukas.Accounts.register_operator(inv, %{
     "kind" => "operator",
-    "phone_number" => "091",
+    "phone_number" => "0911974326",
     "password" => "123123123123",
     "email" => "cool2@gmail.com",
     "name" => "Mohamed Edrah"
@@ -12,7 +12,7 @@ inv = Lukas.Accounts.generate_operator_invite!()
 {:ok, student} =
   Lukas.Accounts.register_student(%{
     "kind" => "student",
-    "phone_number" => "092",
+    "phone_number" => "0921974326",
     "password" => "123123123123",
     "email" => "cool@gmail.com",
     "name" => "Abu bakr sadiq"
@@ -25,7 +25,7 @@ invite = Lukas.Accounts.generate_lecturer_invite!()
 {:ok, lect} =
   Lukas.Accounts.register_lecturer(invite, %{
     "kind" => "lecturer",
-    "phone_number" => "094",
+    "phone_number" => "0944751386",
     "password" => "123123123123",
     "email" => "cool3@gmail.com",
     "name" => "Ali ageel"
