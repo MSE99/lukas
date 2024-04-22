@@ -15,7 +15,7 @@ inv = Lukas.Accounts.generate_operator_invite!()
     "phone_number" => "0921974326",
     "password" => "123123123123",
     "email" => "cool@gmail.com",
-    "name" => "Abu bakr sadiq"
+    "name" => "Ali ageel"
   })
 
 Lukas.Money.directly_deposit_to_student!(clerk, student, 5000)
@@ -28,7 +28,7 @@ invite = Lukas.Accounts.generate_lecturer_invite!()
     "phone_number" => "0944751386",
     "password" => "123123123123",
     "email" => "cool3@gmail.com",
-    "name" => "Ali ageel"
+    "name" => "Abu baker al sadiq"
   })
 
 {:ok, _} = Lukas.Accounts.enable_user(lect)
